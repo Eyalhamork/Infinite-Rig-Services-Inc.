@@ -1,0 +1,59 @@
+
+> infinite-rig-services@1.0.0 build
+> next build
+
+  ▲ Next.js 14.2.33
+  - Environments: .env.local
+
+   Creating an optimized production build ...
+> [PWA] Compile server
+> [PWA] Compile server
+> [PWA] Compile client (static)
+> [PWA] Custom worker found: C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\worker\index.js
+> [PWA] Build custom worker: C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\public\worker-4bOy45LAV4hecma3KE1bW.js
+> [PWA] Auto register service worker with: C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\node_modules\next-pwa\register.js
+> [PWA] Service worker: C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\public\sw.js
+> [PWA]   url: /sw.js
+> [PWA]   scope: /
+<w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (125kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
+ ⚠ Compiled with warnings
+
+./node_modules/@supabase/realtime-js/dist/module/lib/websocket-factory.js
+A Node.js API is used (process.versions at line: 32) which is not supported in the Edge Runtime.
+Learn more: https://nextjs.org/docs/api-reference/edge-runtime
+
+Import trace for requested module:
+./node_modules/@supabase/realtime-js/dist/module/lib/websocket-factory.js
+./node_modules/@supabase/realtime-js/dist/module/index.js
+./node_modules/@supabase/supabase-js/dist/module/index.js
+./node_modules/@supabase/ssr/dist/module/createBrowserClient.js
+./node_modules/@supabase/ssr/dist/module/index.js
+
+./node_modules/@supabase/supabase-js/dist/module/index.js
+A Node.js API is used (process.version at line: 24) which is not supported in the Edge Runtime.
+Learn more: https://nextjs.org/docs/api-reference/edge-runtime
+
+Import trace for requested module:
+./node_modules/@supabase/supabase-js/dist/module/index.js
+./node_modules/@supabase/ssr/dist/module/createBrowserClient.js
+./node_modules/@supabase/ssr/dist/module/index.js
+
+   Skipping linting
+   Checking validity of types ...
+Failed to compile.
+
+./lib/push-notifications.ts:196:5
+Type error: Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'string | BufferSource | null | undefined'.
+  Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+    Types of property 'buffer' are incompatible.
+      Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+        Type 'SharedArrayBuffer' is missing the following properties from type 'ArrayBuffer': resizable, resize, detached, transfer, transferToFixedLength
+
+[0m [90m 194 |[39m   [36mconst[39m subscription [33m=[39m [36mawait[39m registration[33m.[39mpushManager[33m.[39msubscribe({[0m
+[0m [90m 195 |[39m     userVisibleOnly[33m:[39m [36mtrue[39m[33m,[39m[0m
+[0m[31m[1m>[22m[39m[90m 196 |[39m     applicationServerKey[33m:[39m urlBase64ToUint8Array([33mVAPID_PUBLIC_KEY[39m)[33m,[39m[0m
+[0m [90m     |[39m     [31m[1m^[22m[39m[0m
+[0m [90m 197 |[39m   })[33m;[39m[0m
+[0m [90m 198 |[39m[0m
+[0m [90m 199 |[39m   [36mreturn[39m subscription[33m.[39mtoJSON()[33m;[39m[0m
+Next.js build worker exited with code: 1 and signal: null

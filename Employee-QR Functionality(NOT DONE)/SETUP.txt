@@ -1,0 +1,35 @@
+# Employee ID Verification System - Files Created
+
+## Database
+- `supabase/migrations/create_employees_table.sql` - Main table + RLS policies
+- `supabase/seed/employees_seed.sql` - Sample data for testing
+
+## Frontend Pages
+- `app/verify/[id]/page.tsx` - Main verification page
+- `app/verify/[id]/not-found.tsx` - 404 page
+- `app/verify/page.tsx` - Landing/info page
+
+## API Routes
+- `app/api/employees/route.ts` - List/create employees
+- `app/api/employees/[id]/route.ts` - Get/update/delete individual employee
+
+## Utilities
+- `lib/supabase/server.ts` - Supabase client
+- `lib/employee-utils.ts` - Helper functions
+- `scripts/generate-qr.ts` - QR code generator
+
+## Types
+- `types/employee.ts` - Employee interfaces
+- `types/database.ts` - Supabase types
+
+## Quick Start
+
+1. Run migration: `supabase/migrations/create_employees_table.sql`
+2. Add sample data: `supabase/seed/employees_seed.sql`
+3. Install deps: `npm i qrcode @types/qrcode tsx @supabase/ssr`
+4. Add env vars from `.env.verification.example`
+5. Generate QR: `npm run generate-qr EMP001`
+6. Test: Navigate to `/verify/EMP001`
+
+## QR Code Format
+`https://infiniterigservices.com/verify/[EMPLOYEE_ID]`

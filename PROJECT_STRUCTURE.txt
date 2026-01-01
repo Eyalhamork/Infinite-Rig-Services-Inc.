@@ -1,0 +1,136 @@
+|-- app
+  |-- about
+    |-- page.tsx
+  |-- api
+    |-- chat
+      |-- route.ts
+  |-- careers
+    |-- [id]
+    |-- page.tsx
+  |-- case-studies
+    |-- page.tsx
+  |-- chat
+    |-- page.tsx
+  |-- contact
+    |-- page.tsx
+  |-- cookie-policy
+    |-- page.tsx
+  |-- login
+    |-- page.tsx
+  |-- privacy-policy
+    |-- page.tsx
+  |-- quote
+    |-- page.tsx
+  |-- services
+    |-- hse
+      |-- page.tsx
+    |-- manning
+      |-- page.tsx
+    |-- offshore
+      |-- page.tsx
+    |-- supply
+      |-- page.tsx
+    |-- page.tsx
+  |-- signup
+    |-- page.tsx
+  |-- team
+    |-- page.tsx
+  |-- terms-of-service
+    |-- page.tsx
+  |-- tracking
+    |-- page.tsx
+  |-- actions.ts
+  |-- globals.css
+  |-- layout.tsx
+  |-- not-found.tsx
+  |-- page.tsx
+|-- components
+  |-- layout
+    |-- CookieConsent.tsx
+    |-- Footer.tsx
+    |-- Header.tsx
+  |-- ui
+    |-- SuccessModal.tsx
+  |-- AnimatedCounter.tsx
+  |-- ClientMarquee.tsx
+  |-- cookie-consent-banner.tsx
+  |-- floating-chat-widget.tsx
+  |-- HeroCarousel.tsx
+  |-- pwa-install-prompt.tsx
+  |-- TestimonialSlider.tsx
+|-- database
+  |-- schema.sql
+|-- documents
+  |-- document-processor.ts
+|-- lib
+  |-- data
+    |-- jobs.ts
+    |-- services.ts
+  |-- supabase
+    |-- client.ts
+    |-- server.ts
+  |-- pwa-utils.ts
+  |-- utils.ts
+|-- public
+  |-- images
+    |-- services
+      |-- manning-hero-premium.png
+      |-- manning-hero.png
+      |-- manning-training-premium.png
+      |-- offshore-drilling-premium.png
+      |-- offshore-hero-premium.png
+      |-- offshore-hero.png
+      |-- offshore-operations.png
+      |-- offshore-safety-premium.png
+      |-- offshore-team-premium.png
+      |-- supply-hero.png
+      |-- supply-operations.png
+    |-- hero-hse.png
+    |-- hero-manning.png
+    |-- hero-offshore.png
+    |-- hero-supply.png
+    |-- homepage-hero.png
+    |-- office-building.png
+    |-- vessel-port-2.jpg
+    |-- vessel-port-3.jpg
+    |-- vessel-port.png
+  |-- favicon.ico
+  |-- icon-128x128.png
+  |-- icon-144x144.png
+  |-- icon-152x152.png
+  |-- icon-180x180.png
+  |-- icon-192x192.png
+  |-- icon-256x256.png
+  |-- icon-384x384.png
+  |-- icon-512x512.png
+  |-- icon-72x72.png
+  |-- icon-96x96.png
+  |-- logo.png
+  |-- manifest.json
+  |-- robots.txt
+  |-- sw.js
+  |-- workbox-00a24876.js
+|-- supabase
+  |-- migrations
+    |-- 20241226000000_create_form_tables.sql
+|-- types
+  |-- database.ts
+|-- .env.local
+|-- .eslintrc.json
+|-- .gitignore
+|-- auto-setup-pwa.js
+|-- DEPLOYMENT_CHECKLIST.md
+|-- generate-icons.js
+|-- middleware.ts
+|-- next-env.d.ts
+|-- next.config.js
+|-- package-lock.json
+|-- package.json
+|-- postcss.config.js
+|-- PROJECT_STRUCTURE.txt
+|-- QUICKSTART.md
+|-- README.md
+|-- SETUP.md
+|-- tailwind.config.js
+|-- tree.ps1
+|-- tsconfig.json

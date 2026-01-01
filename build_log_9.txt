@@ -1,0 +1,109 @@
+
+> infinite-rig-services@1.0.0 build
+> next build
+
+  ▲ Next.js 14.2.33
+  - Environments: .env.local
+
+   Creating an optimized production build ...
+> [PWA] Compile server
+> [PWA] Compile server
+> [PWA] Compile client (static)
+> [PWA] Custom worker found: C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\worker\index.js
+> [PWA] Build custom worker: C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\public\worker-GtZyJhmOWKhqVAtFGv56k.js
+> [PWA] Auto register service worker with: C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\node_modules\next-pwa\register.js
+> [PWA] Service worker: C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\public\sw.js
+> [PWA]   url: /sw.js
+> [PWA]   scope: /
+ ✓ Compiled successfully
+   Skipping linting
+   Checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/61) ...
+   Generating static pages (15/61) 
+   Generating static pages (30/61) 
+   Generating static pages (45/61) 
+ ✓ Generating static pages (61/61)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                              Size     First Load JS
+┌ ○ /                                    11.8 kB         154 kB
+├ ○ /_not-found                          143 B          87.6 kB
+├ ○ /about                               5.52 kB         147 kB
+├ ƒ /api/chat                            0 B                0 B
+├ ƒ /api/employees                       0 B                0 B
+├ ƒ /api/employees/[id]                  0 B                0 B
+├ ƒ /api/push/send                       0 B                0 B
+├ ƒ /api/push/subscribe                  0 B                0 B
+├ ƒ /api/upload                          0 B                0 B
+├ ƒ /auth/callback                       0 B                0 B
+├ ○ /careers                             5.57 kB         201 kB
+├ ƒ /careers/[id]                        8.7 kB          213 kB
+├ ○ /case-studies                        5.68 kB         147 kB
+├ ○ /chat                                3.57 kB        91.1 kB
+├ ○ /contact                             5.45 kB         159 kB
+├ ○ /cookie-policy                       2.05 kB         104 kB
+├ ○ /dashboard                           5.36 kB         155 kB
+├ ○ /dashboard/applications              4.02 kB         154 kB
+├ ƒ /dashboard/applications/[id]         4.18 kB         154 kB
+├ ○ /dashboard/clients                   3.88 kB         153 kB
+├ ○ /dashboard/clients/new               2.4 kB          152 kB
+├ ○ /dashboard/contacts                  3.68 kB         144 kB
+├ ○ /dashboard/documents                 5.26 kB         155 kB
+├ ○ /dashboard/employees                 3.85 kB         160 kB
+├ ○ /dashboard/employees/new             2.47 kB         152 kB
+├ ○ /dashboard/jobs                      3.97 kB         154 kB
+├ ƒ /dashboard/jobs/[id]                 2.78 kB         152 kB
+├ ○ /dashboard/jobs/new                  2.67 kB         152 kB
+├ ○ /dashboard/messages                  3.96 kB         152 kB
+├ ○ /dashboard/news                      4.37 kB         154 kB
+├ ƒ /dashboard/news/[id]                 3.33 kB         153 kB
+├ ○ /dashboard/news/new                  2.75 kB         152 kB
+├ ○ /dashboard/notifications             3.38 kB         162 kB
+├ ○ /dashboard/projects                  3.8 kB          153 kB
+├ ƒ /dashboard/projects/[id]             7.48 kB         166 kB
+├ ○ /dashboard/quotes                    4.26 kB         145 kB
+├ ○ /dashboard/requests                  4.37 kB         155 kB
+├ ○ /dashboard/roster                    3.58 kB         156 kB
+├ ○ /dashboard/settings                  5.43 kB         164 kB
+├ ○ /dashboard/settings/templates        3.89 kB         163 kB
+├ ○ /dashboard/users                     4.13 kB         152 kB
+├ ○ /login                               3.99 kB         163 kB
+├ ○ /news                                4.04 kB         199 kB
+├ ƒ /news/[slug]                         3.31 kB         198 kB
+├ ○ /portal                              6.74 kB         194 kB
+├ ○ /portal/documents                    3.42 kB         154 kB
+├ ○ /portal/messages                     2.64 kB         143 kB
+├ ○ /portal/notifications                3.14 kB         162 kB
+├ ○ /portal/projects                     3.16 kB         153 kB
+├ ƒ /portal/projects/[id]                5.12 kB         164 kB
+├ ○ /portal/requests                     3.22 kB         162 kB
+├ ○ /portal/requests/new                 3.45 kB         154 kB
+├ ○ /portal/settings                     3.38 kB         154 kB
+├ ○ /privacy-policy                      2.05 kB         104 kB
+├ ○ /quote                               4.14 kB         158 kB
+├ ○ /reset-password                      2.39 kB         161 kB
+├ ○ /reset-password/update               2.9 kB          162 kB
+├ ○ /services                            5.96 kB         148 kB
+├ ○ /services/hse                        6.02 kB         148 kB
+├ ○ /services/manning                    6.32 kB         148 kB
+├ ○ /services/offshore                   6.82 kB         148 kB
+├ ○ /services/supply                     5.92 kB         148 kB
+├ ○ /signup                              7.08 kB         204 kB
+├ ○ /team                                5.52 kB         147 kB
+├ ○ /terms-of-service                    2.05 kB         104 kB
+├ ○ /tracking                            6.34 kB         211 kB
+├ ○ /verify                              183 B          96.4 kB
+└ ƒ /verify/[id]                         392 B           102 kB
++ First Load JS shared by all            87.5 kB
+  ├ chunks/2117-a1da9739684a3dc9.js      31.9 kB
+  ├ chunks/fd9d1056-6e8d7091c3227b69.js  53.6 kB
+  └ other shared chunks (total)          1.97 kB
+
+
+ƒ Middleware                             73.2 kB
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

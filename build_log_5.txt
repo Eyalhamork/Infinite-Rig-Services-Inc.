@@ -1,0 +1,32 @@
+
+> infinite-rig-services@1.0.0 build
+> next build
+
+  ▲ Next.js 14.2.33
+  - Environments: .env.local
+
+   Creating an optimized production build ...
+> [PWA] Compile server
+> [PWA] Compile server
+> [PWA] Compile client (static)
+> [PWA] Custom worker found: C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\worker\index.js
+> [PWA] Build custom worker: C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\public\worker-U5ig9W8LXpF6qGFUjhOoi.js
+> [PWA] Auto register service worker with: C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\node_modules\next-pwa\register.js
+> [PWA] Service worker: C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\public\sw.js
+> [PWA]   url: /sw.js
+> [PWA]   scope: /
+ ✓ Compiled successfully
+   Skipping linting
+   Checking validity of types ...
+Failed to compile.
+
+./lib/push-notifications.ts:1:21
+Type error: Could not find a declaration file for module 'web-push'. 'C:/Users/Layee Kromah/Desktop/infinite-rig-services-WebApp/node_modules/web-push/src/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/web-push` if it exists or add a new declaration (.d.ts) file containing `declare module 'web-push';`
+
+[0m[31m[1m>[22m[39m[90m 1 |[39m [36mimport[39m webPush [36mfrom[39m [32m'web-push'[39m[33m;[39m[0m
+[0m [90m   |[39m                     [31m[1m^[22m[39m[0m
+[0m [90m 2 |[39m[0m
+[0m [90m 3 |[39m [90m// Configure VAPID keys[39m[0m
+[0m [90m 4 |[39m [36mconst[39m [33mVAPID_PUBLIC_KEY[39m [33m=[39m process[33m.[39menv[33m.[39m[33mNEXT_PUBLIC_VAPID_PUBLIC_KEY[39m [33m||[39m [32m''[39m[33m;[39m[0m
+Next.js build worker exited with code: 1 and signal: null

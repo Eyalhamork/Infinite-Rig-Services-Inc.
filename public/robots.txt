@@ -1,0 +1,11 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Disallow admin and user-specific areas
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /admin/
+
+# Sitemap
+Sitemap: https://infiniterigservices.com/sitemap.xml

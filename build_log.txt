@@ -1,0 +1,32 @@
+
+> infinite-rig-services@1.0.0 build
+> next build
+
+  ▲ Next.js 14.2.33
+  - Environments: .env.local
+
+   Creating an optimized production build ...
+> [PWA] Compile server
+> [PWA] Compile server
+> [PWA] Compile client (static)
+> [PWA] Custom worker found: C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\worker\index.js
+> [PWA] Build custom worker: C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\public\worker-PGyGf0jxK2O1ch0lXezkB.js
+> [PWA] Auto register service worker with: C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\node_modules\next-pwa\register.js
+> [PWA] Service worker: C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\public\sw.js
+> [PWA]   url: /sw.js
+> [PWA]   scope: /
+ ✓ Compiled successfully
+   Skipping linting
+   Checking validity of types ...
+Failed to compile.
+
+./Employee-QR Functionality(NOT DONE)/employee-utils.ts:2:34
+Type error: Cannot find module '@/types/employee' or its corresponding type declarations.
+
+[0m [90m 1 |[39m [36mimport[39m { createClient } [36mfrom[39m [32m'@/lib/supabase/server'[39m[33m;[39m[0m
+[0m[31m[1m>[22m[39m[90m 2 |[39m [36mimport[39m { [33mEmploymentStatus[39m } [36mfrom[39m [32m'@/types/employee'[39m[33m;[39m[0m
+[0m [90m   |[39m                                  [31m[1m^[22m[39m[0m
+[0m [90m 3 |[39m[0m
+[0m [90m 4 |[39m [90m/**[39m[0m
+[0m [90m 5 |[39m [90m * Utility functions for employee management[39m[0m
+Next.js build worker exited with code: 1 and signal: null

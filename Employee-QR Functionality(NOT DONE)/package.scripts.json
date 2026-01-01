@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "generate-qr": "tsx scripts/generate-qr.ts",
+    "generate-qr:all": "tsx scripts/generate-qr.ts --all"
+  },
+  "devDependencies": {
+    "qrcode": "^1.5.3",
+    "@types/qrcode": "^1.5.5",
+    "tsx": "^4.7.0"
+  }
+}

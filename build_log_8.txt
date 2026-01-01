@@ -1,0 +1,58 @@
+
+> infinite-rig-services@1.0.0 build
+> next build
+
+  ▲ Next.js 14.2.33
+  - Environments: .env.local
+
+   Creating an optimized production build ...
+> [PWA] Compile server
+> [PWA] Compile server
+> [PWA] Compile client (static)
+> [PWA] Custom worker found: C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\worker\index.js
+> [PWA] Build custom worker: C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\public\worker-IZXmmagkGBrZTPuPLq1Tr.js
+> [PWA] Auto register service worker with: C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\node_modules\next-pwa\register.js
+> [PWA] Service worker: C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\public\sw.js
+> [PWA]   url: /sw.js
+> [PWA]   scope: /
+ ✓ Compiled successfully
+   Skipping linting
+   Checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/61) ...
+   Generating static pages (15/61) 
+ ⨯ useSearchParams() should be wrapped in a suspense boundary at page "/login". Read more: https://nextjs.org/docs/messages/missing-suspense-with-csr-bailout
+    at o (C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\.next\server\chunks\7849.js:1:15574)
+    at d (C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\.next\server\chunks\7849.js:1:26557)
+    at f (C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\.next\server\app\login\page.js:1:2119)
+    at nj (C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\node_modules\next\dist\compiled\next-server\app-page.runtime.prod.js:12:46252)
+    at nM (C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\node_modules\next\dist\compiled\next-server\app-page.runtime.prod.js:12:47572)
+    at nN (C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\node_modules\next\dist\compiled\next-server\app-page.runtime.prod.js:12:64547)
+    at nI (C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\node_modules\next\dist\compiled\next-server\app-page.runtime.prod.js:12:47011)
+    at nM (C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\node_modules\next\dist\compiled\next-server\app-page.runtime.prod.js:12:47718)
+    at nM (C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\node_modules\next\dist\compiled\next-server\app-page.runtime.prod.js:12:61547)
+    at nN (C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\node_modules\next\dist\compiled\next-server\app-page.runtime.prod.js:12:64547)
+
+Error occurred prerendering page "/login". Read more: https://nextjs.org/docs/messages/prerender-error
+
+   Generating static pages (30/61) 
+   Generating static pages (45/61) 
+ ⨯ useSearchParams() should be wrapped in a suspense boundary at page "/tracking". Read more: https://nextjs.org/docs/messages/missing-suspense-with-csr-bailout
+    at o (C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\.next\server\chunks\7849.js:1:15574)
+    at d (C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\.next\server\chunks\7849.js:1:26557)
+    at N (C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\.next\server\app\tracking\page.js:1:2320)
+    at nj (C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\node_modules\next\dist\compiled\next-server\app-page.runtime.prod.js:12:46252)
+    at nM (C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\node_modules\next\dist\compiled\next-server\app-page.runtime.prod.js:12:47572)
+    at nN (C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\node_modules\next\dist\compiled\next-server\app-page.runtime.prod.js:12:64547)
+    at nI (C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\node_modules\next\dist\compiled\next-server\app-page.runtime.prod.js:12:47011)
+    at nM (C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\node_modules\next\dist\compiled\next-server\app-page.runtime.prod.js:12:47718)
+    at nM (C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\node_modules\next\dist\compiled\next-server\app-page.runtime.prod.js:12:61547)
+    at nN (C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\node_modules\next\dist\compiled\next-server\app-page.runtime.prod.js:12:64547)
+
+Error occurred prerendering page "/tracking". Read more: https://nextjs.org/docs/messages/prerender-error
+
+ ✓ Generating static pages (61/61)
+
+> Export encountered errors on following paths:
+	/login/page: /login
+	/tracking/page: /tracking

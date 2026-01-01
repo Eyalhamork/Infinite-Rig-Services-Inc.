@@ -1,0 +1,33 @@
+
+> infinite-rig-services@1.0.0 build
+> next build
+
+  ▲ Next.js 14.2.33
+  - Environments: .env.local
+
+   Creating an optimized production build ...
+> [PWA] Compile server
+> [PWA] Compile server
+> [PWA] Compile client (static)
+> [PWA] Custom worker found: C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\worker\index.js
+> [PWA] Build custom worker: C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\public\worker-5R5Nr2HO62y9L03G0Km-k.js
+> [PWA] Auto register service worker with: C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\node_modules\next-pwa\register.js
+> [PWA] Service worker: C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\public\sw.js
+> [PWA]   url: /sw.js
+> [PWA]   scope: /
+ ✓ Compiled successfully
+   Skipping linting
+   Checking validity of types ...
+Failed to compile.
+
+./Employee-QR Functionality(NOT DONE)/generate-qr.ts:99:24
+Type error: Property 'from' does not exist on type 'Promise<SupabaseClient<any, "public", "public", any, any>>'.
+
+[0m [90m  97 |[39m   [36mconst[39m supabase [33m=[39m createClient()[33m;[39m[0m
+[0m [90m  98 |[39m[0m
+[0m[31m[1m>[22m[39m[90m  99 |[39m   [36mlet[39m query [33m=[39m supabase[33m.[39m[36mfrom[39m([32m'employees'[39m)[33m.[39mselect([32m'employee_id'[39m)[33m;[39m[0m
+[0m [90m     |[39m                        [31m[1m^[22m[39m[0m
+[0m [90m 100 |[39m   [0m
+[0m [90m 101 |[39m   [36mif[39m (statusFilter [33m===[39m [32m'active'[39m) {[0m
+[0m [90m 102 |[39m     query [33m=[39m query[33m.[39meq([32m'employment_status'[39m[33m,[39m [32m'active'[39m)[33m;[39m[0m
+Next.js build worker exited with code: 1 and signal: null

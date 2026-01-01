@@ -1,0 +1,33 @@
+
+> infinite-rig-services@1.0.0 build
+> next build
+
+  ▲ Next.js 14.2.33
+  - Environments: .env.local
+
+   Creating an optimized production build ...
+> [PWA] Compile server
+> [PWA] Compile server
+> [PWA] Compile client (static)
+> [PWA] Custom worker found: C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\worker\index.js
+> [PWA] Build custom worker: C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\public\worker-e7zIjVYlQWarmVxNkJ2Rs.js
+> [PWA] Auto register service worker with: C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\node_modules\next-pwa\register.js
+> [PWA] Service worker: C:\Users\Layee Kromah\Desktop\infinite-rig-services-WebApp\public\sw.js
+> [PWA]   url: /sw.js
+> [PWA]   scope: /
+ ✓ Compiled successfully
+   Skipping linting
+   Checking validity of types ...
+Failed to compile.
+
+./Employee-QR Functionality(NOT DONE)/server.ts:3:10
+Type error: Module '"@/types/database"' has no exported member 'Database'.
+
+[0m [90m 1 |[39m [36mimport[39m { createServerClient[33m,[39m type [33mCookieOptions[39m } [36mfrom[39m [32m'@supabase/ssr'[39m[33m;[39m[0m
+[0m [90m 2 |[39m [36mimport[39m { cookies } [36mfrom[39m [32m'next/headers'[39m[33m;[39m[0m
+[0m[31m[1m>[22m[39m[90m 3 |[39m [36mimport[39m { [33mDatabase[39m } [36mfrom[39m [32m'@/types/database'[39m[33m;[39m[0m
+[0m [90m   |[39m          [31m[1m^[22m[39m[0m
+[0m [90m 4 |[39m[0m
+[0m [90m 5 |[39m [36mexport[39m [36mfunction[39m createClient() {[0m
+[0m [90m 6 |[39m   [36mconst[39m cookieStore [33m=[39m cookies()[33m;[39m[0m
+Next.js build worker exited with code: 1 and signal: null

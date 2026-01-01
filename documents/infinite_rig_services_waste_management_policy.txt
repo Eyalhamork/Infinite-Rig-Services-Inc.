@@ -1,0 +1,98 @@
+INFINITE RIG SERVICES, INC.
+WASTE MANAGEMENT POLICY AND PROCEDURES
+Crown Prince Plaza, Congo Town, Monrovia - Liberia
+Effective Date: [Insert Date]
+Approved By: Mr. Melee Kermue, CEO / Managing Partner
+
+1. Policy Statement
+Infinite Rig Services, Inc. is committed to conducting all operations in a manner that ensures environmental protection, public health, and compliance with all applicable national and international environmental regulations, including those of the Liberia Maritime Authority and Environmental Protection Agency (EPA) of Liberia.
+
+This Waste Management Policy establishes procedures for the safe handling, segregation, transportation, and disposal of all waste generated from our offshore and onshore operations.
+
+2. Objectives
+• To minimize waste generation through efficient operational practices and reuse/recycling initiatives
+• To ensure all waste is managed, treated, and disposed of in compliance with environmental laws
+• To prevent pollution of the marine and terrestrial environment
+• To protect the health and safety of employees, contractors, and surrounding communities
+• To maintain proper documentation and traceability of all waste streams
+
+3. Scope
+This policy applies to all Infinite Rig Services, Inc. facilities, including:
+• Onshore base and warehouse operations
+• Offshore support and supply vessels
+• Manning and service operations on drilling rigs or production platforms
+• All employees, contractors, and subcontractors
+
+4. Waste Classification
+Waste generated from operations shall be categorized as follows:
+
+Category | Description | Examples
+----------|-------------|----------
+General Waste | Non-hazardous waste that poses no risk to the environment or health | Office paper, plastics, food waste, packaging materials
+Hazardous Waste | Waste that is toxic, flammable, corrosive, or reactive | Used oils, chemicals, solvents, paint, batteries
+Biomedical Waste | Medical waste from offshore medical facilities | Used PPE, syringes, medical packaging
+Scrap Metal & Recyclables | Reusable or recyclable waste | Steel, aluminum, drum pallets
+Sewage & Oily Water | Waste and oil-contaminated liquids | Bilge water, sludge, greywater
+
+5. Waste Management Procedures
+
+5.1 Waste Minimization
+• Implement procurement practices that reduce waste (e.g., bulk packaging)
+• Promote reuse and recycling wherever feasible
+• Conduct regular awareness training for all employees
+
+5.2 Waste Segregation
+• Waste shall be separated at the source into clearly labeled containers
+• Color-coded bins shall be used according to waste classification
+• Hazardous waste shall be stored in designated containment areas with secondary spill protection
+
+5.3 Storage and Handling
+• Waste containers shall be kept closed and inspected regularly
+• Hazardous waste shall be handled by trained personnel only
+• Spill containment materials must be readily available
+
+5.4 Collection and Transportation
+• Waste collection schedules shall be established to prevent overflow or contamination
+• Transportation shall comply with national and international maritime standards
+• Licensed waste contractors shall be engaged for hazardous waste transportation
+
+5.5 Disposal
+• All waste shall be disposed of at authorized disposal facilities approved by EPA or Liberia Maritime Authority
+• Offshore waste shall be stored and transported to shore for proper disposal
+• Open burning and ocean dumping are strictly prohibited
+
+5.6 Record Keeping and Documentation
+• A Waste Register shall be maintained for all generated waste streams
+• Waste Transfer Notes (WTNs) shall accompany all waste transported offsite
+• Monthly waste reports shall be submitted to the HSE Department
+
+6. Responsibilities
+
+Role | Responsibilities
+------|----------------
+CEO / Managing Partner | Approve and support implementation of waste management programs
+HSE Manager | Develop and monitor compliance with waste procedures and maintain records
+Operations Manager | Ensure all operational sites adhere to waste handling standards
+Supervisors / Team Leads | Enforce segregation and safe disposal at site level
+Employees / Contractors | Comply with all waste management rules and report any issues
+
+7. Training and Awareness
+• All employees and contractors shall receive environmental and waste management training during induction and periodically thereafter
+• Toolbox meetings shall include waste management topics and updates
+
+8. Monitoring, Reporting, and Review
+• Regular audits shall be conducted to verify compliance
+• Non-conformities shall be documented and corrective actions implemented
+• The policy shall be reviewed annually or when operational changes occur
+
+9. References
+• Liberia Environmental Protection and Management Law (EPA Act)
+• Liberia Maritime Authority Offshore Regulations
+• MARPOL 73/78 – Annex V (Prevention of Pollution by Garbage from Ships)
+• ISO 14001: Environmental Management Systems
+
+10. Approval
+Approved By:
+Mr. Melee Kermue
+Chief Executive Officer / Managing Partner
+Infinite Rig Services, Inc.
