@@ -19,7 +19,7 @@ INSERT INTO public.employees (
     '/images/employees/melee.png',
     'active',
     '2025-01-01',
-    '2027-01-01'
+    '2030-01-01'
 ),
 (
     'IRS-DCEO-002',
@@ -29,7 +29,7 @@ INSERT INTO public.employees (
     '/images/employees/mansfield.png',
     'active',
     '2025-01-01',
-    '2027-01-01'
+    '2030-01-01'
 ),
 (
     'IRS-HR-003',
@@ -39,7 +39,7 @@ INSERT INTO public.employees (
     '/images/employees/nathaniel.png',
     'active',
     '2025-01-01',
-    '2027-01-01'
+    '2030-01-01'
 ),
 (
     'IRS-PS-004',
@@ -49,7 +49,7 @@ INSERT INTO public.employees (
     '/images/employees/prince.png',
     'active',
     '2025-01-01',
-    '2027-01-01'
+    '2030-01-01'
 ),
 (
     'IRS-PS-005',
@@ -59,7 +59,7 @@ INSERT INTO public.employees (
     '/images/employees/francis.png',
     'active',
     '2025-01-01',
-    '2027-01-01'
+    '2030-01-01'
 ),
 (
     'IRS-IT-006',
@@ -69,7 +69,7 @@ INSERT INTO public.employees (
     '/images/employees/mohammed.png',
     'active',
     '2025-01-01',
-    '2027-01-01'
+    '2030-01-01'
 ),
 (
     'IRS-IT-007',
@@ -79,7 +79,7 @@ INSERT INTO public.employees (
     '/images/employees/kester.png',
     'active',
     '2025-01-01',
-    '2027-01-01'
+    '2030-01-01'
 ),
 (
     'IRS-LOG-008',
@@ -89,7 +89,7 @@ INSERT INTO public.employees (
     '/images/employees/daniel.png',
     'active',
     '2025-01-01',
-    '2027-01-01'
+    '2030-01-01'
 ),
 (
     'IRS-COM-009',
@@ -99,7 +99,7 @@ INSERT INTO public.employees (
     '/images/employees/kadiatu.png',
     'active',
     '2025-01-01',
-    '2027-01-01'
+    '2030-01-01'
 ),
 (
     'IRS-OPS-010',
@@ -109,7 +109,7 @@ INSERT INTO public.employees (
     '/images/employees/lorpu.png',
     'active',
     '2025-01-01',
-    '2027-01-01'
+    '2030-01-01'
 ),
 (
     'IRS-EA-011',
@@ -119,7 +119,7 @@ INSERT INTO public.employees (
     '/images/employees/korto.png',
     'active',
     '2025-01-01',
-    '2027-01-01'
+    '2030-01-01'
 ),
 (
     'IRS-COM-012',
@@ -129,8 +129,26 @@ INSERT INTO public.employees (
     '/images/employees/woods.png',
     'active',
     '2025-01-01',
-    '2027-01-01'
-);
+    '2030-01-01'
+),
+(
+    'IRS-ADM-013',
+    'Maria B Williams',
+    'Secretary',
+    'HR & Administration',
+    '/images/employees/maria.png',
+    'active',
+    '2025-01-01',
+    '2030-01-01'
+)
+ON CONFLICT (employee_id) DO UPDATE SET
+    full_name = EXCLUDED.full_name,
+    position = EXCLUDED.position,
+    department = EXCLUDED.department,
+    photo_url = EXCLUDED.photo_url,
+    employment_status = EXCLUDED.employment_status,
+    card_issue_date = EXCLUDED.card_issue_date,
+    card_expiry_date = EXCLUDED.card_expiry_date;
 
 -- Verify data inserted successfully
 SELECT employee_id, full_name, position, department FROM public.employees ORDER BY employee_id;

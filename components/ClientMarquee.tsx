@@ -5,17 +5,23 @@ import { motion } from "framer-motion";
 const clients = [
     { name: "NOCAL", subtitle: "National Oil Company of Liberia" },
     { name: "LPRC", subtitle: "Liberia Petroleum Refining Company" },
-    { name: "MOE", subtitle: "Ministry of Energy" },
+    { name: "MME", subtitle: "Ministry of Mines & Energy" },
     { name: "NPA", subtitle: "National Port Authority" },
-    { name: "LMA", subtitle: "Liberia Maritime Authority" },
+    { name: "LiMA", subtitle: "Liberia Maritime Authority" },
     { name: "EPA", subtitle: "Environmental Protection Agency" },
+    { name: "LPRA", subtitle: "Liberia Petroleum Regulatory Authority" },
+    { name: "ZOIL", subtitle: "Zoil Limited Gh (Waste Management)" },
+    { name: "JPN", subtitle: "JPN Offshore Int Ltd" },
     // Duplicate for seamless scroll
     { name: "NOCAL", subtitle: "National Oil Company of Liberia" },
     { name: "LPRC", subtitle: "Liberia Petroleum Refining Company" },
-    { name: "MOE", subtitle: "Ministry of Energy" },
+    { name: "MME", subtitle: "Ministry of Mines & Energy" },
     { name: "NPA", subtitle: "National Port Authority" },
-    { name: "LMA", subtitle: "Liberia Maritime Authority" },
+    { name: "LiMA", subtitle: "Liberia Maritime Authority" },
     { name: "EPA", subtitle: "Environmental Protection Agency" },
+    { name: "LPRA", subtitle: "Liberia Petroleum Regulatory Authority" },
+    { name: "ZOIL", subtitle: "Zoil Limited Gh (Waste Management)" },
+    { name: "JPN", subtitle: "JPN Offshore Int Ltd" },
 ];
 
 export default function ClientMarquee() {
@@ -29,7 +35,7 @@ export default function ClientMarquee() {
                     className="text-center"
                 >
                     <span className="text-gray-500 font-semibold text-sm uppercase tracking-wide">
-                        Trusted By Government & Industry Leaders
+                        Trusted By Government, Industry Leaders & Strategic Partners
                     </span>
                 </motion.div>
             </div>

@@ -114,6 +114,24 @@ const teamMembers = [
     email: "djallah@infiniterigservices.com",
     linkedin: "#",
   },
+  {
+    name: "Kadiatu Mildred Jallah",
+    position: "Corporate Communications Officer",
+    department: "Corporate Communications",
+    tier: "specialist",
+    bio: "Enhancing brand visibility and managing internal and external communications strategies.",
+    email: "kjallah@infiniterigservices.com",
+    linkedin: "#",
+  },
+  {
+    name: "Maria B Williams",
+    position: "Secretary",
+    department: "Human Resources",
+    tier: "specialist",
+    bio: "Providing essential administrative support and ensuring smooth office operations.",
+    email: "mwilliams@infiniterigservices.com",
+    linkedin: "#",
+  },
 ];
 
 const departments = [

@@ -133,6 +133,13 @@ export default function HomePage() {
                 features: ["Safety Audits", "Risk Assessment", "Compliance"],
                 gradient: "from-orange-500 to-orange-600",
               },
+              {
+                icon: Ship,
+                title: "Waste Management",
+                desc: "Integrated hazardous waste handling, recycling, and disposal solutions for sustainable offshore operations.",
+                features: ["Hazardous Handling", "Recycling", "EPA Compliance"],
+                gradient: "from-teal-500 to-teal-600",
+              },
             ].map((service, i) => (
               <motion.div
                 key={i}

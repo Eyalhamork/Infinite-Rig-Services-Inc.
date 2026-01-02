@@ -125,6 +125,30 @@ export default function ServicesPage() {
         "Regulatory compliance consulting",
       ],
     },
+    {
+      icon: TrendingUp,
+      title: "Waste Management",
+      route: "waste-management",
+      tagline: "Sustainable environmental solutions",
+      description:
+        "Integrated waste management services for the offshore industry, focusing on hazardous material handling, recycling, and compliance with environmental regulations.",
+      gradient: "from-teal-600 to-teal-800",
+      imagePlaceholder: "/images/services/offshore-hero.png", // Use a generic placeholder for now
+      imageAlt: "Waste management operations",
+      features: [
+        { icon: AlertTriangle, text: "Hazardous Waste" },
+        { icon: TrendingUp, text: "Recycling Programs" },
+        { icon: Truck, text: "Transport & Disposal" },
+        { icon: FileCheck, text: "EPA Reporting" },
+      ],
+      capabilities: [
+        "Hazardous and non-hazardous waste collection",
+        "Offshore waste segregation and transport",
+        "Environmental impact assessment and reporting",
+        "Recycling and resource recovery",
+        "Regulatory compliance management",
+      ],
+    },
   ];
 
   const whyChoose = [

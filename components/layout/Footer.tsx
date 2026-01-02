@@ -44,6 +44,7 @@ export default function Footer() {
                 { name: "Track Shipment", href: "/tracking" },
                 { name: "Manning Solutions", href: "/services/manning" },
                 { name: "HSE Consulting", href: "/services/hse" },
+                { name: "Waste Management", href: "/services/waste-management" },
               ].map((item, i) => (
                 <li key={i}>
                   <Link
