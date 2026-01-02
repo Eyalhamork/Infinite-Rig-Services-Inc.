@@ -17,6 +17,7 @@ import {
   Anchor,
   Package,
   Briefcase,
+  Trash2,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
@@ -43,6 +44,7 @@ const serviceIcons: Record<string, React.ElementType> = {
   offshore: Anchor,
   supply: Package,
   manning: Briefcase,
+  waste: Trash2,
 };
 
 export default function QuotesPage() {
@@ -140,6 +142,7 @@ export default function QuotesPage() {
       offshore: "Offshore Services",
       supply: "Supply Chain & Logistics",
       manning: "Manning Services",
+      waste: "Waste Management",
     };
     return labels[service] || service;
   };
@@ -192,6 +195,7 @@ export default function QuotesPage() {
             <option value="offshore">Offshore Services</option>
             <option value="supply">Supply Chain</option>
             <option value="manning">Manning Services</option>
+            <option value="waste">Waste Management</option>
           </select>
         </div>
       </div>
@@ -219,24 +223,24 @@ export default function QuotesPage() {
               <div
                 key={quote.id}
                 onClick={() => viewQuote(quote)}
-                className={`bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-all cursor-pointer border-l-4 ${
-                  quote.status === "new"
-                    ? "border-l-yellow-500"
-                    : quote.status === "quoted"
+                className={`bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-all cursor-pointer border-l-4 ${quote.status === "new"
+                  ? "border-l-yellow-500"
+                  : quote.status === "quoted"
                     ? "border-l-green-500"
                     : "border-l-gray-200"
-                }`}
+                  }`}
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center space-x-3">
                     <div
-                      className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                        quote.service_area === "offshore"
-                          ? "bg-blue-100 text-blue-600"
-                          : quote.service_area === "supply"
+                      className={`w-10 h-10 rounded-lg flex items-center justify-center ${quote.service_area === "offshore"
+                        ? "bg-blue-100 text-blue-600"
+                        : quote.service_area === "supply"
                           ? "bg-green-100 text-green-600"
-                          : "bg-purple-100 text-purple-600"
-                      }`}
+                          : quote.service_area === "waste"
+                            ? "bg-teal-100 text-teal-600"
+                            : "bg-purple-100 text-purple-600"
+                        }`}
                     >
                       <ServiceIcon className="h-5 w-5" />
                     </div>
@@ -250,9 +254,8 @@ export default function QuotesPage() {
                     </div>
                   </div>
                   <span
-                    className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      statusConfig[quote.status].color
-                    }`}
+                    className={`px-2 py-1 rounded-full text-xs font-medium ${statusConfig[quote.status].color
+                      }`}
                   >
                     {statusConfig[quote.status].label}
                   </span>
@@ -353,13 +356,14 @@ export default function QuotesPage() {
             <div className="p-6 space-y-6">
               <div className="flex items-center space-x-4">
                 <div
-                  className={`w-16 h-16 rounded-xl flex items-center justify-center ${
-                    selectedQuote.service_area === "offshore"
+                  className={`w-16 h-16 rounded-xl flex items-center justify-center ${selectedQuote.service_area === "offshore"
                       ? "bg-blue-100 text-blue-600"
                       : selectedQuote.service_area === "supply"
-                      ? "bg-green-100 text-green-600"
-                      : "bg-purple-100 text-purple-600"
-                  }`}
+                        ? "bg-green-100 text-green-600"
+                        : selectedQuote.service_area === "waste"
+                          ? "bg-teal-100 text-teal-600"
+                          : "bg-purple-100 text-purple-600"
+                    }`}
                 >
                   {(() => {
                     const Icon =

@@ -57,6 +57,7 @@ const serviceOptions = [
     { value: "offshore", label: "Offshore" },
     { value: "hse", label: "HSE" },
     { value: "supply", label: "Supply Chain" },
+    { value: "waste", label: "Waste Management" },
 ];
 
 export default function AdminProjectsPage() {

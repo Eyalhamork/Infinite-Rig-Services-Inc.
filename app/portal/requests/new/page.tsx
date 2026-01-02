@@ -10,7 +10,8 @@ import {
     Truck,
     ChevronRight,
     ArrowLeft,
-    CheckCircle2
+    CheckCircle2,
+    Trash2
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -19,7 +20,7 @@ const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-type ServiceType = "manning" | "offshore" | "hse" | "supply";
+type ServiceType = "manning" | "offshore" | "hse" | "supply" | "waste";
 
 interface ServiceOption {
     id: ServiceType;
@@ -52,6 +53,12 @@ const services: ServiceOption[] = [
         title: "Supply Chain & Logistics",
         description: "Procurement, vessel chartering, and logistics support.",
         icon: Truck,
+    },
+    {
+        id: "waste",
+        title: "Waste Management",
+        description: "Hazardous waste handling, recycling, and disposal services.",
+        icon: Trash2,
     },
 ];
 
@@ -200,6 +207,34 @@ export default function NewRequestPage() {
                                     <option value="urgent">Urgent</option>
                                     <option value="critical">Critical</option>
                                 </select>
+                            </div>
+                        </div>
+                    </>
+                );
+            case "waste":
+                return (
+                    <>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Waste Type *</label>
+                                <select className="w-full p-2.5 border rounded-lg bg-white" onChange={(e) => handleInputChange("waste_type", e.target.value)}>
+                                    <option value="">Select Type</option>
+                                    <option value="hazardous">Hazardous (Chemical/Oil)</option>
+                                    <option value="non-hazardous">Non-Hazardous (General/Recyclable)</option>
+                                    <option value="mixed">Mixed Waste</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Estimated Volume/Weight</label>
+                                <input required type="text" className="w-full p-2.5 border rounded-lg" placeholder="e.g. 500kg or 10 Drums" onChange={(e) => handleInputChange("volume", e.target.value)} />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Pickup Location</label>
+                                <input required type="text" className="w-full p-2.5 border rounded-lg" placeholder="e.g. Rig Alpha Platform" onChange={(e) => handleInputChange("location", e.target.value)} />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Handling Requirements</label>
+                                <input type="text" className="w-full p-2.5 border rounded-lg" placeholder="e.g. Special containers needed" onChange={(e) => handleInputChange("handling", e.target.value)} />
                             </div>
                         </div>
                     </>

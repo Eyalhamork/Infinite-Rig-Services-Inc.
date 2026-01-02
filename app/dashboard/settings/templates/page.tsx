@@ -40,6 +40,7 @@ const SERVICE_TYPES = [
     { value: "offshore", label: "Offshore Services", color: "bg-purple-500" },
     { value: "hse", label: "HSE Consulting", color: "bg-green-500" },
     { value: "supply", label: "Supply Chain", color: "bg-orange-500" },
+    { value: "waste", label: "Waste Management", color: "bg-teal-500" },
 ];
 
 export default function TemplatesPage() {
