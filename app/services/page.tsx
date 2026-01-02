@@ -133,7 +133,7 @@ export default function ServicesPage() {
       description:
         "Integrated waste management services for the offshore industry, focusing on hazardous material handling, recycling, and compliance with environmental regulations.",
       gradient: "from-teal-600 to-teal-800",
-      imagePlaceholder: "/images/services/offshore-hero.png", // Use a generic placeholder for now
+      imagePlaceholder: "/images/services/waste-management-hero.png",
       imageAlt: "Waste management operations",
       features: [
         { icon: AlertTriangle, text: "Hazardous Waste" },

@@ -94,15 +94,14 @@ export default function WasteManagementPage() {
                             transition={{ duration: 0.8, delay: 0.2 }}
                             className="relative hidden lg:block"
                         >
-                            <div className="relative rounded-[2rem] overflow-hidden shadow-2xl border border-white/10">
+                            <div className="relative rounded-[2rem] overflow-hidden shadow-2xl border border-white/10 h-[500px]">
                                 <div className="absolute inset-0 bg-gradient-to-t from-navy-900/80 to-transparent z-10"></div>
-                                {/* Placeholder Image - Should be replaced with actual asset */}
-                                <div className="h-[500px] w-full bg-gray-800 relative">
-                                    <div className="absolute inset-0 flex items-center justify-center text-gray-500 flex-col gap-4">
-                                        <Trash2 className="w-24 h-24 opacity-20" />
-                                        <span className="uppercase tracking-widest text-sm font-medium">Waste Management Image</span>
-                                    </div>
-                                </div>
+                                <Image
+                                    src="/images/services/waste-management-hero.png"
+                                    alt="Offshore Waste Management Operations"
+                                    fill
+                                    className="object-cover"
+                                />
                             </div>
 
                             {/* Floating Stats Card */}
