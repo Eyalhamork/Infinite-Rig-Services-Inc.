@@ -24,7 +24,7 @@ import SuccessModal from "@/components/ui/SuccessModal";
 export default function QuotePage() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [activeSegment, setActiveSegment] = useState<
-        "offshore" | "manning" | "hse" | "supply"
+        "offshore" | "manning" | "hse" | "supply" | "waste"
     >("offshore");
     const [showSuccessModal, setShowSuccessModal] = useState(false);
 
@@ -56,6 +56,7 @@ export default function QuotePage() {
         { id: "manning", label: "Manning Services" },
         { id: "hse", label: "HSE Consulting" },
         { id: "supply", label: "Supply Chain" },
+        { id: "waste", label: "Waste Management" },
     ];
 
     return (
@@ -154,7 +155,9 @@ export default function QuotePage() {
                                                     key={service.id}
                                                     onClick={() => setActiveSegment(service.id as any)}
                                                     className={`py-3 px-4 rounded-xl text-sm font-semibold transition-all duration-300 border ${activeSegment === service.id
-                                                        ? "bg-orange-600 text-white border-orange-600 shadow-lg scale-105"
+                                                        ? service.id === "waste"
+                                                            ? "bg-teal-600 text-white border-teal-600 shadow-lg scale-105"
+                                                            : "bg-orange-600 text-white border-orange-600 shadow-lg scale-105"
                                                         : "bg-gray-50 text-gray-600 border-gray-200 hover:border-gold-400 hover:bg-gold-50"
                                                         }`}
                                                 >
