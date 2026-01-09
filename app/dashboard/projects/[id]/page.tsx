@@ -382,7 +382,7 @@ export default function AdminProjectDetailPage() {
                     project_id: params.id,
                     milestone_name: tm.name,
                     description: tm.description || "",
-                    description: tm.description || "",
+
                     due_date: dueDate.toISOString(),
                     status: 'in_progress',
                     is_completed: false,
@@ -492,98 +492,81 @@ export default function AdminProjectDetailPage() {
         }
     };
 
-    if (error) throw error;
 
-    setMilestones(
-        milestones.map((m) =>
-            m.id === milestone.id
-                ? {
-                    ...m,
-                    is_completed: !m.is_completed,
-                    completion_date: !m.is_completed ? new Date().toISOString() : "",
-                }
-                : m
-        )
-    );
-    toast.success(milestone.is_completed ? "Milestone reopened" : "Milestone completed");
-} catch (error: any) {
-    toast.error("Failed to update milestone");
-}
+
+    const deleteMilestone = async (id: string) => {
+        if (!confirm("Delete this milestone?")) return;
+
+        try {
+            const { error } = await supabase.from("project_milestones").delete().eq("id", id);
+            if (error) throw error;
+
+            setMilestones(milestones.filter((m) => m.id !== id));
+            toast.success("Milestone deleted");
+        } catch (error: any) {
+            toast.error("Failed to delete milestone");
+        }
     };
 
-const deleteMilestone = async (id: string) => {
-    if (!confirm("Delete this milestone?")) return;
+    const getStatusColor = (status: string) => {
+        switch (status) {
+            case "active":
+            case "in_progress":
+                return "bg-blue-100 text-blue-700";
+            case "completed":
+                return "bg-green-100 text-green-700";
+            case "planning":
+                return "bg-yellow-100 text-yellow-700";
+            case "on_hold":
+                return "bg-gray-100 text-gray-700";
+            case "cancelled":
+                return "bg-red-100 text-red-700";
+            default:
+                return "bg-gray-100 text-gray-700";
+        }
+    };
 
-    try {
-        const { error } = await supabase.from("project_milestones").delete().eq("id", id);
-        if (error) throw error;
+    const getStatusIcon = (status: string) => {
+        switch (status) {
+            case "active":
+            case "in_progress":
+                return <TrendingUp className="w-5 h-5" />;
+            case "completed":
+                return <CheckCircle2 className="w-5 h-5" />;
+            case "planning":
+                return <Clock className="w-5 h-5" />;
+            case "on_hold":
+                return <Pause className="w-5 h-5" />;
+            default:
+                return <AlertCircle className="w-5 h-5" />;
+        }
+    };
 
-        setMilestones(milestones.filter((m) => m.id !== id));
-        toast.success("Milestone deleted");
-    } catch (error: any) {
-        toast.error("Failed to delete milestone");
-    }
-};
+    const calculateProgress = () => {
+        if (milestones.length === 0) return 0;
+        const completed = milestones.filter((m) => m.is_completed).length;
+        return Math.round((completed / milestones.length) * 100);
+    };
 
-const getStatusColor = (status: string) => {
-    switch (status) {
-        case "active":
-        case "in_progress":
-            return "bg-blue-100 text-blue-700";
-        case "completed":
-            return "bg-green-100 text-green-700";
-        case "planning":
-            return "bg-yellow-100 text-yellow-700";
-        case "on_hold":
-            return "bg-gray-100 text-gray-700";
-        case "cancelled":
-            return "bg-red-100 text-red-700";
-        default:
-            return "bg-gray-100 text-gray-700";
-    }
-};
+    const formatCurrency = (value: number) => {
+        if (!value) return "—";
+        return new Intl.NumberFormat("en-US", {
+            style: "currency",
+            currency: "USD",
+            minimumFractionDigits: 0,
+        }).format(value);
+    };
 
-const getStatusIcon = (status: string) => {
-    switch (status) {
-        case "active":
-        case "in_progress":
-            return <TrendingUp className="w-5 h-5" />;
-        case "completed":
-            return <CheckCircle2 className="w-5 h-5" />;
-        case "planning":
-            return <Clock className="w-5 h-5" />;
-        case "on_hold":
-            return <Pause className="w-5 h-5" />;
-        default:
-            return <AlertCircle className="w-5 h-5" />;
-    }
-};
+    const handleGenerateContract = async () => {
+        if (!project) return;
 
-const calculateProgress = () => {
-    if (milestones.length === 0) return 0;
-    const completed = milestones.filter((m) => m.is_completed).length;
-    return Math.round((completed / milestones.length) * 100);
-};
+        setGeneratingContract(true);
+        try {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) throw new Error("Not authenticated");
 
-const formatCurrency = (value: number) => {
-    if (!value) return "—";
-    return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-        minimumFractionDigits: 0,
-    }).format(value);
-};
-
-const handleGenerateContract = async () => {
-    if (!project) return;
-
-    setGeneratingContract(true);
-    try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) throw new Error("Not authenticated");
-
-        // Generate contract HTML content
-        const contractHtml = `
+            // Generate contract HTML content
+            const contractHtml = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -706,429 +689,429 @@ const handleGenerateContract = async () => {
 </body>
 </html>`;
 
-        // Create a Blob and upload to storage
-        const blob = new Blob([contractHtml], { type: 'text/html' });
-        const fileName = `contract_${project.project_code || project.id.slice(0, 8)}_${Date.now()}.html`;
-        const filePath = `${project.id}/contracts/${fileName}`;
+            // Create a Blob and upload to storage
+            const blob = new Blob([contractHtml], { type: 'text/html' });
+            const fileName = `contract_${project.project_code || project.id.slice(0, 8)}_${Date.now()}.html`;
+            const filePath = `${project.id}/contracts/${fileName}`;
 
-        // Upload to project storage
-        const { error: uploadError } = await supabase.storage
-            .from('projects')
-            .upload(filePath, blob, {
-                contentType: 'text/html',
-                upsert: false
-            });
+            // Upload to project storage
+            const { error: uploadError } = await supabase.storage
+                .from('projects')
+                .upload(filePath, blob, {
+                    contentType: 'text/html',
+                    upsert: false
+                });
 
-        if (uploadError) throw uploadError;
+            if (uploadError) throw uploadError;
 
-        // Create project_documents entry
-        const { error: docError } = await supabase
-            .from('project_documents')
-            .insert({
+            // Create project_documents entry
+            const { error: docError } = await supabase
+                .from('project_documents')
+                .insert({
+                    project_id: project.id,
+                    title: `Service Contract - ${project.project_name}`,
+                    description: 'Auto-generated service contract',
+                    storage_path: filePath,
+                    file_type: 'text/html',
+                    file_size: blob.size,
+                    is_client_visible: true,
+                    uploaded_by: user.id,
+                });
+
+            if (docError) throw docError;
+
+            // Add activity entry
+            await supabase.from('project_updates').insert({
                 project_id: project.id,
-                title: `Service Contract - ${project.project_name}`,
-                description: 'Auto-generated service contract',
-                storage_path: filePath,
-                file_type: 'text/html',
-                file_size: blob.size,
-                is_client_visible: true,
-                uploaded_by: user.id,
+                update_type: 'document_added',
+                title: 'Contract Generated',
+                description: 'Service contract has been generated and is available for download.',
+                created_by: user.id,
+                is_client_visible: true
             });
 
-        if (docError) throw docError;
+            toast.success('Contract generated successfully!', {
+                description: 'The contract is now available in project documents.'
+            });
+            setShowContractModal(false);
+            setContractNote('');
+        } catch (error: any) {
+            console.error('Error generating contract:', error);
+            toast.error('Failed to generate contract', { description: error.message });
+        } finally {
+            setGeneratingContract(false);
+        }
+    };
 
-        // Add activity entry
-        await supabase.from('project_updates').insert({
-            project_id: project.id,
-            update_type: 'document_added',
-            title: 'Contract Generated',
-            description: 'Service contract has been generated and is available for download.',
-            created_by: user.id,
-            is_client_visible: true
-        });
-
-        toast.success('Contract generated successfully!', {
-            description: 'The contract is now available in project documents.'
-        });
-        setShowContractModal(false);
-        setContractNote('');
-    } catch (error: any) {
-        console.error('Error generating contract:', error);
-        toast.error('Failed to generate contract', { description: error.message });
-    } finally {
-        setGeneratingContract(false);
-    }
-};
-
-if (loading) {
-    return (
-        <div className="flex items-center justify-center h-64">
-            <Loader2 className="w-8 h-8 animate-spin text-primary" />
-        </div>
-    );
-}
-
-if (!project) {
-    return (
-        <div className="text-center py-12">
-            <p className="text-gray-500">Project not found</p>
-            <Link href="/dashboard/projects" className="text-primary hover:underline">
-                Back to Projects
-            </Link>
-        </div>
-    );
-}
-
-return (
-    <div className="space-y-6">
-        {/* Back Button & Actions */}
-        <div className="flex items-center justify-between">
-            <Link
-                href="/dashboard/projects"
-                className="inline-flex items-center text-gray-600 hover:text-primary transition-colors"
-            >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Projects
-            </Link>
-
-            <div className="flex items-center gap-3">
-                {isEditing ? (
-                    <>
-                        <button
-                            onClick={() => {
-                                setIsEditing(false);
-                                setEditForm(project);
-                            }}
-                            className="px-4 py-2 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50"
-                        >
-                            <X className="w-4 h-4 inline mr-1" />
-                            Cancel
-                        </button>
-                        <button
-                            onClick={handleSave}
-                            disabled={saving}
-                            className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-orange-600 disabled:opacity-50 flex items-center gap-2"
-                        >
-                            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                            Save Changes
-                        </button>
-                    </>
-                ) : (
-                    <div className="flex items-center gap-2">
-                        <button
-                            onClick={() => setShowContractModal(true)}
-                            className="px-4 py-2 border border-gray-200 bg-white text-gray-700 rounded-lg hover:bg-gray-50 flex items-center gap-2"
-                        >
-                            <FileCheck className="w-4 h-4" />
-                            Generate Contract
-                        </button>
-                        <button
-                            onClick={() => setIsEditing(true)}
-                            className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-orange-600 flex items-center gap-2"
-                        >
-                            <Edit3 className="w-4 h-4" />
-                            Edit Project
-                        </button>
-                    </div>
-                )}
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center h-64">
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
             </div>
-        </div>
+        );
+    }
 
-        {/* Project Header */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="bg-gradient-to-r from-[#1A1A2E] to-[#2D2D44] p-6 text-white">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div>
+    if (!project) {
+        return (
+            <div className="text-center py-12">
+                <p className="text-gray-500">Project not found</p>
+                <Link href="/dashboard/projects" className="text-primary hover:underline">
+                    Back to Projects
+                </Link>
+            </div>
+        );
+    }
+
+    return (
+        <div className="space-y-6">
+            {/* Back Button & Actions */}
+            <div className="flex items-center justify-between">
+                <Link
+                    href="/dashboard/projects"
+                    className="inline-flex items-center text-gray-600 hover:text-primary transition-colors"
+                >
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    Back to Projects
+                </Link>
+
+                <div className="flex items-center gap-3">
+                    {isEditing ? (
+                        <>
+                            <button
+                                onClick={() => {
+                                    setIsEditing(false);
+                                    setEditForm(project);
+                                }}
+                                className="px-4 py-2 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50"
+                            >
+                                <X className="w-4 h-4 inline mr-1" />
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleSave}
+                                disabled={saving}
+                                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-orange-600 disabled:opacity-50 flex items-center gap-2"
+                            >
+                                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                                Save Changes
+                            </button>
+                        </>
+                    ) : (
+                        <div className="flex items-center gap-2">
+                            <button
+                                onClick={() => setShowContractModal(true)}
+                                className="px-4 py-2 border border-gray-200 bg-white text-gray-700 rounded-lg hover:bg-gray-50 flex items-center gap-2"
+                            >
+                                <FileCheck className="w-4 h-4" />
+                                Generate Contract
+                            </button>
+                            <button
+                                onClick={() => setIsEditing(true)}
+                                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-orange-600 flex items-center gap-2"
+                            >
+                                <Edit3 className="w-4 h-4" />
+                                Edit Project
+                            </button>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* Project Header */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="bg-gradient-to-r from-[#1A1A2E] to-[#2D2D44] p-6 text-white">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            {isEditing ? (
+                                <input
+                                    type="text"
+                                    value={editForm.project_name || ""}
+                                    onChange={(e) => setEditForm({ ...editForm, project_name: e.target.value })}
+                                    className="text-2xl font-bold bg-white/10 border border-white/20 rounded-lg px-3 py-1 text-white w-full md:w-auto"
+                                />
+                            ) : (
+                                <h1 className="text-2xl font-bold">{project.project_name}</h1>
+                            )}
+                            {project.project_code && (
+                                <span className="inline-block bg-white/20 px-3 py-1 rounded-full text-sm mt-2">
+                                    {project.project_code}
+                                </span>
+                            )}
+                        </div>
                         {isEditing ? (
-                            <input
-                                type="text"
-                                value={editForm.project_name || ""}
-                                onChange={(e) => setEditForm({ ...editForm, project_name: e.target.value })}
-                                className="text-2xl font-bold bg-white/10 border border-white/20 rounded-lg px-3 py-1 text-white w-full md:w-auto"
-                            />
+                            <select
+                                value={editForm.status || ""}
+                                onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
+                                className="px-4 py-2 rounded-lg bg-white text-gray-900 font-medium"
+                            >
+                                {statusOptions.map((option) => (
+                                    <option key={option.value} value={option.value}>
+                                        {option.label}
+                                    </option>
+                                ))}
+                            </select>
                         ) : (
-                            <h1 className="text-2xl font-bold">{project.project_name}</h1>
-                        )}
-                        {project.project_code && (
-                            <span className="inline-block bg-white/20 px-3 py-1 rounded-full text-sm mt-2">
-                                {project.project_code}
+                            <span
+                                className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${getStatusColor(
+                                    project.status
+                                )}`}
+                            >
+                                {getStatusIcon(project.status)}
+                                {project.status?.replace("_", " ")}
                             </span>
                         )}
                     </div>
-                    {isEditing ? (
-                        <select
-                            value={editForm.status || ""}
-                            onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
-                            className="px-4 py-2 rounded-lg bg-white text-gray-900 font-medium"
-                        >
-                            {statusOptions.map((option) => (
-                                <option key={option.value} value={option.value}>
-                                    {option.label}
-                                </option>
-                            ))}
-                        </select>
-                    ) : (
-                        <span
-                            className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${getStatusColor(
-                                project.status
-                            )}`}
-                        >
-                            {getStatusIcon(project.status)}
-                            {project.status?.replace("_", " ")}
-                        </span>
-                    )}
                 </div>
-            </div>
 
-            {/* Progress Bar */}
-            <div className="p-6 border-b border-gray-100">
-                <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-gray-700">Project Progress</span>
-                    <span className="text-sm font-bold text-primary">{calculateProgress()}%</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div
-                        className="bg-gradient-to-r from-primary to-orange-400 h-2 rounded-full transition-all duration-500"
-                        style={{ width: `${calculateProgress()}%` }}
-                    ></div>
-                </div>
-            </div>
-
-            {/* Project Details */}
-            <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {/* Client */}
-                <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                        <Building2 className="w-5 h-5 text-gray-600" />
+                {/* Progress Bar */}
+                <div className="p-6 border-b border-gray-100">
+                    <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-medium text-gray-700">Project Progress</span>
+                        <span className="text-sm font-bold text-primary">{calculateProgress()}%</span>
                     </div>
-                    <div>
-                        <p className="text-xs text-gray-500 uppercase tracking-wider">Client</p>
-                        <p className="font-semibold text-gray-900">{project.client?.company_name || "—"}</p>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div
+                            className="bg-gradient-to-r from-primary to-orange-400 h-2 rounded-full transition-all duration-500"
+                            style={{ width: `${calculateProgress()}%` }}
+                        ></div>
                     </div>
                 </div>
 
-                {/* Contract Value */}
-                <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                        <DollarSign className="w-5 h-5 text-green-600" />
-                    </div>
-                    <div>
-                        <p className="text-xs text-gray-500 uppercase tracking-wider">Contract Value</p>
-                        {isEditing ? (
-                            <MoneyInput
-                                value={editForm.contract_value?.toString() || ""}
-                                onChange={(value) => setEditForm({ ...editForm, contract_value: value ? parseFloat(value) : 0 })}
-                                className="font-semibold text-gray-900 border border-gray-200 rounded px-2 py-1 w-full"
-                            />
-                        ) : (
-                            <p className="font-semibold text-gray-900">{formatCurrency(project.contract_value)}</p>
-                        )}
-                    </div>
-                </div>
-
-                {/* Timeline */}
-                <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <Calendar className="w-5 h-5 text-blue-600" />
-                    </div>
-                    <div>
-                        <p className="text-xs text-gray-500 uppercase tracking-wider">Timeline</p>
-                        {isEditing ? (
-                            <div className="flex gap-2">
-                                <input
-                                    type="date"
-                                    value={editForm.start_date?.split("T")[0] || ""}
-                                    onChange={(e) => setEditForm({ ...editForm, start_date: e.target.value })}
-                                    className="text-sm border border-gray-200 rounded px-2 py-1"
-                                />
-                                <input
-                                    type="date"
-                                    value={editForm.end_date?.split("T")[0] || ""}
-                                    onChange={(e) => setEditForm({ ...editForm, end_date: e.target.value })}
-                                    className="text-sm border border-gray-200 rounded px-2 py-1"
-                                />
-                            </div>
-                        ) : (
-                            <p className="font-semibold text-gray-900">
-                                {project.start_date
-                                    ? new Date(project.start_date).toLocaleDateString()
-                                    : "—"}
-                                {project.end_date && ` - ${new Date(project.end_date).toLocaleDateString()}`}
-                            </p>
-                        )}
-                    </div>
-                </div>
-
-                {/* Service Type */}
-                <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                        <FileText className="w-5 h-5 text-purple-600" />
-                    </div>
-                    <div>
-                        <p className="text-xs text-gray-500 uppercase tracking-wider">Service Type</p>
-                        <p className="font-semibold text-gray-900 capitalize">{project.service_type || "—"}</p>
-                    </div>
-                </div>
-            </div>
-
-            {/* Description & Notes */}
-            {(project.description || isEditing) && (
-                <div className="p-6 border-t border-gray-100">
-                    <h3 className="text-sm font-semibold text-gray-700 mb-2">Description</h3>
-                    {isEditing ? (
-                        <textarea
-                            value={editForm.description || ""}
-                            onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
-                            className="w-full border border-gray-200 rounded-lg p-3 text-gray-700"
-                            rows={3}
-                        />
-                    ) : (
-                        <p className="text-gray-600">{project.description}</p>
-                    )}
-                </div>
-            )}
-
-            {/* Link to Service Request */}
-            {project.service_request_id && (
-                <div className="p-6 border-t border-gray-100 bg-gray-50">
-                    <Link
-                        href={`/dashboard/requests`}
-                        className="inline-flex items-center gap-2 text-primary hover:text-orange-600 font-medium"
-                    >
-                        <ExternalLink className="w-4 h-4" />
-                        View Original Service Request
-                    </Link>
-                </div>
-            )}
-        </div>
-
-        {/* Contract Management */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 mb-6">
-            <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-                <h2 className="text-lg font-bold text-gray-900">Contract Management</h2>
-                {contractDoc && (
-                    <div className="flex gap-2">
-                        <button
-                            onClick={() => setShowContractModal(true)}
-                            className="inline-flex items-center gap-2 px-3 py-1.5 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium"
-                        >
-                            <ExternalLink className="w-4 h-4" />
-                            View Details
-                        </button>
-                        <button
-                            onClick={handleDeleteContract}
-                            className="inline-flex items-center gap-2 px-3 py-1.5 bg-red-50 text-red-600 border border-red-100 rounded-lg hover:bg-red-100 text-sm font-medium"
-                        >
-                            <Trash2 className="w-4 h-4" />
-                            Delete
-                        </button>
-                    </div>
-                )}
-            </div>
-
-            <div className="p-6">
-                {!contractDoc ? (
-                    <div className="text-center py-6">
-                        <FileCheck className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                        <p className="text-gray-500 mb-4">No formal contract generated yet.</p>
-                        <button
-                            onClick={() => setShowContractModal(true)}
-                            className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-orange-600 text-sm font-medium"
-                        >
-                            Generate Contract
-                        </button>
-                    </div>
-                ) : (
-                    <div>
-                        <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg mb-6">
-                            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                <FileCheck className="w-5 h-5 text-green-600" />
-                            </div>
-                            <div>
-                                <h3 className="font-semibold text-gray-900">{contractDoc.title}</h3>
-                                <p className="text-sm text-gray-500">
-                                    Generated on {new Date(contractDoc.created_at).toLocaleDateString()}
-                                </p>
-                            </div>
+                {/* Project Details */}
+                <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {/* Client */}
+                    <div className="flex items-start gap-3">
+                        <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                            <Building2 className="w-5 h-5 text-gray-600" />
                         </div>
+                        <div>
+                            <p className="text-xs text-gray-500 uppercase tracking-wider">Client</p>
+                            <p className="font-semibold text-gray-900">{project.client?.company_name || "—"}</p>
+                        </div>
+                    </div>
 
-                        <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                            <History className="w-4 h-4" />
-                            Contract History
-                        </h3>
-                        <div className="space-y-4 max-h-60 overflow-y-auto pr-2">
-                            {contractHistory.length > 0 ? (
-                                contractHistory.map((update) => (
-                                    <div key={update.id} className="relative pl-6 border-l-2 border-gray-200 pb-4 last:border-0 last:pb-0">
-                                        <div className="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-gray-400"></div>
-                                        <p className="text-sm font-medium text-gray-900">{update.title}</p>
-                                        <p className="text-xs text-gray-500 mt-0.5">{update.description}</p>
-                                        <div className="text-xs text-gray-400 mt-1">
-                                            {new Date(update.created_at).toLocaleString()} by {update.profiles?.full_name || 'System'}
-                                        </div>
-                                    </div>
-                                ))
+                    {/* Contract Value */}
+                    <div className="flex items-start gap-3">
+                        <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                            <DollarSign className="w-5 h-5 text-green-600" />
+                        </div>
+                        <div>
+                            <p className="text-xs text-gray-500 uppercase tracking-wider">Contract Value</p>
+                            {isEditing ? (
+                                <MoneyInput
+                                    value={editForm.contract_value?.toString() || ""}
+                                    onChange={(value) => setEditForm({ ...editForm, contract_value: value ? parseFloat(value) : 0 })}
+                                    className="font-semibold text-gray-900 border border-gray-200 rounded px-2 py-1 w-full"
+                                />
                             ) : (
-                                <p className="text-sm text-gray-500 italic">No updates recorded.</p>
+                                <p className="font-semibold text-gray-900">{formatCurrency(project.contract_value)}</p>
                             )}
                         </div>
                     </div>
+
+                    {/* Timeline */}
+                    <div className="flex items-start gap-3">
+                        <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <Calendar className="w-5 h-5 text-blue-600" />
+                        </div>
+                        <div>
+                            <p className="text-xs text-gray-500 uppercase tracking-wider">Timeline</p>
+                            {isEditing ? (
+                                <div className="flex gap-2">
+                                    <input
+                                        type="date"
+                                        value={editForm.start_date?.split("T")[0] || ""}
+                                        onChange={(e) => setEditForm({ ...editForm, start_date: e.target.value })}
+                                        className="text-sm border border-gray-200 rounded px-2 py-1"
+                                    />
+                                    <input
+                                        type="date"
+                                        value={editForm.end_date?.split("T")[0] || ""}
+                                        onChange={(e) => setEditForm({ ...editForm, end_date: e.target.value })}
+                                        className="text-sm border border-gray-200 rounded px-2 py-1"
+                                    />
+                                </div>
+                            ) : (
+                                <p className="font-semibold text-gray-900">
+                                    {project.start_date
+                                        ? new Date(project.start_date).toLocaleDateString()
+                                        : "—"}
+                                    {project.end_date && ` - ${new Date(project.end_date).toLocaleDateString()}`}
+                                </p>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Service Type */}
+                    <div className="flex items-start gap-3">
+                        <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                            <FileText className="w-5 h-5 text-purple-600" />
+                        </div>
+                        <div>
+                            <p className="text-xs text-gray-500 uppercase tracking-wider">Service Type</p>
+                            <p className="font-semibold text-gray-900 capitalize">{project.service_type || "—"}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Description & Notes */}
+                {(project.description || isEditing) && (
+                    <div className="p-6 border-t border-gray-100">
+                        <h3 className="text-sm font-semibold text-gray-700 mb-2">Description</h3>
+                        {isEditing ? (
+                            <textarea
+                                value={editForm.description || ""}
+                                onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+                                className="w-full border border-gray-200 rounded-lg p-3 text-gray-700"
+                                rows={3}
+                            />
+                        ) : (
+                            <p className="text-gray-600">{project.description}</p>
+                        )}
+                    </div>
+                )}
+
+                {/* Link to Service Request */}
+                {project.service_request_id && (
+                    <div className="p-6 border-t border-gray-100 bg-gray-50">
+                        <Link
+                            href={`/dashboard/requests`}
+                            className="inline-flex items-center gap-2 text-primary hover:text-orange-600 font-medium"
+                        >
+                            <ExternalLink className="w-4 h-4" />
+                            View Original Service Request
+                        </Link>
+                    </div>
                 )}
             </div>
-        </div>
 
-        {/* Milestones */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-            <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-                <h2 className="text-lg font-bold text-gray-900">Project Milestones</h2>
-                <button
-                    onClick={() => setShowMilestoneModal(true)}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-orange-600 text-sm font-medium"
-                >
-                    <Plus className="w-4 h-4" />
-                    Add Milestone
-                </button>
-            </div>
+            {/* Contract Management */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 mb-6">
+                <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+                    <h2 className="text-lg font-bold text-gray-900">Contract Management</h2>
+                    {contractDoc && (
+                        <div className="flex gap-2">
+                            <button
+                                onClick={() => setShowContractModal(true)}
+                                className="inline-flex items-center gap-2 px-3 py-1.5 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium"
+                            >
+                                <ExternalLink className="w-4 h-4" />
+                                View Details
+                            </button>
+                            <button
+                                onClick={handleDeleteContract}
+                                className="inline-flex items-center gap-2 px-3 py-1.5 bg-red-50 text-red-600 border border-red-100 rounded-lg hover:bg-red-100 text-sm font-medium"
+                            >
+                                <Trash2 className="w-4 h-4" />
+                                Delete
+                            </button>
+                        </div>
+                    )}
+                </div>
 
-            {milestones.length > 0 ? (
-                <div className="divide-y divide-gray-100">
-                    {milestones.map((milestone, index) => (
-                        <div key={milestone.id} className="p-6 flex items-start gap-4 hover:bg-gray-50">
-                            <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-sm ${milestone.is_completed ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
-                                }`}>
-                                {milestone.is_completed ? <CheckCircle2 className="w-5 h-5" /> : index + 1}
-                            </div>
-                            <div className="flex-1">
-                                <h3
-                                    className={`font-semibold ${milestone.is_completed ? "text-green-700 line-through" : "text-gray-900"
-                                        }`}
-                                >
-                                    {milestone.milestone_name}
-                                </h3>
-                                {milestone.description && (
-                                    <p className="text-gray-500 text-sm mt-1">{milestone.description}</p>
-                                )}
-                                <div className="flex items-center gap-4 mt-2 text-sm">
-                                    {milestone.due_date && (
-                                        <span className="text-gray-500 flex items-center gap-1">
-                                            <Calendar className="w-4 h-4" />
-                                            Due: {new Date(milestone.due_date).toLocaleDateString()}
-                                        </span>
-                                    )}
-                                    {milestone.completion_date && (
-                                        <span className="text-green-600 flex items-center gap-1">
-                                            <CheckCircle2 className="w-4 h-4" />
-                                            Completed: {new Date(milestone.completion_date).toLocaleDateString()}
-                                        </span>
-                                    )}
+                <div className="p-6">
+                    {!contractDoc ? (
+                        <div className="text-center py-6">
+                            <FileCheck className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                            <p className="text-gray-500 mb-4">No formal contract generated yet.</p>
+                            <button
+                                onClick={() => setShowContractModal(true)}
+                                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-orange-600 text-sm font-medium"
+                            >
+                                Generate Contract
+                            </button>
+                        </div>
+                    ) : (
+                        <div>
+                            <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg mb-6">
+                                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <FileCheck className="w-5 h-5 text-green-600" />
+                                </div>
+                                <div>
+                                    <h3 className="font-semibold text-gray-900">{contractDoc.title}</h3>
+                                    <p className="text-sm text-gray-500">
+                                        Generated on {new Date(contractDoc.created_at).toLocaleDateString()}
+                                    </p>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-2">
-                                <div className="relative">
-                                    <select
-                                        value={milestone.status || (milestone.is_completed ? 'completed' : 'pending')}
-                                        onChange={(e) => updateMilestoneStatus(milestone, e.target.value)}
-                                        className={`
+
+                            <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                                <History className="w-4 h-4" />
+                                Contract History
+                            </h3>
+                            <div className="space-y-4 max-h-60 overflow-y-auto pr-2">
+                                {contractHistory.length > 0 ? (
+                                    contractHistory.map((update) => (
+                                        <div key={update.id} className="relative pl-6 border-l-2 border-gray-200 pb-4 last:border-0 last:pb-0">
+                                            <div className="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-gray-400"></div>
+                                            <p className="text-sm font-medium text-gray-900">{update.title}</p>
+                                            <p className="text-xs text-gray-500 mt-0.5">{update.description}</p>
+                                            <div className="text-xs text-gray-400 mt-1">
+                                                {new Date(update.created_at).toLocaleString()} by {update.profiles?.full_name || 'System'}
+                                            </div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p className="text-sm text-gray-500 italic">No updates recorded.</p>
+                                )}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* Milestones */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+                <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+                    <h2 className="text-lg font-bold text-gray-900">Project Milestones</h2>
+                    <button
+                        onClick={() => setShowMilestoneModal(true)}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-orange-600 text-sm font-medium"
+                    >
+                        <Plus className="w-4 h-4" />
+                        Add Milestone
+                    </button>
+                </div>
+
+                {milestones.length > 0 ? (
+                    <div className="divide-y divide-gray-100">
+                        {milestones.map((milestone, index) => (
+                            <div key={milestone.id} className="p-6 flex items-start gap-4 hover:bg-gray-50">
+                                <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-sm ${milestone.is_completed ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
+                                    }`}>
+                                    {milestone.is_completed ? <CheckCircle2 className="w-5 h-5" /> : index + 1}
+                                </div>
+                                <div className="flex-1">
+                                    <h3
+                                        className={`font-semibold ${milestone.is_completed ? "text-green-700 line-through" : "text-gray-900"
+                                            }`}
+                                    >
+                                        {milestone.milestone_name}
+                                    </h3>
+                                    {milestone.description && (
+                                        <p className="text-gray-500 text-sm mt-1">{milestone.description}</p>
+                                    )}
+                                    <div className="flex items-center gap-4 mt-2 text-sm">
+                                        {milestone.due_date && (
+                                            <span className="text-gray-500 flex items-center gap-1">
+                                                <Calendar className="w-4 h-4" />
+                                                Due: {new Date(milestone.due_date).toLocaleDateString()}
+                                            </span>
+                                        )}
+                                        {milestone.completion_date && (
+                                            <span className="text-green-600 flex items-center gap-1">
+                                                <CheckCircle2 className="w-4 h-4" />
+                                                Completed: {new Date(milestone.completion_date).toLocaleDateString()}
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="relative">
+                                        <select
+                                            value={milestone.status || (milestone.is_completed ? 'completed' : 'pending')}
+                                            onChange={(e) => updateMilestoneStatus(milestone, e.target.value)}
+                                            className={`
                                         appearance-none pr-8 text-xs font-bold uppercase tracking-wider py-1.5 px-3 rounded-lg border-0 cursor-pointer focus:ring-2 focus:ring-primary/20 outline-none transition-colors
                                         ${(milestone.status === 'completed' || milestone.is_completed) ? 'bg-green-100 text-green-700 hover:bg-green-200' : ''}
                                         ${milestone.status === 'in_progress' ? 'bg-blue-100 text-blue-700 hover:bg-blue-200' : ''}
@@ -1136,351 +1119,351 @@ return (
                                         ${milestone.status === 'skipped' ? 'bg-gray-100 text-gray-400 line-through hover:bg-gray-200' : ''}
                                         ${milestone.status === 'cancelled' ? 'bg-red-50 text-red-600 hover:bg-red-100' : ''}
                                     `}
+                                        >
+                                            <option value="pending">Pending</option>
+                                            <option value="in_progress">In Progress</option>
+                                            <option value="completed">Completed</option>
+                                            <option value="skipped">Skipped</option>
+                                            <option value="cancelled">Cancelled</option>
+                                        </select>
+                                        <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none opacity-50">
+                                            <TrendingUp className="w-3 h-3 rotate-90" />
+                                        </div>
+                                    </div>
+                                    <button
+                                        onClick={() => deleteMilestone(milestone.id)}
+                                        className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                        title="Delete Milestone"
                                     >
-                                        <option value="pending">Pending</option>
-                                        <option value="in_progress">In Progress</option>
-                                        <option value="completed">Completed</option>
-                                        <option value="skipped">Skipped</option>
-                                        <option value="cancelled">Cancelled</option>
-                                    </select>
-                                    <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none opacity-50">
-                                        <TrendingUp className="w-3 h-3 rotate-90" />
+                                        <Trash2 className="w-4 h-4" />
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="p-12 text-center">
+                        <Clock className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                        <p className="text-gray-500">No milestones defined yet</p>
+                    </div>
+                )}
+            </div>
+
+            {/* Add Milestone Modal */}
+            {showMilestoneModal && (
+                <>
+                    <div
+                        className="fixed inset-0 bg-black/60 z-40 backdrop-blur-sm transition-opacity"
+                        onClick={() => setShowMilestoneModal(false)}
+                    />
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                        <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full flex flex-col max-h-[90vh] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                            {/* Header */}
+                            <div className="bg-gradient-to-r from-[#1A1A2E] to-[#2D2D44] p-6 text-white flex items-center justify-between shrink-0">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                                        <Briefcase className="w-5 h-5 text-orange-400" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-xl font-bold">Add Milestone</h3>
+                                        <p className="text-white/60 text-sm">Add tasks to track project progress</p>
                                     </div>
                                 </div>
                                 <button
-                                    onClick={() => deleteMilestone(milestone.id)}
-                                    className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                                    title="Delete Milestone"
+                                    onClick={() => setShowMilestoneModal(false)}
+                                    className="p-2 text-white/50 hover:text-white hover:bg-white/10 rounded-full transition-colors"
                                 >
-                                    <Trash2 className="w-4 h-4" />
+                                    <X className="w-5 h-5" />
                                 </button>
                             </div>
-                        </div>
-                    ))}
-                </div>
-            ) : (
-                <div className="p-12 text-center">
-                    <Clock className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                    <p className="text-gray-500">No milestones defined yet</p>
-                </div>
-            )}
-        </div>
 
-        {/* Add Milestone Modal */}
-        {showMilestoneModal && (
-            <>
-                <div
-                    className="fixed inset-0 bg-black/60 z-40 backdrop-blur-sm transition-opacity"
-                    onClick={() => setShowMilestoneModal(false)}
-                />
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full flex flex-col max-h-[90vh] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-                        {/* Header */}
-                        <div className="bg-gradient-to-r from-[#1A1A2E] to-[#2D2D44] p-6 text-white flex items-center justify-between shrink-0">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                                    <Briefcase className="w-5 h-5 text-orange-400" />
-                                </div>
-                                <div>
-                                    <h3 className="text-xl font-bold">Add Milestone</h3>
-                                    <p className="text-white/60 text-sm">Add tasks to track project progress</p>
-                                </div>
-                            </div>
-                            <button
-                                onClick={() => setShowMilestoneModal(false)}
-                                className="p-2 text-white/50 hover:text-white hover:bg-white/10 rounded-full transition-colors"
-                            >
-                                <X className="w-5 h-5" />
-                            </button>
-                        </div>
-
-                        {/* Tabs */}
-                        <div className="p-6 pb-0 shrink-0">
-                            {availableMilestones.length > 0 && (
-                                <div className="flex p-1 bg-gray-100 rounded-xl mb-6">
-                                    <button
-                                        onClick={() => setMilestoneTab("template")}
-                                        className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-lg transition-all ${milestoneTab === "template"
-                                            ? "bg-white text-gray-900 shadow-md ring-1 ring-black/5"
-                                            : "text-gray-500 hover:text-gray-700 hover:bg-gray-200/50"
-                                            }`}
-                                    >
-                                        <Briefcase className="w-4 h-4" />
-                                        Recommended Templates
-                                    </button>
-                                    <button
-                                        onClick={() => setMilestoneTab("custom")}
-                                        className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-lg transition-all ${milestoneTab === "custom"
-                                            ? "bg-white text-gray-900 shadow-md ring-1 ring-black/5"
-                                            : "text-gray-500 hover:text-gray-700 hover:bg-gray-200/50"
-                                            }`}
-                                    >
-                                        <Plus className="w-4 h-4" />
-                                        Create Custom
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Content */}
-                        <div className="p-6 pt-0 overflow-y-auto min-h-[300px]">
-                            {milestoneTab === "template" && availableMilestones.length > 0 ? (
-                                <div className="space-y-6">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        {availableMilestones.map((tm, idx) => {
-                                            const isAdded = milestones.some(m => m.milestone_name === tm.name);
-                                            return (
-                                                <div
-                                                    key={idx}
-                                                    className={`group relative flex flex-col p-4 rounded-xl border-2 transition-all duration-200 ${isAdded
-                                                        ? "bg-green-50/50 border-green-100"
-                                                        : "bg-white border-gray-100 hover:border-primary/30 hover:shadow-lg hover:-translate-y-0.5"
-                                                        }`}
-                                                >
-                                                    <div className="flex items-start justify-between mb-3">
-                                                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold ${isAdded ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500 group-hover:bg-primary/10 group-hover:text-primary"
-                                                            }`}>
-                                                            {tm.order || idx + 1}
-                                                        </div>
-                                                        {isAdded ? (
-                                                            <span className="flex items-center gap-1 text-[10px] uppercase tracking-wider font-bold text-green-600 bg-green-100 px-2 py-1 rounded-full">
-                                                                <FileCheck className="w-3 h-3" />
-                                                                Added
-                                                            </span>
-                                                        ) : (
-                                                            <button
-                                                                onClick={() => handleAddTemplateMilestone(tm)}
-                                                                className="h-8 w-8 rounded-full bg-primary text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:scale-110 shadow-lg"
-                                                                title="Add Milestone"
-                                                            >
-                                                                <Plus className="w-4 h-4" />
-                                                            </button>
-                                                        )}
-                                                    </div>
-
-                                                    <h4 className={`font-semibold text-sm mb-1 ${isAdded ? "text-green-900" : "text-gray-900"}`}>
-                                                        {tm.name}
-                                                    </h4>
-
-                                                    <p className="text-xs text-gray-500 line-clamp-2 mt-auto">
-                                                        {tm.description || "No description available"}
-                                                    </p>
-
-                                                    <div className="mt-3 pt-3 border-t border-gray-100 flex items-center gap-1.5">
-                                                        <Calendar className="w-3.5 h-3.5 text-gray-400" />
-                                                        <span className="text-xs text-gray-500 font-medium">
-                                                            {tm.days_offset > 0 ? `+${tm.days_offset} days from start` : "Project Start Date"}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-
-                                    <div className="flex items-center justify-between pt-4 border-t border-gray-100 mt-4">
+                            {/* Tabs */}
+                            <div className="p-6 pb-0 shrink-0">
+                                {availableMilestones.length > 0 && (
+                                    <div className="flex p-1 bg-gray-100 rounded-xl mb-6">
                                         <button
-                                            onClick={handleAddAllDefaults}
-                                            className="flex items-center gap-2 px-4 py-2 text-primary bg-primary/5 hover:bg-primary/10 rounded-lg text-sm font-semibold transition-colors"
+                                            onClick={() => setMilestoneTab("template")}
+                                            className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-lg transition-all ${milestoneTab === "template"
+                                                ? "bg-white text-gray-900 shadow-md ring-1 ring-black/5"
+                                                : "text-gray-500 hover:text-gray-700 hover:bg-gray-200/50"
+                                                }`}
+                                        >
+                                            <Briefcase className="w-4 h-4" />
+                                            Recommended Templates
+                                        </button>
+                                        <button
+                                            onClick={() => setMilestoneTab("custom")}
+                                            className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-lg transition-all ${milestoneTab === "custom"
+                                                ? "bg-white text-gray-900 shadow-md ring-1 ring-black/5"
+                                                : "text-gray-500 hover:text-gray-700 hover:bg-gray-200/50"
+                                                }`}
                                         >
                                             <Plus className="w-4 h-4" />
-                                            Add All Remaining
-                                        </button>
-                                        <button
-                                            onClick={() => setShowMilestoneModal(false)}
-                                            className="px-8 py-2.5 bg-gray-900 text-white rounded-lg hover:bg-gray-800 text-sm font-semibold transition-colors shadow-lg shadow-gray-200"
-                                        >
-                                            Done
+                                            Create Custom
                                         </button>
                                     </div>
-                                </div>
-                            ) : (
-                                <div className="max-w-xl mx-auto py-4">
-                                    <div className="space-y-5">
-                                        <div>
-                                            <label className="block text-sm font-semibold text-gray-900 mb-2">
-                                                Milestone Name <span className="text-red-500">*</span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                value={milestoneForm.milestone_name}
-                                                onChange={(e) =>
-                                                    setMilestoneForm({ ...milestoneForm, milestone_name: e.target.value })
-                                                }
-                                                className="w-full border border-gray-200 rounded-xl px-5 py-3 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm"
-                                                placeholder="e.g., Initial Site Assessment"
-                                            />
+                                )}
+                            </div>
+
+                            {/* Content */}
+                            <div className="p-6 pt-0 overflow-y-auto min-h-[300px]">
+                                {milestoneTab === "template" && availableMilestones.length > 0 ? (
+                                    <div className="space-y-6">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            {availableMilestones.map((tm, idx) => {
+                                                const isAdded = milestones.some(m => m.milestone_name === tm.name);
+                                                return (
+                                                    <div
+                                                        key={idx}
+                                                        className={`group relative flex flex-col p-4 rounded-xl border-2 transition-all duration-200 ${isAdded
+                                                            ? "bg-green-50/50 border-green-100"
+                                                            : "bg-white border-gray-100 hover:border-primary/30 hover:shadow-lg hover:-translate-y-0.5"
+                                                            }`}
+                                                    >
+                                                        <div className="flex items-start justify-between mb-3">
+                                                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold ${isAdded ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500 group-hover:bg-primary/10 group-hover:text-primary"
+                                                                }`}>
+                                                                {tm.order || idx + 1}
+                                                            </div>
+                                                            {isAdded ? (
+                                                                <span className="flex items-center gap-1 text-[10px] uppercase tracking-wider font-bold text-green-600 bg-green-100 px-2 py-1 rounded-full">
+                                                                    <FileCheck className="w-3 h-3" />
+                                                                    Added
+                                                                </span>
+                                                            ) : (
+                                                                <button
+                                                                    onClick={() => handleAddTemplateMilestone(tm)}
+                                                                    className="h-8 w-8 rounded-full bg-primary text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:scale-110 shadow-lg"
+                                                                    title="Add Milestone"
+                                                                >
+                                                                    <Plus className="w-4 h-4" />
+                                                                </button>
+                                                            )}
+                                                        </div>
+
+                                                        <h4 className={`font-semibold text-sm mb-1 ${isAdded ? "text-green-900" : "text-gray-900"}`}>
+                                                            {tm.name}
+                                                        </h4>
+
+                                                        <p className="text-xs text-gray-500 line-clamp-2 mt-auto">
+                                                            {tm.description || "No description available"}
+                                                        </p>
+
+                                                        <div className="mt-3 pt-3 border-t border-gray-100 flex items-center gap-1.5">
+                                                            <Calendar className="w-3.5 h-3.5 text-gray-400" />
+                                                            <span className="text-xs text-gray-500 font-medium">
+                                                                {tm.days_offset > 0 ? `+${tm.days_offset} days from start` : "Project Start Date"}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
                                         </div>
 
-                                        <div className="grid grid-cols-2 gap-5">
+                                        <div className="flex items-center justify-between pt-4 border-t border-gray-100 mt-4">
+                                            <button
+                                                onClick={handleAddAllDefaults}
+                                                className="flex items-center gap-2 px-4 py-2 text-primary bg-primary/5 hover:bg-primary/10 rounded-lg text-sm font-semibold transition-colors"
+                                            >
+                                                <Plus className="w-4 h-4" />
+                                                Add All Remaining
+                                            </button>
+                                            <button
+                                                onClick={() => setShowMilestoneModal(false)}
+                                                className="px-8 py-2.5 bg-gray-900 text-white rounded-lg hover:bg-gray-800 text-sm font-semibold transition-colors shadow-lg shadow-gray-200"
+                                            >
+                                                Done
+                                            </button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="max-w-xl mx-auto py-4">
+                                        <div className="space-y-5">
                                             <div>
                                                 <label className="block text-sm font-semibold text-gray-900 mb-2">
-                                                    Due Date <span className="text-red-500">*</span>
+                                                    Milestone Name <span className="text-red-500">*</span>
                                                 </label>
                                                 <input
-                                                    type="date"
-                                                    value={milestoneForm.due_date}
+                                                    type="text"
+                                                    value={milestoneForm.milestone_name}
                                                     onChange={(e) =>
-                                                        setMilestoneForm({ ...milestoneForm, due_date: e.target.value })
+                                                        setMilestoneForm({ ...milestoneForm, milestone_name: e.target.value })
                                                     }
                                                     className="w-full border border-gray-200 rounded-xl px-5 py-3 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm"
+                                                    placeholder="e.g., Initial Site Assessment"
                                                 />
                                             </div>
+
+                                            <div className="grid grid-cols-2 gap-5">
+                                                <div>
+                                                    <label className="block text-sm font-semibold text-gray-900 mb-2">
+                                                        Due Date <span className="text-red-500">*</span>
+                                                    </label>
+                                                    <input
+                                                        type="date"
+                                                        value={milestoneForm.due_date}
+                                                        onChange={(e) =>
+                                                            setMilestoneForm({ ...milestoneForm, due_date: e.target.value })
+                                                        }
+                                                        className="w-full border border-gray-200 rounded-xl px-5 py-3 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-semibold text-gray-900 mb-2">
+                                                        Priority
+                                                    </label>
+                                                    <select className="w-full border border-gray-200 rounded-xl px-5 py-3 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm bg-white">
+                                                        <option>Normal</option>
+                                                        <option>High</option>
+                                                        <option>Critical</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
                                             <div>
                                                 <label className="block text-sm font-semibold text-gray-900 mb-2">
-                                                    Priority
+                                                    Description
                                                 </label>
-                                                <select className="w-full border border-gray-200 rounded-xl px-5 py-3 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm bg-white">
-                                                    <option>Normal</option>
-                                                    <option>High</option>
-                                                    <option>Critical</option>
-                                                </select>
+                                                <textarea
+                                                    value={milestoneForm.description}
+                                                    onChange={(e) =>
+                                                        setMilestoneForm({ ...milestoneForm, description: e.target.value })
+                                                    }
+                                                    className="w-full border border-gray-200 rounded-xl px-5 py-3 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm"
+                                                    rows={4}
+                                                    placeholder="Add details about deliverables and expectations..."
+                                                />
                                             </div>
                                         </div>
 
-                                        <div>
-                                            <label className="block text-sm font-semibold text-gray-900 mb-2">
-                                                Description
-                                            </label>
-                                            <textarea
-                                                value={milestoneForm.description}
-                                                onChange={(e) =>
-                                                    setMilestoneForm({ ...milestoneForm, description: e.target.value })
-                                                }
-                                                className="w-full border border-gray-200 rounded-xl px-5 py-3 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm"
-                                                rows={4}
-                                                placeholder="Add details about deliverables and expectations..."
-                                            />
+                                        <div className="flex justify-end gap-3 mt-8 pt-6 border-t border-gray-100">
+                                            <button
+                                                onClick={() => setShowMilestoneModal(false)}
+                                                className="px-6 py-2.5 border border-gray-200 rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+                                            >
+                                                Cancel
+                                            </button>
+                                            <button
+                                                onClick={handleAddMilestone}
+                                                className="px-8 py-2.5 bg-primary text-white rounded-xl font-semibold hover:bg-orange-600 transition-colors shadow-lg shadow-orange-100"
+                                            >
+                                                Create Milestone
+                                            </button>
                                         </div>
                                     </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </>
+            )}
 
-                                    <div className="flex justify-end gap-3 mt-8 pt-6 border-t border-gray-100">
-                                        <button
-                                            onClick={() => setShowMilestoneModal(false)}
-                                            className="px-6 py-2.5 border border-gray-200 rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition-colors"
-                                        >
-                                            Cancel
-                                        </button>
-                                        <button
-                                            onClick={handleAddMilestone}
-                                            className="px-8 py-2.5 bg-primary text-white rounded-xl font-semibold hover:bg-orange-600 transition-colors shadow-lg shadow-orange-100"
-                                        >
-                                            Create Milestone
-                                        </button>
+            {/* Manage Contract Modal */}
+            {showContractModal && project && (
+                <>
+                    <div
+                        className="fixed inset-0 bg-black/50 z-40"
+                        onClick={() => setShowContractModal(false)}
+                    />
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                        <div className="bg-white rounded-xl shadow-xl max-w-lg w-full p-6">
+                            <div className="flex items-center gap-3 mb-6">
+                                <div className={`w-12 h-12 rounded-full flex items-center justify-center ${contractDoc ? "bg-green-100" : "bg-blue-100"
+                                    }`}>
+                                    <FileCheck className={`w-6 h-6 ${contractDoc ? "text-green-600" : "text-blue-600"
+                                        }`} />
+                                </div>
+                                <div>
+                                    <h3 className="text-xl font-bold text-gray-900">
+                                        {contractDoc ? "Manage Contract" : "Generate Contract"}
+                                    </h3>
+                                    <p className="text-sm text-gray-500">
+                                        {contractDoc
+                                            ? "View current contract or generate a new version"
+                                            : "Create a new service contract document"}
+                                    </p>
+                                </div>
+                            </div>
+
+                            {contractDoc && (
+                                <div className="bg-gray-50 rounded-xl p-4 mb-6 border border-gray-100">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Current Version</span>
+                                        <span className="bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-full">Active</span>
                                     </div>
+                                    <h4 className="font-semibold text-gray-900 mb-1">{contractDoc.title}</h4>
+                                    <p className="text-xs text-gray-500 mb-4">
+                                        Generated on {new Date(contractDoc.created_at).toLocaleString()}
+                                    </p>
+
+                                    <button
+                                        onClick={handleViewContract}
+                                        className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium text-sm"
+                                    >
+                                        <ExternalLink className="w-4 h-4" />
+                                        View Generated HTML
+                                    </button>
                                 </div>
                             )}
-                        </div>
-                    </div>
-                </div>
-            </>
-        )}
 
-        {/* Manage Contract Modal */}
-        {showContractModal && project && (
-            <>
-                <div
-                    className="fixed inset-0 bg-black/50 z-40"
-                    onClick={() => setShowContractModal(false)}
-                />
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-xl shadow-xl max-w-lg w-full p-6">
-                        <div className="flex items-center gap-3 mb-6">
-                            <div className={`w-12 h-12 rounded-full flex items-center justify-center ${contractDoc ? "bg-green-100" : "bg-blue-100"
-                                }`}>
-                                <FileCheck className={`w-6 h-6 ${contractDoc ? "text-green-600" : "text-blue-600"
-                                    }`} />
-                            </div>
-                            <div>
-                                <h3 className="text-xl font-bold text-gray-900">
-                                    {contractDoc ? "Manage Contract" : "Generate Contract"}
-                                </h3>
-                                <p className="text-sm text-gray-500">
-                                    {contractDoc
-                                        ? "View current contract or generate a new version"
-                                        : "Create a new service contract document"}
-                                </p>
-                            </div>
-                        </div>
+                            <div className="border-t border-gray-100 pt-4">
+                                <h4 className="font-semibold text-gray-900 mb-3 block">
+                                    {contractDoc ? "Update / Regenerate" : "Contract Details"}
+                                </h4>
 
-                        {contractDoc && (
-                            <div className="bg-gray-50 rounded-xl p-4 mb-6 border border-gray-100">
-                                <div className="flex items-center justify-between mb-2">
-                                    <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Current Version</span>
-                                    <span className="bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-full">Active</span>
+                                <div className="grid grid-cols-2 gap-3 text-sm mb-4">
+                                    <div className="p-3 bg-gray-50 rounded-lg">
+                                        <span className="text-gray-500 text-xs block mb-1">Contract Value</span>
+                                        <p className="font-semibold text-gray-900">{formatCurrency(project.contract_value)}</p>
+                                    </div>
+                                    <div className="p-3 bg-gray-50 rounded-lg">
+                                        <span className="text-gray-500 text-xs block mb-1">Milestones Included</span>
+                                        <p className="font-semibold text-gray-900">{milestones.length}</p>
+                                    </div>
                                 </div>
-                                <h4 className="font-semibold text-gray-900 mb-1">{contractDoc.title}</h4>
-                                <p className="text-xs text-gray-500 mb-4">
-                                    Generated on {new Date(contractDoc.created_at).toLocaleString()}
-                                </p>
 
-                                <button
-                                    onClick={handleViewContract}
-                                    className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium text-sm"
-                                >
-                                    <ExternalLink className="w-4 h-4" />
-                                    View Generated HTML
-                                </button>
-                            </div>
-                        )}
-
-                        <div className="border-t border-gray-100 pt-4">
-                            <h4 className="font-semibold text-gray-900 mb-3 block">
-                                {contractDoc ? "Update / Regenerate" : "Contract Details"}
-                            </h4>
-
-                            <div className="grid grid-cols-2 gap-3 text-sm mb-4">
-                                <div className="p-3 bg-gray-50 rounded-lg">
-                                    <span className="text-gray-500 text-xs block mb-1">Contract Value</span>
-                                    <p className="font-semibold text-gray-900">{formatCurrency(project.contract_value)}</p>
+                                <div className="mb-6">
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Additional Notes / Terms
+                                    </label>
+                                    <textarea
+                                        value={contractNote}
+                                        onChange={(e) => setContractNote(e.target.value)}
+                                        className="w-full border border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20 min-h-[100px]"
+                                        placeholder="Enter any specific terms, payment schedules, or notes to include in the contract..."
+                                    />
                                 </div>
-                                <div className="p-3 bg-gray-50 rounded-lg">
-                                    <span className="text-gray-500 text-xs block mb-1">Milestones Included</span>
-                                    <p className="font-semibold text-gray-900">{milestones.length}</p>
+
+                                <div className="flex justify-end gap-3">
+                                    <button
+                                        onClick={() => setShowContractModal(false)}
+                                        className="px-4 py-2 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50"
+                                    >
+                                        Close
+                                    </button>
+                                    <button
+                                        onClick={handleGenerateContract}
+                                        disabled={generatingContract}
+                                        className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-orange-600 disabled:opacity-50 flex items-center gap-2 transition-colors shadow-sm"
+                                    >
+                                        {generatingContract ? (
+                                            <>
+                                                <Loader2 className="w-4 h-4 animate-spin" />
+                                                Processing...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <FileCheck className="w-4 h-4" />
+                                                {contractDoc ? "Regenerate Contract" : "Generate Contract"}
+                                            </>
+                                        )}
+                                    </button>
                                 </div>
-                            </div>
-
-                            <div className="mb-6">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Additional Notes / Terms
-                                </label>
-                                <textarea
-                                    value={contractNote}
-                                    onChange={(e) => setContractNote(e.target.value)}
-                                    className="w-full border border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20 min-h-[100px]"
-                                    placeholder="Enter any specific terms, payment schedules, or notes to include in the contract..."
-                                />
-                            </div>
-
-                            <div className="flex justify-end gap-3">
-                                <button
-                                    onClick={() => setShowContractModal(false)}
-                                    className="px-4 py-2 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50"
-                                >
-                                    Close
-                                </button>
-                                <button
-                                    onClick={handleGenerateContract}
-                                    disabled={generatingContract}
-                                    className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-orange-600 disabled:opacity-50 flex items-center gap-2 transition-colors shadow-sm"
-                                >
-                                    {generatingContract ? (
-                                        <>
-                                            <Loader2 className="w-4 h-4 animate-spin" />
-                                            Processing...
-                                        </>
-                                    ) : (
-                                        <>
-                                            <FileCheck className="w-4 h-4" />
-                                            {contractDoc ? "Regenerate Contract" : "Generate Contract"}
-                                        </>
-                                    )}
-                                </button>
                             </div>
                         </div>
                     </div>
-                </div>
-            </>
-        )}
-    </div>
-);
+                </>
+            )}
+        </div>
+    );
 }
