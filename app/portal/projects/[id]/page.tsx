@@ -57,6 +57,7 @@ interface Milestone {
   completion_date: string;
   is_completed: boolean;
   is_custom?: boolean;
+  status?: string;
 }
 
 interface ProjectDocument {
@@ -610,6 +611,16 @@ export default function ProjectDetailPage() {
                           {milestone.is_custom && (
                             <span className="px-2 py-0.5 bg-purple-100 text-purple-600 text-xs rounded-full">
                               Custom
+                            </span>
+                          )}
+                          {milestone.status && milestone.status !== 'pending' && (
+                            <span className={`px-2 py-0.5 text-xs rounded-full uppercase tracking-wider font-bold ${milestone.status === 'completed' ? 'bg-green-100 text-green-700' :
+                                milestone.status === 'in_progress' ? 'bg-blue-100 text-blue-700' :
+                                  milestone.status === 'skipped' ? 'bg-gray-100 text-gray-500 line-through' :
+                                    milestone.status === 'cancelled' ? 'bg-red-100 text-red-700' :
+                                      'bg-gray-100 text-gray-600'
+                              }`}>
+                              {milestone.status.replace('_', ' ')}
                             </span>
                           )}
                         </div>
