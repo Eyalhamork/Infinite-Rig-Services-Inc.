@@ -129,7 +129,7 @@ export default function RequestsInboxPage() {
                     client_id: selectedRequest.client_id,
                     project_name: selectedRequest.details.service_name || `${selectedRequest.service_type} Project - ${selectedRequest.client.company_name}`,
                     description: selectedRequest.details.description || `Project created from request ${selectedRequest.id}`,
-                    status: "active",
+                    status: "in_progress",
                     service_type: selectedRequest.service_type,
                     start_date: new Date().toISOString(),
                     end_date: completionDate,
