@@ -33,6 +33,8 @@ interface Project {
   project_name: string;
 }
 
+const GENERAL_PROJECT_ID = "general";
+
 export default function PortalMessagesPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
@@ -72,8 +74,12 @@ export default function PortalMessagesPage() {
 
           setProjects(projectsData || []);
 
+          // Check if there are unread general messages to decide selection priority?
+          // For now, default to General if no projects, or just add General to list.
           if (projectsData && projectsData.length > 0) {
             setSelectedProject(projectsData[0].id);
+          } else {
+            setSelectedProject(GENERAL_PROJECT_ID);
           }
         }
       } catch (error) {
@@ -91,7 +97,7 @@ export default function PortalMessagesPage() {
       if (!selectedProject) return;
 
       try {
-        const { data } = await supabase
+        let query = supabase
           .from("project_messages")
           .select(
             `
@@ -99,8 +105,15 @@ export default function PortalMessagesPage() {
             sender:profiles!project_messages_sender_id_fkey(full_name)
           `
           )
-          .eq("project_id", selectedProject)
           .order("created_at", { ascending: true });
+
+        if (selectedProject === GENERAL_PROJECT_ID) {
+          query = query.is("project_id", null);
+        } else {
+          query = query.eq("project_id", selectedProject);
+        }
+
+        const { data } = await query;
 
         const formattedMessages =
           data?.map((msg: any) => ({
@@ -113,11 +126,18 @@ export default function PortalMessagesPage() {
 
         // Mark messages as read
         if (userId) {
-          await supabase
+          let updateQuery = supabase
             .from("project_messages")
             .update({ is_read: true })
-            .eq("project_id", selectedProject)
             .neq("sender_id", userId);
+
+          if (selectedProject === GENERAL_PROJECT_ID) {
+            updateQuery = updateQuery.is("project_id", null);
+          } else {
+            updateQuery = updateQuery.eq("project_id", selectedProject);
+          }
+
+          await updateQuery;
 
 
           // Mark message notifications as read
@@ -145,14 +165,19 @@ export default function PortalMessagesPage() {
     setSending(true);
 
     try {
-      const { error } = await supabase.from("project_messages").insert({
-        project_id: selectedProject,
+      const messageData: any = {
         client_id: clientId,
         sender_id: userId,
         sender_type: "client",
         message: newMessage.trim(),
         is_read: false,
-      });
+      };
+
+      if (selectedProject !== GENERAL_PROJECT_ID) {
+        messageData.project_id = selectedProject;
+      }
+
+      const { error } = await supabase.from("project_messages").insert(messageData);
 
       if (error) throw error;
 
@@ -203,39 +228,65 @@ export default function PortalMessagesPage() {
         </div>
 
         <div className="overflow-y-auto max-h-[calc(100%-60px)]">
-          {projects.length > 0 ? (
-            <div className="p-2">
-              {projects.map((project) => (
-                <button
-                  key={project.id}
-                  onClick={() => setSelectedProject(project.id)}
-                  className={`w-full text-left p-3 rounded-xl transition-colors ${selectedProject === project.id
-                    ? "bg-primary/10 text-primary"
-                    : "hover:bg-gray-50 text-gray-700"
+          <div className="p-2">
+            {/* General Channel */}
+            <button
+              onClick={() => setSelectedProject(GENERAL_PROJECT_ID)}
+              className={`w-full text-left p-3 rounded-xl transition-colors mb-2 ${selectedProject === GENERAL_PROJECT_ID
+                ? "bg-primary/10 text-primary"
+                : "hover:bg-gray-50 text-gray-700"
+                }`}
+            >
+              <div className="flex items-center gap-3">
+                <div
+                  className={`w-10 h-10 rounded-lg flex items-center justify-center ${selectedProject === GENERAL_PROJECT_ID
+                    ? "bg-primary text-white"
+                    : "bg-gray-100"
                     }`}
                 >
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={`w-10 h-10 rounded-lg flex items-center justify-center ${selectedProject === project.id
-                        ? "bg-primary text-white"
-                        : "bg-gray-100"
-                        }`}
-                    >
-                      <MessageSquare className="w-5 h-5" />
+                  <MessageSquare className="w-5 h-5" />
+                </div>
+                <span className="font-medium truncate">General Support</span>
+              </div>
+            </button>
+
+            {projects.length > 0 ? (
+              <>
+                <div className="px-3 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                  Projects
+                </div>
+                {projects.map((project) => (
+                  <button
+                    key={project.id}
+                    onClick={() => setSelectedProject(project.id)}
+                    className={`w-full text-left p-3 rounded-xl transition-colors ${selectedProject === project.id
+                      ? "bg-primary/10 text-primary"
+                      : "hover:bg-gray-50 text-gray-700"
+                      }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`w-10 h-10 rounded-lg flex items-center justify-center ${selectedProject === project.id
+                          ? "bg-primary text-white"
+                          : "bg-gray-100"
+                          }`}
+                      >
+                        <MessageSquare className="w-5 h-5" />
+                      </div>
+                      <span className="font-medium truncate">
+                        {project.project_name}
+                      </span>
                     </div>
-                    <span className="font-medium truncate">
-                      {project.project_name}
-                    </span>
-                  </div>
-                </button>
-              ))}
-            </div>
-          ) : (
-            <div className="p-6 text-center">
-              <MessageSquare className="w-10 h-10 text-gray-300 mx-auto mb-2" />
-              <p className="text-gray-500 text-sm">No projects yet</p>
-            </div>
-          )}
+                  </button>
+                ))}
+              </>
+            ) : (
+              <div className="p-6 text-center">
+                <MessageSquare className="w-10 h-10 text-gray-300 mx-auto mb-2" />
+                <p className="text-gray-500 text-sm">No projects yet</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -246,7 +297,9 @@ export default function PortalMessagesPage() {
             {/* Header */}
             <div className="p-4 border-b border-gray-100">
               <h2 className="font-bold text-navy-900">
-                {projects.find((p) => p.id === selectedProject)?.project_name}
+                {selectedProject === GENERAL_PROJECT_ID
+                  ? "General Support"
+                  : projects.find((p) => p.id === selectedProject)?.project_name}
               </h2>
               <p className="text-sm text-gray-500">
                 Send messages to your project team

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import {
   Search,
   MessageSquare,
@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { UserAvatar } from "@/components/ui/user-avatar";
+import { useSearchParams } from "next/navigation";
 
 interface Client {
   id: string;
@@ -44,7 +45,7 @@ interface ConversationPreview {
   unreadCount: number;
 }
 
-export default function MessagesPage() {
+function MessagesContent() {
   const [conversations, setConversations] = useState<ConversationPreview[]>([]);
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -55,6 +56,8 @@ export default function MessagesPage() {
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const supabase = createClient();
+  const searchParams = useSearchParams();
+  const urlClientId = searchParams.get('client_id');
 
   useEffect(() => {
     const init = async () => {
@@ -142,6 +145,31 @@ export default function MessagesPage() {
       });
 
       setConversations(conversationPreviews);
+
+      // Auto-select client if in URL
+      if (urlClientId) {
+        // Find in loaded clients
+        const targetClient = clients?.find(c => c.id === urlClientId);
+        if (targetClient) {
+          setSelectedClient(targetClient as unknown as Client);
+        } else {
+          // If not in list (maybe inactive?), fetch directly
+          const { data: directClient } = await supabase
+            .from("clients")
+            .select(`
+                 id,
+                 company_name,
+                 primary_contact_id,
+                 profiles:primary_contact_id (full_name, email, avatar_url, role)
+               `)
+            .eq("id", urlClientId)
+            .single();
+
+          if (directClient) {
+            setSelectedClient(directClient as unknown as Client);
+          }
+        }
+      }
     } catch (error) {
       console.error("Error fetching conversations:", error);
     } finally {
@@ -443,5 +471,13 @@ export default function MessagesPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function MessagesPage() {
+  return (
+    <Suspense fallback={<div>Loading conversations...</div>}>
+      <MessagesContent />
+    </Suspense>
   );
 }
