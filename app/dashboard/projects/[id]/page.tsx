@@ -1124,24 +1124,29 @@ return (
                                 </div>
                             </div>
                             <div className="flex items-center gap-2">
-                                <select
-                                    value={milestone.status || (milestone.is_completed ? 'completed' : 'pending')}
-                                    onChange={(e) => updateMilestoneStatus(milestone, e.target.value)}
-                                    className={`
-                                        text-xs font-bold uppercase tracking-wider py-1.5 px-3 rounded-lg border-0 cursor-pointer focus:ring-2 focus:ring-primary/20 outline-none transition-colors
+                                <div className="relative">
+                                    <select
+                                        value={milestone.status || (milestone.is_completed ? 'completed' : 'pending')}
+                                        onChange={(e) => updateMilestoneStatus(milestone, e.target.value)}
+                                        className={`
+                                        appearance-none pr-8 text-xs font-bold uppercase tracking-wider py-1.5 px-3 rounded-lg border-0 cursor-pointer focus:ring-2 focus:ring-primary/20 outline-none transition-colors
                                         ${(milestone.status === 'completed' || milestone.is_completed) ? 'bg-green-100 text-green-700 hover:bg-green-200' : ''}
                                         ${milestone.status === 'in_progress' ? 'bg-blue-100 text-blue-700 hover:bg-blue-200' : ''}
                                         ${(!milestone.status || milestone.status === 'pending') ? 'bg-gray-100 text-gray-700 hover:bg-gray-200' : ''}
                                         ${milestone.status === 'skipped' ? 'bg-gray-100 text-gray-400 line-through hover:bg-gray-200' : ''}
                                         ${milestone.status === 'cancelled' ? 'bg-red-50 text-red-600 hover:bg-red-100' : ''}
                                     `}
-                                >
-                                    <option value="pending">Pending</option>
-                                    <option value="in_progress">In Progress</option>
-                                    <option value="completed">Completed</option>
-                                    <option value="skipped">Skipped</option>
-                                    <option value="cancelled">Cancelled</option>
-                                </select>
+                                    >
+                                        <option value="pending">Pending</option>
+                                        <option value="in_progress">In Progress</option>
+                                        <option value="completed">Completed</option>
+                                        <option value="skipped">Skipped</option>
+                                        <option value="cancelled">Cancelled</option>
+                                    </select>
+                                    <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none opacity-50">
+                                        <TrendingUp className="w-3 h-3 rotate-90" />
+                                    </div>
+                                </div>
                                 <button
                                     onClick={() => deleteMilestone(milestone.id)}
                                     className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
