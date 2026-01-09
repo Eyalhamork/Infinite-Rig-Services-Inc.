@@ -28,6 +28,7 @@ import {
     Trash2,
     FileCheck,
     Send,
+    History,
 } from "lucide-react";
 import { toast } from "sonner";
 import { MoneyInput } from "@/components/ui/MoneyInput";
@@ -100,6 +101,8 @@ export default function AdminProjectDetailPage() {
     const [showContractModal, setShowContractModal] = useState(false);
     const [generatingContract, setGeneratingContract] = useState(false);
     const [contractNote, setContractNote] = useState("");
+    const [contractDoc, setContractDoc] = useState<any>(null);
+    const [contractHistory, setContractHistory] = useState<any[]>([]);
 
     useEffect(() => {
         fetchProject();
@@ -125,6 +128,31 @@ export default function AdminProjectDetailPage() {
 
             setProject(projectData);
             setEditForm(projectData);
+
+            // Fetch contract document
+            const { data: docData } = await supabase
+                .from("project_documents")
+                .select("*")
+                .eq("project_id", params.id)
+                .ilike("title", "Service Contract%")
+                .order("created_at", { ascending: false })
+                .limit(1)
+                .maybeSingle();
+
+            setContractDoc(docData);
+
+            // Fetch contract history
+            const { data: historyData } = await supabase
+                .from("project_updates")
+                .select(`
+                    *,
+                    profiles:created_by(full_name)
+                `)
+                .eq("project_id", params.id)
+                .in("update_type", ["contract_update", "contract_deleted", "document_added"])
+                .order("created_at", { ascending: false });
+
+            setContractHistory(historyData || []);
 
             // Fetch milestones
             const { data: milestonesData } = await supabase
@@ -165,13 +193,89 @@ export default function AdminProjectDetailPage() {
 
             if (error) throw error;
 
-            setProject({ ...project, ...editForm });
+            // Track contract changes
+            const changes = [];
+            if (editForm.contract_value !== project.contract_value) {
+                changes.push(`Value: ${formatCurrency(project.contract_value)} → ${formatCurrency(editForm.contract_value || 0)}`);
+            }
+            if (editForm.start_date !== project.start_date) {
+                changes.push(`Start Date changed`);
+            }
+            if (editForm.end_date !== project.end_date) {
+                changes.push(`End Date changed`);
+            }
+
+            if (changes.length > 0) {
+                const { data: { user } } = await supabase.auth.getUser();
+                await supabase.from("project_updates").insert({
+                    project_id: project.id,
+                    update_type: "contract_update",
+                    title: "Contract Updated",
+                    description: changes.join(", "),
+                    created_by: user?.id,
+                    is_client_visible: true
+                });
+                // Refresh to get new history
+                fetchProject();
+            } else {
+                setProject({ ...project, ...editForm });
+            }
+
             setIsEditing(false);
             toast.success("Project updated successfully");
         } catch (error: any) {
             toast.error("Failed to update project", { description: error.message });
         } finally {
             setSaving(false);
+        }
+    };
+
+    const handleViewContract = async () => {
+        if (!contractDoc?.storage_path) return;
+        try {
+            const { data, error } = await supabase.storage
+                .from('projects')
+                .createSignedUrl(contractDoc.storage_path, 3600);
+            if (error) throw error;
+            window.open(data.signedUrl, '_blank');
+        } catch (err) {
+            toast.error("Failed to open contract");
+        }
+    };
+
+    const handleDeleteContract = async () => {
+        if (!confirm("Are you sure you want to delete the contract? This will remove the contract document and clear the contract value.")) return;
+
+        try {
+            const { data: { user } } = await supabase.auth.getUser();
+
+            // 1. Delete Document if exists
+            if (contractDoc) {
+                if (contractDoc.storage_path) {
+                    await supabase.storage.from("projects").remove([contractDoc.storage_path]);
+                }
+                await supabase.from("project_documents").delete().eq("id", contractDoc.id);
+            }
+
+            // 2. Clear Project Fields
+            await supabase.from("projects").update({
+                contract_value: 0,
+            }).eq("id", project?.id);
+
+            // 3. Log
+            await supabase.from("project_updates").insert({
+                project_id: project?.id,
+                update_type: "contract_deleted",
+                title: "Contract Deleted",
+                description: "Contract document deleted and value cleared.",
+                created_by: user?.id,
+                is_client_visible: true
+            });
+
+            toast.success("Contract deleted");
+            fetchProject();
+        } catch (error: any) {
+            toast.error("Failed to delete contract");
         }
     };
 
@@ -729,6 +833,81 @@ export default function AdminProjectDetailPage() {
                         </Link>
                     </div>
                 )}
+            </div>
+
+            {/* Contract Management */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 mb-6">
+                <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+                    <h2 className="text-lg font-bold text-gray-900">Contract Management</h2>
+                    {contractDoc && (
+                        <div className="flex gap-2">
+                            <button
+                                onClick={handleViewContract}
+                                className="inline-flex items-center gap-2 px-3 py-1.5 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium"
+                            >
+                                <ExternalLink className="w-4 h-4" />
+                                View Contract
+                            </button>
+                            <button
+                                onClick={handleDeleteContract}
+                                className="inline-flex items-center gap-2 px-3 py-1.5 bg-red-50 text-red-600 border border-red-100 rounded-lg hover:bg-red-100 text-sm font-medium"
+                            >
+                                <Trash2 className="w-4 h-4" />
+                                Delete
+                            </button>
+                        </div>
+                    )}
+                </div>
+
+                <div className="p-6">
+                    {!contractDoc ? (
+                        <div className="text-center py-6">
+                            <FileCheck className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                            <p className="text-gray-500 mb-4">No formal contract generated yet.</p>
+                            <button
+                                onClick={() => setShowContractModal(true)}
+                                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-orange-600 text-sm font-medium"
+                            >
+                                Generate Contract
+                            </button>
+                        </div>
+                    ) : (
+                        <div>
+                            <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg mb-6">
+                                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <FileCheck className="w-5 h-5 text-green-600" />
+                                </div>
+                                <div>
+                                    <h3 className="font-semibold text-gray-900">{contractDoc.title}</h3>
+                                    <p className="text-sm text-gray-500">
+                                        Generated on {new Date(contractDoc.created_at).toLocaleDateString()}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                                <History className="w-4 h-4" />
+                                Contract History
+                            </h3>
+                            <div className="space-y-4 max-h-60 overflow-y-auto pr-2">
+                                {contractHistory.length > 0 ? (
+                                    contractHistory.map((update) => (
+                                        <div key={update.id} className="relative pl-6 border-l-2 border-gray-200 pb-4 last:border-0 last:pb-0">
+                                            <div className="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-gray-400"></div>
+                                            <p className="text-sm font-medium text-gray-900">{update.title}</p>
+                                            <p className="text-xs text-gray-500 mt-0.5">{update.description}</p>
+                                            <div className="text-xs text-gray-400 mt-1">
+                                                {new Date(update.created_at).toLocaleString()} by {update.profiles?.full_name || 'System'}
+                                            </div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p className="text-sm text-gray-500 italic">No updates recorded.</p>
+                                )}
+                            </div>
+                        </div>
+                    )}
+                </div>
             </div>
 
             {/* Milestones */}
