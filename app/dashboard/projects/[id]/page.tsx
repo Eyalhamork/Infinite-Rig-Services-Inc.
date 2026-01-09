@@ -343,7 +343,7 @@ export default function AdminProjectDetailPage() {
             const startDate = project?.start_date ? new Date(project.start_date) : new Date();
             const dueDate = new Date(startDate);
             if (!isNaN(dueDate.getTime())) {
-                dueDate.setDate(dueDate.getDate() + (tm.days_offset || 0));
+                dueDate.setDate(dueDate.getDate() + (Number(tm.days_offset) || 0));
             }
 
             const { data, error } = await supabase
@@ -351,12 +351,12 @@ export default function AdminProjectDetailPage() {
                 .insert({
                     project_id: params.id,
                     milestone_name: tm.name,
-                    description: tm.description,
+                    description: tm.description || "",
                     due_date: dueDate.toISOString(),
                     is_completed: false,
                     is_custom: false,
                     created_by: user?.id,
-                    sort_order: tm.order || 99,
+                    sort_order: Number(tm.order) || 99,
                 })
                 .select()
                 .single();
@@ -366,6 +366,7 @@ export default function AdminProjectDetailPage() {
             setMilestones([...milestones, data].sort((a, b) => new Date(a.due_date).getTime() - new Date(b.due_date).getTime()));
             toast.success("Milestone added");
         } catch (e: any) {
+            console.error(e);
             toast.error("Failed to add milestone");
         }
     };
@@ -386,17 +387,17 @@ export default function AdminProjectDetailPage() {
             const toInsert = missing.map(tm => {
                 const d = new Date(startDate);
                 if (!isNaN(d.getTime())) {
-                    d.setDate(d.getDate() + (tm.days_offset || 0));
+                    d.setDate(d.getDate() + (Number(tm.days_offset) || 0));
                 }
                 return {
                     project_id: params.id,
                     milestone_name: tm.name,
-                    description: tm.description,
+                    description: tm.description || "",
                     due_date: d.toISOString(),
                     is_completed: false,
                     is_custom: false,
                     created_by: user?.id,
-                    sort_order: tm.order || 99
+                    sort_order: Number(tm.order) || 99
                 };
             });
 
@@ -407,6 +408,7 @@ export default function AdminProjectDetailPage() {
             toast.success(`${data.length} milestones added`);
             setShowMilestoneModal(false);
         } catch (e) {
+            console.error(e);
             toast.error("Failed to add milestones");
         }
     };
@@ -940,11 +942,11 @@ export default function AdminProjectDetailPage() {
                     {contractDoc && (
                         <div className="flex gap-2">
                             <button
-                                onClick={handleViewContract}
+                                onClick={() => setShowContractModal(true)}
                                 className="inline-flex items-center gap-2 px-3 py-1.5 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium"
                             >
                                 <ExternalLink className="w-4 h-4" />
-                                View Contract
+                                View Details
                             </button>
                             <button
                                 onClick={handleDeleteContract}
@@ -1092,26 +1094,25 @@ export default function AdminProjectDetailPage() {
                             <h3 className="text-lg font-bold text-gray-900 mb-4">Add Milestone</h3>
 
                             {availableMilestones.length > 0 && (
-                                <div className="flex border-b border-gray-200 mb-4">
+                                <div className="flex p-1 bg-gray-100 rounded-lg mb-6">
                                     <button
-                                        className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${milestoneTab === "template"
-                                                ? "border-primary text-primary"
-                                                : "border-transparent text-gray-500 hover:text-gray-700"
-                                            }`}
                                         onClick={() => setMilestoneTab("template")}
+                                        className={`flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-md transition-all ${milestoneTab === "template"
+                                            ? "bg-white text-gray-900 shadow-sm"
+                                            : "text-gray-500 hover:text-gray-700"
+                                            }`}
                                     >
-                                        <div className="flex items-center gap-2">
-                                            <Briefcase className="w-4 h-4" />
-                                            Recommended
-                                        </div>
+                                        <Briefcase className="w-4 h-4" />
+                                        Recommended
                                     </button>
                                     <button
-                                        className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${milestoneTab === "custom"
-                                                ? "border-primary text-primary"
-                                                : "border-transparent text-gray-500 hover:text-gray-700"
-                                            }`}
                                         onClick={() => setMilestoneTab("custom")}
+                                        className={`flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-md transition-all ${milestoneTab === "custom"
+                                            ? "bg-white text-gray-900 shadow-sm"
+                                            : "text-gray-500 hover:text-gray-700"
+                                            }`}
                                     >
+                                        <Plus className="w-4 h-4" />
                                         Custom
                                     </button>
                                 </div>
@@ -1119,29 +1120,46 @@ export default function AdminProjectDetailPage() {
 
                             {milestoneTab === "template" && availableMilestones.length > 0 ? (
                                 <div className="space-y-4">
-                                    <div className="space-y-2 max-h-[50vh] overflow-y-auto pr-2">
+                                    <div className="space-y-3 max-h-[50vh] overflow-y-auto pr-1">
                                         {availableMilestones.map((tm, idx) => {
                                             const isAdded = milestones.some(m => m.milestone_name === tm.name);
                                             return (
-                                                <div key={idx} className="flex items-start justify-between p-3 border border-gray-100 rounded-lg hover:bg-gray-50">
-                                                    <div>
-                                                        <p className="font-medium text-sm text-gray-900">{tm.name}</p>
-                                                        <div className="flex items-center gap-2 mt-0.5">
-                                                            <span className="text-xs text-gray-500">
+                                                <div
+                                                    key={idx}
+                                                    className={`group flex items-center justify-between p-3 rounded-lg border transition-all ${isAdded
+                                                        ? "bg-green-50 border-green-100"
+                                                        : "bg-white border-gray-100 hover:border-primary/20 hover:shadow-sm"
+                                                        }`}
+                                                >
+                                                    <div className="flex items-center gap-3">
+                                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ${isAdded ? "bg-green-100 text-green-700" : "bg-blue-50 text-blue-600"
+                                                            }`}>
+                                                            {tm.order || idx + 1}
+                                                        </div>
+                                                        <div>
+                                                            <p className={`font-medium text-sm ${isAdded ? "text-green-900" : "text-gray-900"}`}>
+                                                                {tm.name}
+                                                            </p>
+                                                            <p className="text-xs text-gray-500">
                                                                 Due: {tm.days_offset > 0 ? `+${tm.days_offset} days` : "Start Date"}
-                                                            </span>
+                                                            </p>
                                                         </div>
                                                     </div>
-                                                    <button
-                                                        disabled={isAdded}
-                                                        onClick={() => handleAddTemplateMilestone(tm)}
-                                                        className={`px-3 py-1 text-xs font-medium rounded transition-colors ${isAdded
-                                                                ? "bg-green-100 text-green-700"
-                                                                : "bg-primary text-white hover:bg-orange-600"
-                                                            }`}
-                                                    >
-                                                        {isAdded ? "Added" : "Add"}
-                                                    </button>
+
+                                                    {isAdded ? (
+                                                        <span className="flex items-center gap-1 text-xs font-medium text-green-600 bg-white px-2 py-1 rounded-full border border-green-100">
+                                                            <FileCheck className="w-3 h-3" />
+                                                            Added
+                                                        </span>
+                                                    ) : (
+                                                        <button
+                                                            onClick={() => handleAddTemplateMilestone(tm)}
+                                                            className="p-2 rounded-lg bg-gray-50 text-gray-500 hover:bg-primary hover:text-white transition-colors"
+                                                            title="Add Milestone"
+                                                        >
+                                                            <Plus className="w-4 h-4" />
+                                                        </button>
+                                                    )}
                                                 </div>
                                             );
                                         })}
@@ -1150,13 +1168,13 @@ export default function AdminProjectDetailPage() {
                                     <div className="flex justify-between gap-3 pt-4 border-t border-gray-100">
                                         <button
                                             onClick={handleAddAllDefaults}
-                                            className="text-sm text-primary hover:underline font-medium"
+                                            className="text-sm font-medium text-primary hover:text-orange-700 hover:underline px-2"
                                         >
                                             Add All Missing
                                         </button>
                                         <button
                                             onClick={() => setShowMilestoneModal(false)}
-                                            className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm font-medium"
+                                            className="px-6 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 text-sm font-medium transition-colors"
                                         >
                                             Done
                                         </button>
@@ -1175,7 +1193,7 @@ export default function AdminProjectDetailPage() {
                                                 onChange={(e) =>
                                                     setMilestoneForm({ ...milestoneForm, milestone_name: e.target.value })
                                                 }
-                                                className="w-full border border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20"
+                                                className="w-full border border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
                                                 placeholder="e.g., Initial Assessment Complete"
                                             />
                                         </div>
@@ -1188,7 +1206,7 @@ export default function AdminProjectDetailPage() {
                                                 onChange={(e) =>
                                                     setMilestoneForm({ ...milestoneForm, description: e.target.value })
                                                 }
-                                                className="w-full border border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20"
+                                                className="w-full border border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
                                                 rows={3}
                                                 placeholder="Optional description..."
                                             />
@@ -1203,7 +1221,7 @@ export default function AdminProjectDetailPage() {
                                                 onChange={(e) =>
                                                     setMilestoneForm({ ...milestoneForm, due_date: e.target.value })
                                                 }
-                                                className="w-full border border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20"
+                                                className="w-full border border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
                                             />
                                         </div>
                                     </div>
@@ -1228,7 +1246,7 @@ export default function AdminProjectDetailPage() {
                 </>
             )}
 
-            {/* Generate Contract Modal */}
+            {/* Manage Contract Modal */}
             {showContractModal && project && (
                 <>
                     <div
@@ -1237,81 +1255,98 @@ export default function AdminProjectDetailPage() {
                     />
                     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                         <div className="bg-white rounded-xl shadow-xl max-w-lg w-full p-6">
-                            <div className="flex items-center gap-3 mb-4">
-                                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                                    <FileCheck className="w-5 h-5 text-green-600" />
+                            <div className="flex items-center gap-3 mb-6">
+                                <div className={`w-12 h-12 rounded-full flex items-center justify-center ${contractDoc ? "bg-green-100" : "bg-blue-100"
+                                    }`}>
+                                    <FileCheck className={`w-6 h-6 ${contractDoc ? "text-green-600" : "text-blue-600"
+                                        }`} />
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-bold text-gray-900">Generate Contract</h3>
-                                    <p className="text-sm text-gray-500">Create a service contract document</p>
+                                    <h3 className="text-xl font-bold text-gray-900">
+                                        {contractDoc ? "Manage Contract" : "Generate Contract"}
+                                    </h3>
+                                    <p className="text-sm text-gray-500">
+                                        {contractDoc
+                                            ? "View current contract or generate a new version"
+                                            : "Create a new service contract document"}
+                                    </p>
                                 </div>
                             </div>
 
-                            {/* Preview */}
-                            <div className="bg-gray-50 rounded-lg p-4 mb-4">
-                                <h4 className="text-xs font-semibold text-gray-500 uppercase mb-3">Contract Preview</h4>
-                                <div className="grid grid-cols-2 gap-3 text-sm">
-                                    <div>
-                                        <span className="text-gray-500">Client:</span>
-                                        <p className="font-medium">{project.client?.company_name || 'N/A'}</p>
+                            {contractDoc && (
+                                <div className="bg-gray-50 rounded-xl p-4 mb-6 border border-gray-100">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Current Version</span>
+                                        <span className="bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-full">Active</span>
                                     </div>
-                                    <div>
-                                        <span className="text-gray-500">Project:</span>
-                                        <p className="font-medium">{project.project_name}</p>
+                                    <h4 className="font-semibold text-gray-900 mb-1">{contractDoc.title}</h4>
+                                    <p className="text-xs text-gray-500 mb-4">
+                                        Generated on {new Date(contractDoc.created_at).toLocaleString()}
+                                    </p>
+
+                                    <button
+                                        onClick={handleViewContract}
+                                        className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium text-sm"
+                                    >
+                                        <ExternalLink className="w-4 h-4" />
+                                        View Generated HTML
+                                    </button>
+                                </div>
+                            )}
+
+                            <div className="border-t border-gray-100 pt-4">
+                                <h4 className="font-semibold text-gray-900 mb-3 block">
+                                    {contractDoc ? "Update / Regenerate" : "Contract Details"}
+                                </h4>
+
+                                <div className="grid grid-cols-2 gap-3 text-sm mb-4">
+                                    <div className="p-3 bg-gray-50 rounded-lg">
+                                        <span className="text-gray-500 text-xs block mb-1">Contract Value</span>
+                                        <p className="font-semibold text-gray-900">{formatCurrency(project.contract_value)}</p>
                                     </div>
-                                    <div>
-                                        <span className="text-gray-500">Contract Value:</span>
-                                        <p className="font-medium text-green-600">{formatCurrency(project.contract_value)}</p>
-                                    </div>
-                                    <div>
-                                        <span className="text-gray-500">Milestones:</span>
-                                        <p className="font-medium">{milestones.length} defined</p>
+                                    <div className="p-3 bg-gray-50 rounded-lg">
+                                        <span className="text-gray-500 text-xs block mb-1">Milestones Included</span>
+                                        <p className="font-semibold text-gray-900">{milestones.length}</p>
                                     </div>
                                 </div>
-                            </div>
 
-                            {/* Note */}
-                            <div className="mb-4">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Additional Notes (optional)
-                                </label>
-                                <textarea
-                                    value={contractNote}
-                                    onChange={(e) => setContractNote(e.target.value)}
-                                    className="w-full border border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20"
-                                    rows={3}
-                                    placeholder="Any additional terms or notes to include in the contract..."
-                                />
-                            </div>
+                                <div className="mb-6">
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Additional Notes / Terms
+                                    </label>
+                                    <textarea
+                                        value={contractNote}
+                                        onChange={(e) => setContractNote(e.target.value)}
+                                        className="w-full border border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20 min-h-[100px]"
+                                        placeholder="Enter any specific terms, payment schedules, or notes to include in the contract..."
+                                    />
+                                </div>
 
-                            <p className="text-xs text-gray-500 mb-4">
-                                The contract will be saved to Project Documents and made visible to the client.
-                            </p>
-
-                            <div className="flex justify-end gap-3">
-                                <button
-                                    onClick={() => setShowContractModal(false)}
-                                    className="px-4 py-2 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    onClick={handleGenerateContract}
-                                    disabled={generatingContract}
-                                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center gap-2"
-                                >
-                                    {generatingContract ? (
-                                        <>
-                                            <Loader2 className="w-4 h-4 animate-spin" />
-                                            Generating...
-                                        </>
-                                    ) : (
-                                        <>
-                                            <FileCheck className="w-4 h-4" />
-                                            Generate Contract
-                                        </>
-                                    )}
-                                </button>
+                                <div className="flex justify-end gap-3">
+                                    <button
+                                        onClick={() => setShowContractModal(false)}
+                                        className="px-4 py-2 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50"
+                                    >
+                                        Close
+                                    </button>
+                                    <button
+                                        onClick={handleGenerateContract}
+                                        disabled={generatingContract}
+                                        className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-orange-600 disabled:opacity-50 flex items-center gap-2 transition-colors shadow-sm"
+                                    >
+                                        {generatingContract ? (
+                                            <>
+                                                <Loader2 className="w-4 h-4 animate-spin" />
+                                                Processing...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <FileCheck className="w-4 h-4" />
+                                                {contractDoc ? "Regenerate Contract" : "Generate Contract"}
+                                            </>
+                                        )}
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
