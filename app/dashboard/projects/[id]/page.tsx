@@ -29,6 +29,7 @@ import {
     FileCheck,
     Send,
     History,
+    Briefcase,
 } from "lucide-react";
 import { toast } from "sonner";
 import { MoneyInput } from "@/components/ui/MoneyInput";
@@ -104,6 +105,18 @@ export default function AdminProjectDetailPage() {
     const [contractDoc, setContractDoc] = useState<any>(null);
     const [contractHistory, setContractHistory] = useState<any[]>([]);
 
+    // Milestone Templates
+    const [availableMilestones, setAvailableMilestones] = useState<any[]>([]);
+    const [milestoneTab, setMilestoneTab] = useState<"custom" | "template">("custom");
+
+    useEffect(() => {
+        if (showMilestoneModal && availableMilestones.length > 0) {
+            setMilestoneTab("template");
+        } else if (showMilestoneModal) {
+            setMilestoneTab("custom");
+        }
+    }, [showMilestoneModal, availableMilestones.length]);
+
     useEffect(() => {
         fetchProject();
     }, [params.id]);
@@ -162,6 +175,16 @@ export default function AdminProjectDetailPage() {
                 .order("due_date", { ascending: true });
 
             setMilestones(milestonesData || []);
+
+            // Fetch milestone templates for this service type
+            if (projectData?.service_type) {
+                const { data: temp } = await supabase
+                    .from("project_templates")
+                    .select("default_milestones")
+                    .eq("service_type", projectData.service_type)
+                    .single();
+                setAvailableMilestones(temp?.default_milestones || []);
+            }
         } catch (error) {
             console.error("Error fetching project:", error);
             toast.error("Failed to load project");
@@ -310,6 +333,81 @@ export default function AdminProjectDetailPage() {
             toast.success("Custom milestone added");
         } catch (error: any) {
             toast.error("Failed to add milestone", { description: error.message });
+        }
+    };
+
+    const handleAddTemplateMilestone = async (tm: any) => {
+        try {
+            const { data: { user } } = await supabase.auth.getUser();
+
+            const startDate = project?.start_date ? new Date(project.start_date) : new Date();
+            const dueDate = new Date(startDate);
+            if (!isNaN(dueDate.getTime())) {
+                dueDate.setDate(dueDate.getDate() + (tm.days_offset || 0));
+            }
+
+            const { data, error } = await supabase
+                .from("project_milestones")
+                .insert({
+                    project_id: params.id,
+                    milestone_name: tm.name,
+                    description: tm.description,
+                    due_date: dueDate.toISOString(),
+                    is_completed: false,
+                    is_custom: false,
+                    created_by: user?.id,
+                    sort_order: tm.order || 99,
+                })
+                .select()
+                .single();
+
+            if (error) throw error;
+
+            setMilestones([...milestones, data].sort((a, b) => new Date(a.due_date).getTime() - new Date(b.due_date).getTime()));
+            toast.success("Milestone added");
+        } catch (e: any) {
+            toast.error("Failed to add milestone");
+        }
+    };
+
+    const handleAddAllDefaults = async () => {
+        if (!availableMilestones.length) return;
+        const missing = availableMilestones.filter(tm => !milestones.some(m => m.milestone_name === tm.name));
+        if (!missing.length) {
+            toast.info("All defaults already added");
+            return;
+        }
+
+        try {
+            const { data: { user } } = await supabase.auth.getUser();
+
+            const startDate = project?.start_date ? new Date(project.start_date) : new Date();
+
+            const toInsert = missing.map(tm => {
+                const d = new Date(startDate);
+                if (!isNaN(d.getTime())) {
+                    d.setDate(d.getDate() + (tm.days_offset || 0));
+                }
+                return {
+                    project_id: params.id,
+                    milestone_name: tm.name,
+                    description: tm.description,
+                    due_date: d.toISOString(),
+                    is_completed: false,
+                    is_custom: false,
+                    created_by: user?.id,
+                    sort_order: tm.order || 99
+                };
+            });
+
+            const { data, error } = await supabase.from("project_milestones").insert(toInsert).select();
+            if (error) throw error;
+
+            setMilestones([...milestones, ...data].sort((a, b) => new Date(a.due_date).getTime() - new Date(b.due_date).getTime()));
+            toast.success(`${data.length} milestones added`);
+            setShowMilestoneModal(false);
+        } catch (e) {
+            toast.error("Failed to add milestones");
         }
     };
 
@@ -992,63 +1090,139 @@ export default function AdminProjectDetailPage() {
                     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                         <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
                             <h3 className="text-lg font-bold text-gray-900 mb-4">Add Milestone</h3>
-                            <div className="space-y-4">
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Milestone Name *
-                                    </label>
-                                    <input
-                                        type="text"
-                                        value={milestoneForm.milestone_name}
-                                        onChange={(e) =>
-                                            setMilestoneForm({ ...milestoneForm, milestone_name: e.target.value })
-                                        }
-                                        className="w-full border border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20"
-                                        placeholder="e.g., Initial Assessment Complete"
-                                    />
+
+                            {availableMilestones.length > 0 && (
+                                <div className="flex border-b border-gray-200 mb-4">
+                                    <button
+                                        className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${milestoneTab === "template"
+                                                ? "border-primary text-primary"
+                                                : "border-transparent text-gray-500 hover:text-gray-700"
+                                            }`}
+                                        onClick={() => setMilestoneTab("template")}
+                                    >
+                                        <div className="flex items-center gap-2">
+                                            <Briefcase className="w-4 h-4" />
+                                            Recommended
+                                        </div>
+                                    </button>
+                                    <button
+                                        className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${milestoneTab === "custom"
+                                                ? "border-primary text-primary"
+                                                : "border-transparent text-gray-500 hover:text-gray-700"
+                                            }`}
+                                        onClick={() => setMilestoneTab("custom")}
+                                    >
+                                        Custom
+                                    </button>
                                 </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Description
-                                    </label>
-                                    <textarea
-                                        value={milestoneForm.description}
-                                        onChange={(e) =>
-                                            setMilestoneForm({ ...milestoneForm, description: e.target.value })
-                                        }
-                                        className="w-full border border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20"
-                                        rows={3}
-                                        placeholder="Optional description..."
-                                    />
+                            )}
+
+                            {milestoneTab === "template" && availableMilestones.length > 0 ? (
+                                <div className="space-y-4">
+                                    <div className="space-y-2 max-h-[50vh] overflow-y-auto pr-2">
+                                        {availableMilestones.map((tm, idx) => {
+                                            const isAdded = milestones.some(m => m.milestone_name === tm.name);
+                                            return (
+                                                <div key={idx} className="flex items-start justify-between p-3 border border-gray-100 rounded-lg hover:bg-gray-50">
+                                                    <div>
+                                                        <p className="font-medium text-sm text-gray-900">{tm.name}</p>
+                                                        <div className="flex items-center gap-2 mt-0.5">
+                                                            <span className="text-xs text-gray-500">
+                                                                Due: {tm.days_offset > 0 ? `+${tm.days_offset} days` : "Start Date"}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <button
+                                                        disabled={isAdded}
+                                                        onClick={() => handleAddTemplateMilestone(tm)}
+                                                        className={`px-3 py-1 text-xs font-medium rounded transition-colors ${isAdded
+                                                                ? "bg-green-100 text-green-700"
+                                                                : "bg-primary text-white hover:bg-orange-600"
+                                                            }`}
+                                                    >
+                                                        {isAdded ? "Added" : "Add"}
+                                                    </button>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+
+                                    <div className="flex justify-between gap-3 pt-4 border-t border-gray-100">
+                                        <button
+                                            onClick={handleAddAllDefaults}
+                                            className="text-sm text-primary hover:underline font-medium"
+                                        >
+                                            Add All Missing
+                                        </button>
+                                        <button
+                                            onClick={() => setShowMilestoneModal(false)}
+                                            className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm font-medium"
+                                        >
+                                            Done
+                                        </button>
+                                    </div>
                                 </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Due Date *
-                                    </label>
-                                    <input
-                                        type="date"
-                                        value={milestoneForm.due_date}
-                                        onChange={(e) =>
-                                            setMilestoneForm({ ...milestoneForm, due_date: e.target.value })
-                                        }
-                                        className="w-full border border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20"
-                                    />
-                                </div>
-                            </div>
-                            <div className="flex justify-end gap-3 mt-6">
-                                <button
-                                    onClick={() => setShowMilestoneModal(false)}
-                                    className="px-4 py-2 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    onClick={handleAddMilestone}
-                                    className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-orange-600"
-                                >
-                                    Add Milestone
-                                </button>
-                            </div>
+                            ) : (
+                                <>
+                                    <div className="space-y-4">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Milestone Name *
+                                            </label>
+                                            <input
+                                                type="text"
+                                                value={milestoneForm.milestone_name}
+                                                onChange={(e) =>
+                                                    setMilestoneForm({ ...milestoneForm, milestone_name: e.target.value })
+                                                }
+                                                className="w-full border border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20"
+                                                placeholder="e.g., Initial Assessment Complete"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Description
+                                            </label>
+                                            <textarea
+                                                value={milestoneForm.description}
+                                                onChange={(e) =>
+                                                    setMilestoneForm({ ...milestoneForm, description: e.target.value })
+                                                }
+                                                className="w-full border border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20"
+                                                rows={3}
+                                                placeholder="Optional description..."
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Due Date *
+                                            </label>
+                                            <input
+                                                type="date"
+                                                value={milestoneForm.due_date}
+                                                onChange={(e) =>
+                                                    setMilestoneForm({ ...milestoneForm, due_date: e.target.value })
+                                                }
+                                                className="w-full border border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="flex justify-end gap-3 mt-6">
+                                        <button
+                                            onClick={() => setShowMilestoneModal(false)}
+                                            className="px-4 py-2 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50"
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            onClick={handleAddMilestone}
+                                            className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-orange-600"
+                                        >
+                                            Add Milestone
+                                        </button>
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </div>
                 </>
