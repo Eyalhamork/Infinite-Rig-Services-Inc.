@@ -13,6 +13,13 @@ import {
 import { createClient } from "@/lib/supabase/client";
 import { UserAvatar } from "@/components/ui/user-avatar";
 import { useSearchParams } from "next/navigation";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface Client {
   id: string;
@@ -37,6 +44,10 @@ interface Message {
   profiles?: {
     full_name: string;
   };
+  project_id?: string;
+  project?: {
+    project_name: string;
+  };
 }
 
 interface ConversationPreview {
@@ -44,6 +55,13 @@ interface ConversationPreview {
   lastMessage: Message | null;
   unreadCount: number;
 }
+
+interface Project {
+  id: string;
+  project_name: string;
+}
+
+const GENERAL_PROJECT_ID = "general";
 
 function MessagesContent() {
   const [conversations, setConversations] = useState<ConversationPreview[]>([]);
@@ -58,6 +76,9 @@ function MessagesContent() {
   const supabase = createClient();
   const searchParams = useSearchParams();
   const urlClientId = searchParams.get('client_id');
+
+  const [clientProjects, setClientProjects] = useState<Project[]>([]);
+  const [selectedProject, setSelectedProject] = useState<string>(GENERAL_PROJECT_ID);
 
   useEffect(() => {
     const init = async () => {
@@ -83,6 +104,7 @@ function MessagesContent() {
     if (selectedClient) {
       fetchMessages(selectedClient.id);
       markMessagesAsRead(selectedClient.id);
+      fetchClientProjects(selectedClient.id);
     }
   }, [selectedClient]);
 
@@ -183,7 +205,8 @@ function MessagesContent() {
         .from("project_messages")
         .select(`
           *,
-          profiles:sender_id (full_name)
+          profiles:sender_id (full_name),
+          project:projects(project_name)
         `)
         .eq("client_id", clientId)
         .order("created_at", { ascending: true });
@@ -192,6 +215,25 @@ function MessagesContent() {
       setMessages(data || []);
     } catch (error) {
       console.error("Error fetching messages:", error);
+    }
+  };
+
+  const fetchClientProjects = async (clientId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from("projects")
+        .select("id, project_name")
+        .eq("client_id", clientId)
+        .order("updated_at", { ascending: false });
+
+      if (error) throw error;
+      setClientProjects(data || []);
+
+      // Reset to General Project when switching clients
+      setSelectedProject(GENERAL_PROJECT_ID);
+
+    } catch (error) {
+      console.error("Error fetching projects:", error);
     }
   };
 
@@ -227,8 +269,9 @@ function MessagesContent() {
           sender_id: currentUserId,
           sender_type: "staff",
           message: newMessage.trim(),
+          project_id: selectedProject === GENERAL_PROJECT_ID ? null : selectedProject,
         })
-        .select(`*, profiles:sender_id (full_name)`)
+        .select(`*, profiles:sender_id (full_name), project:projects(project_name)`)
         .single();
 
       if (error) throw error;
@@ -426,6 +469,11 @@ function MessagesContent() {
                       >
                         {formatTime(msg.created_at)}
                       </p>
+                      {msg.project && (
+                        <p className="text-[10px] mt-1 text-gray-400 text-right italic">
+                          via {msg.project.project_name}
+                        </p>
+                      )}
                     </div>
                   </div>
                 ))
@@ -433,26 +481,45 @@ function MessagesContent() {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Message Input */}
             <form
               onSubmit={sendMessage}
               className="p-4 border-t border-gray-200 bg-white"
             >
-              <div className="flex items-center space-x-3">
-                <input
-                  type="text"
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  placeholder="Type a message..."
-                  className="flex-1 px-4 py-2.5 border border-gray-200 rounded-full focus:ring-2 focus:ring-[#FF6B35] focus:border-transparent outline-none"
-                />
-                <button
-                  type="submit"
-                  disabled={!newMessage.trim() || sendingMessage}
-                  className="p-3 bg-[#FF6B35] text-white rounded-full hover:bg-[#e55a2b] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <Send className="h-5 w-5" />
-                </button>
+              <div className="flex flex-col gap-3">
+                {/* Project Context Selector */}
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-gray-500 font-medium">Context:</span>
+                  <Select value={selectedProject} onValueChange={setSelectedProject}>
+                    <SelectTrigger className="w-[200px] h-8 text-xs bg-gray-50 border-gray-200">
+                      <SelectValue placeholder="Select context" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value={GENERAL_PROJECT_ID}>General Support</SelectItem>
+                      {clientProjects.map((p) => (
+                        <SelectItem key={p.id} value={p.id}>
+                          {p.project_name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="flex items-center space-x-3">
+                  <input
+                    type="text"
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    placeholder="Type a message..."
+                    className="flex-1 px-4 py-2.5 border border-gray-200 rounded-full focus:ring-2 focus:ring-[#FF6B35] focus:border-transparent outline-none"
+                  />
+                  <button
+                    type="submit"
+                    disabled={!newMessage.trim() || sendingMessage}
+                    className="p-3 bg-[#FF6B35] text-white rounded-full hover:bg-[#e55a2b] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <Send className="h-5 w-5" />
+                  </button>
+                </div>
               </div>
             </form>
           </>
