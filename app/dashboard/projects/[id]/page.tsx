@@ -30,6 +30,7 @@ import {
     Send,
 } from "lucide-react";
 import { toast } from "sonner";
+import { MoneyInput } from "@/components/ui/MoneyInput";
 
 const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -643,10 +644,9 @@ export default function AdminProjectDetailPage() {
                         <div>
                             <p className="text-xs text-gray-500 uppercase tracking-wider">Contract Value</p>
                             {isEditing ? (
-                                <input
-                                    type="number"
-                                    value={editForm.contract_value || ""}
-                                    onChange={(e) => setEditForm({ ...editForm, contract_value: parseFloat(e.target.value) })}
+                                <MoneyInput
+                                    value={editForm.contract_value?.toString() || ""}
+                                    onChange={(value) => setEditForm({ ...editForm, contract_value: value ? parseFloat(value) : 0 })}
                                     className="font-semibold text-gray-900 border border-gray-200 rounded px-2 py-1 w-full"
                                 />
                             ) : (

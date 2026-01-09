@@ -22,6 +22,7 @@ import {
     Briefcase
 } from "lucide-react";
 import { toast } from "sonner";
+import { MoneyInput } from "@/components/ui/MoneyInput";
 
 const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -495,12 +496,11 @@ export default function RequestsInboxPage() {
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
                                         <label className="block text-xs font-medium text-gray-700 mb-1">Contract Value ($) *</label>
-                                        <input
-                                            type="number"
+                                        <MoneyInput
                                             value={contractValue}
-                                            onChange={(e) => setContractValue(e.target.value)}
-                                            className="w-full p-2 border rounded-lg text-sm"
+                                            onChange={(val) => setContractValue(val)}
                                             placeholder="0.00"
+                                            className="w-full p-2 border rounded-lg text-sm"
                                         />
                                     </div>
                                     <div>

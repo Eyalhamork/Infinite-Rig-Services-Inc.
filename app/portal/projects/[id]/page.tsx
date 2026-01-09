@@ -45,6 +45,7 @@ interface Project {
   vessel_name: string;
   budget: number;
   notes: string;
+  contract_value?: number;
   tracking_code?: string;
 }
 
@@ -77,7 +78,7 @@ interface ProjectUpdate {
   profiles?: { full_name: string };
 }
 
-type TabType = "overview" | "documents" | "milestones" | "updates";
+type TabType = "overview" | "contract" | "documents" | "milestones" | "updates";
 
 export default function ProjectDetailPage() {
   const params = useParams();
@@ -166,6 +167,16 @@ export default function ProjectDetailPage() {
 
     fetchProject();
   }, [params.id, router]);
+
+  const formatCurrency = (amount?: number) => {
+    if (amount === undefined || amount === null) return "N/A";
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(amount);
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -266,6 +277,7 @@ export default function ProjectDetailPage() {
 
   const tabs = [
     { id: "overview" as TabType, label: "Overview", icon: Building2 },
+    { id: "contract" as TabType, label: "Contract", icon: DollarSign },
     { id: "documents" as TabType, label: "Documents", icon: FileText, count: documents.length },
     { id: "milestones" as TabType, label: "Milestones", icon: CheckCircle2, count: milestones.length },
     { id: "updates" as TabType, label: "Updates", icon: Activity, count: updates.length },
@@ -447,6 +459,75 @@ export default function ProjectDetailPage() {
             </div>
           )}
 
+          {/* Contracts Tab */}
+          {activeTab === "contract" && (
+            <div className="space-y-6">
+              <div className="bg-gradient-to-br from-gray-50 to-white border border-gray-100 rounded-2xl p-6">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                    <DollarSign className="w-6 h-6 text-green-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-navy-900">Contract Terms</h3>
+                    <p className="text-gray-500 text-sm">Summary of agreed service terms and value</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Contract Value</label>
+                      <p className="text-3xl font-bold text-navy-900 mt-1">
+                        {formatCurrency(project.contract_value || project.budget)}
+                      </p>
+                    </div>
+                    <div>
+                      <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Service Period</label>
+                      <p className="text-lg font-medium text-navy-800 mt-1 flex items-center gap-2">
+                        <Calendar className="w-4 h-4 text-gray-400" />
+                        {new Date(project.start_date).toLocaleDateString()}
+                        <span className="text-gray-400">-</span>
+                        {project.end_date ? new Date(project.end_date).toLocaleDateString() : 'Ongoing'}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4 border-t md:border-t-0 md:border-l border-gray-100 pt-4 md:pt-0 md:pl-8">
+                    <div>
+                      <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Service Scope</label>
+                      <p className="text-gray-700 mt-1 leading-relaxed">
+                        {project.description}
+                      </p>
+                    </div>
+                    <div>
+                      <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</label>
+                      <div className="mt-2">
+                        <span
+                          className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
+                            project.status
+                          )}`}
+                        >
+                          {getStatusIcon(project.status)}
+                          {project.status.replace("_", " ")}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end">
+                <button
+                  className="inline-flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+                  onClick={() => toast.info('Requesting full contract PDF copy from Admin...')}
+                >
+                  <FileText className="w-4 h-4" />
+                  Request Contract PDF
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Documents Tab */}
           {activeTab === "documents" && (
             <div>
@@ -604,39 +685,39 @@ export default function ProjectDetailPage() {
             </div>
           )}
         </div>
-      </div>
 
-      {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Link
-          href="/portal/messages"
-          className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex items-center gap-4"
-        >
-          <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-            <MessageSquare className="w-6 h-6 text-primary" />
-          </div>
-          <div>
-            <h3 className="font-semibold text-navy-900">Send Message</h3>
-            <p className="text-sm text-gray-500">
-              Contact the project team
-            </p>
-          </div>
-        </Link>
+        {/* Quick Actions */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Link
+            href="/portal/messages"
+            className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex items-center gap-4"
+          >
+            <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+              <MessageSquare className="w-6 h-6 text-primary" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-navy-900">Send Message</h3>
+              <p className="text-sm text-gray-500">
+                Contact the project team
+              </p>
+            </div>
+          </Link>
 
-        <Link
-          href="/portal/documents"
-          className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex items-center gap-4"
-        >
-          <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-            <FileText className="w-6 h-6 text-purple-600" />
-          </div>
-          <div>
-            <h3 className="font-semibold text-navy-900">Company Files</h3>
-            <p className="text-sm text-gray-500">
-              View shared company documents
-            </p>
-          </div>
-        </Link>
+          <Link
+            href="/portal/documents"
+            className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex items-center gap-4"
+          >
+            <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+              <FileText className="w-6 h-6 text-purple-600" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-navy-900">Company Files</h3>
+              <p className="text-sm text-gray-500">
+                View shared company documents
+              </p>
+            </div>
+          </Link>
+        </div>
       </div>
     </div>
   );
