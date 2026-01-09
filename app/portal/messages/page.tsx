@@ -41,6 +41,7 @@ export default function PortalMessagesPage() {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
+  const [clientId, setClientId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -61,6 +62,7 @@ export default function PortalMessagesPage() {
           .single();
 
         if (client) {
+          setClientId(client.id);
           // Fetch projects
           const { data: projectsData } = await supabase
             .from("projects")
@@ -138,14 +140,16 @@ export default function PortalMessagesPage() {
   }, [messages]);
 
   const handleSendMessage = async () => {
-    if (!newMessage.trim() || !selectedProject || !userId) return;
+    if (!newMessage.trim() || !selectedProject || !userId || !clientId) return;
 
     setSending(true);
 
     try {
       const { error } = await supabase.from("project_messages").insert({
         project_id: selectedProject,
+        client_id: clientId,
         sender_id: userId,
+        sender_type: "client",
         message: newMessage.trim(),
         is_read: false,
       });
