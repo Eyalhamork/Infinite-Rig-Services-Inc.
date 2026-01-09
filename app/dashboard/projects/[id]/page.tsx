@@ -59,6 +59,7 @@ interface Project {
     client: {
         id: string;
         company_name: string;
+        primary_contact_id?: string;
     };
 }
 
@@ -128,7 +129,7 @@ export default function AdminProjectDetailPage() {
                 .from("projects")
                 .select(`
           *,
-          client:clients(id, company_name)
+          client:clients(id, company_name, primary_contact_id)
         `)
                 .eq("id", params.id)
                 .single();
@@ -238,6 +239,18 @@ export default function AdminProjectDetailPage() {
                     created_by: user?.id,
                     is_client_visible: true
                 });
+
+                // Notify Client
+                if (project.client?.primary_contact_id) {
+                    await supabase.from("notifications").insert({
+                        user_id: project.client.primary_contact_id,
+                        type: "project",
+                        title: "Contract Updated",
+                        message: `Contract terms for project ${project.project_name} have been updated.`,
+                        link: `/portal/projects/${project.id}?tab=contract`
+                    });
+                }
+
                 // Refresh to get new history
                 fetchProject();
             } else {
@@ -333,6 +346,17 @@ export default function AdminProjectDetailPage() {
             setShowMilestoneModal(false);
             setMilestoneForm({ milestone_name: "", description: "", due_date: "" });
             toast.success("Custom milestone added");
+
+            // Notify Client
+            if (project?.client?.primary_contact_id) {
+                await supabase.from("notifications").insert({
+                    user_id: project.client.primary_contact_id,
+                    type: "project",
+                    title: "New Milestone Added",
+                    message: `A new milestone "${milestoneForm.milestone_name}" has been added to project ${project.project_name}.`,
+                    link: `/portal/projects/${project.id}?tab=milestones`
+                });
+            }
         } catch (error: any) {
             console.error(error);
             toast.error("Failed to add milestone", { description: error.message || "Unknown error" });
