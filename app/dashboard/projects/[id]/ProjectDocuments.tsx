@@ -82,7 +82,7 @@ export default function ProjectDocuments({ projectId }: ProjectDocumentsProps) {
                     granted_at,
                     internal_doc:internal_documents (
                         id, title, description, storage_path, file_type, file_size, category, created_at,
-                        profiles:uploaded_by(full_name)
+                        profiles:created_by(full_name)
                     )
                 `)
                 .eq("project_id", projectId);
