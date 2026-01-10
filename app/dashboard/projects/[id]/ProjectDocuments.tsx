@@ -44,10 +44,10 @@ interface ProjectDocumentsProps {
 export default function ProjectDocuments({ projectId }: ProjectDocumentsProps) {
     const [documents, setDocuments] = useState<ProjectDocument[]>([]);
     const [loading, setLoading] = useState(true);
+
+    // Upload State
     const [showUploadModal, setShowUploadModal] = useState(false);
     const [uploading, setUploading] = useState(false);
-
-    // Upload Form State
     const [uploadForm, setUploadForm] = useState({
         title: "",
         description: "",
@@ -55,28 +55,122 @@ export default function ProjectDocuments({ projectId }: ProjectDocumentsProps) {
         file: null as File | null,
     });
 
+    // Vault Selection State
+    const [showSelectModal, setShowSelectModal] = useState(false);
+    const [vaultDocuments, setVaultDocuments] = useState<any[]>([]);
+    const [attaching, setAttaching] = useState(false);
+
     useEffect(() => {
         fetchDocuments();
     }, [projectId]);
 
     const fetchDocuments = async () => {
         try {
-            const { data, error } = await supabase
+            // 1. Fetch direct uploads
+            const { data: uploads, error: uploadError } = await supabase
                 .from("project_documents")
-                .select(`
-          *,
-          profiles:uploaded_by(full_name)
-        `)
-                .eq("project_id", projectId)
-                .order("created_at", { ascending: false });
+                .select(`*, profiles:uploaded_by(full_name)`)
+                .eq("project_id", projectId);
 
-            if (error) throw error;
-            setDocuments(data || []);
+            if (uploadError) throw uploadError;
+
+            // 2. Fetch linked vault documents
+            const { data: links, error: linkError } = await supabase
+                .from("project_vault_access")
+                .select(`
+                    id,
+                    granted_at,
+                    internal_doc:internal_documents (
+                        id, title, description, storage_path, file_type, file_size, category, created_at,
+                        profiles:uploaded_by(full_name)
+                    )
+                `)
+                .eq("project_id", projectId);
+
+            if (linkError) throw linkError;
+
+            // Merge
+            const formattedUploads = (uploads || []).map(d => ({ ...d, source: 'upload' }));
+            const formattedLinks = (links || []).map(l => {
+                const doc = l.internal_doc as any;
+                const d = Array.isArray(doc) ? doc[0] : doc;
+                if (!d) return null;
+
+                return {
+                    id: d.id,
+                    link_id: l.id,
+                    title: d.title,
+                    description: d.description,
+                    storage_path: d.storage_path,
+                    file_type: d.file_type,
+                    file_size: d.file_size,
+                    is_client_visible: true,
+                    created_at: l.granted_at,
+                    profiles: d.profiles,
+                    source: 'vault'
+                };
+            }).filter(Boolean); // Remove nulls
+
+            setDocuments([...formattedUploads, ...(formattedLinks as any[])].sort((a, b) =>
+                new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+            ));
         } catch (error) {
             console.error("Error fetching documents:", error);
             toast.error("Failed to load documents");
         } finally {
             setLoading(false);
+        }
+    };
+
+    const fetchVaultDocuments = async () => {
+        const { data } = await supabase
+            .from("internal_documents")
+            .select("*")
+            .order("created_at", { ascending: false });
+        setVaultDocuments(data || []);
+    };
+
+    const handleAttach = async (docId: string) => {
+        setAttaching(true);
+        try {
+            const { error } = await supabase
+                .from("project_vault_access")
+                .insert({
+                    project_id: projectId,
+                    internal_doc_id: docId
+                });
+
+            if (error) throw error;
+
+            toast.success("Document attached from Vault");
+            setShowSelectModal(false);
+            fetchDocuments();
+
+            // Notify Client
+            // ... (Reuse notification logic if needed, but omitted for brevity as vault share notifications are handled elsewhere usually)
+            const { data: project } = await supabase
+                .from("projects")
+                .select("client:clients(primary_contact_id)")
+                .eq("id", projectId)
+                .single();
+
+            const client = project?.client as any;
+            const contactId = Array.isArray(client) ? client[0]?.primary_contact_id : client?.primary_contact_id;
+
+            if (contactId) {
+                await supabase.from("notifications").insert({
+                    user_id: contactId,
+                    type: "document",
+                    title: "New Document Shared",
+                    message: "A document from the company vault has been shared with this project.",
+                    link: `/portal/projects/${projectId}?tab=documents`
+                });
+            }
+
+        } catch (error: any) {
+            toast.error("Failed to attach document", { description: error.message });
+        } finally {
+            setAttaching(false);
         }
     };
 
@@ -128,14 +222,13 @@ export default function ProjectDocuments({ projectId }: ProjectDocumentsProps) {
 
             // 4. Notify Client (if visible)
             if (uploadForm.is_client_visible) {
-                // Get client ID from project
                 const { data: project } = await supabase
                     .from("projects")
                     .select("client:clients(primary_contact_id)")
                     .eq("id", projectId)
                     .single();
 
-                const client = project?.client as any; // Cast to bypass strict array check if it occurs
+                const client = project?.client as any;
                 const contactId = Array.isArray(client) ? client[0]?.primary_contact_id : client?.primary_contact_id;
 
                 if (contactId) {
@@ -166,36 +259,43 @@ export default function ProjectDocuments({ projectId }: ProjectDocumentsProps) {
         }
     };
 
-    const handleDelete = async (doc: ProjectDocument) => {
-        if (!confirm("Are you sure you want to delete this document?")) return;
+    const handleDelete = async (doc: any) => {
+        if (!confirm("Are you sure you want to delete/remove this document?")) return;
 
         try {
-            // 1. Delete from Storage
-            const { error: storageError } = await supabase.storage
-                .from("projects")
-                .remove([doc.storage_path]);
+            if (doc.source === 'vault' && doc.link_id) {
+                // Update: 'vault' source means we just remove the link, NOT the file
+                const { error } = await supabase.from("project_vault_access").delete().eq("id", doc.link_id);
+                if (error) throw error;
+                toast.success("Document removed from project");
+            } else {
+                // Direct upload: delete file and record
+                const { error: storageError } = await supabase.storage
+                    .from("projects")
+                    .remove([doc.storage_path]);
 
-            if (storageError) console.warn("Storage deletion warning:", storageError);
+                if (storageError) console.warn("Storage deletion warning:", storageError);
 
-            // 2. Delete from DB
-            const { error: dbError } = await supabase
-                .from("project_documents")
-                .delete()
-                .eq("id", doc.id);
+                const { error: dbError } = await supabase
+                    .from("project_documents")
+                    .delete()
+                    .eq("id", doc.id);
 
-            if (dbError) throw dbError;
+                if (dbError) throw dbError;
+                toast.success("Document deleted");
+            }
 
-            toast.success("Document deleted");
-            setDocuments(documents.filter(d => d.id !== doc.id));
+            fetchDocuments(); // Refresh whole list
         } catch (error: any) {
             toast.error("Delete failed", { description: error.message });
         }
     };
 
-    const handleDownload = async (doc: ProjectDocument) => {
+    const handleDownload = async (doc: any) => {
         try {
+            const bucket = doc.source === 'vault' ? 'vault' : 'projects';
             const { data, error } = await supabase.storage
-                .from("projects")
+                .from(bucket)
                 .createSignedUrl(doc.storage_path, 3600);
 
             if (error) throw error;
@@ -229,13 +329,25 @@ export default function ProjectDocuments({ projectId }: ProjectDocumentsProps) {
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <h3 className="text-lg font-semibold text-gray-900">Project Documents</h3>
-                <button
-                    onClick={() => setShowUploadModal(true)}
-                    className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-orange-600 transition-colors shadow-sm"
-                >
-                    <Upload className="w-4 h-4" />
-                    Upload Document
-                </button>
+                <div className="flex gap-2">
+                    <button
+                        onClick={() => {
+                            setShowSelectModal(true);
+                            fetchVaultDocuments();
+                        }}
+                        className="flex items-center gap-2 px-4 py-2 border border-blue-200 text-blue-700 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors shadow-sm"
+                    >
+                        <Globe className="w-4 h-4" />
+                        Select from Vault
+                    </button>
+                    <button
+                        onClick={() => setShowUploadModal(true)}
+                        className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-orange-600 transition-colors shadow-sm"
+                    >
+                        <Upload className="w-4 h-4" />
+                        Upload Document
+                    </button>
+                </div>
             </div>
 
             {documents.length === 0 ? (
@@ -245,9 +357,9 @@ export default function ProjectDocuments({ projectId }: ProjectDocumentsProps) {
                 </div>
             ) : (
                 <div className="grid grid-cols-1 gap-4">
-                    {documents.map((doc) => (
+                    {documents.map((doc: any) => (
                         <div
-                            key={doc.id}
+                            key={`${doc.source}-${doc.id}`}
                             className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-xl hover:shadow-sm transition-shadow"
                         >
                             <div className="flex items-center gap-4">
@@ -255,7 +367,12 @@ export default function ProjectDocuments({ projectId }: ProjectDocumentsProps) {
                                     {getFileIcon(doc.file_type)}
                                 </div>
                                 <div>
-                                    <h4 className="font-medium text-gray-900">{doc.title}</h4>
+                                    <div className="flex items-center gap-2">
+                                        <h4 className="font-medium text-gray-900">{doc.title}</h4>
+                                        {doc.source === 'vault' && (
+                                            <span className="px-1.5 py-0.5 bg-blue-100 text-blue-700 text-[10px] uppercase font-bold rounded">Vault Linked</span>
+                                        )}
+                                    </div>
                                     <div className="flex items-center gap-3 text-sm text-gray-500 mt-0.5">
                                         <span>{formatFileSize(doc.file_size)}</span>
                                         <span>•</span>
@@ -279,9 +396,9 @@ export default function ProjectDocuments({ projectId }: ProjectDocumentsProps) {
                                 <button
                                     onClick={() => handleDelete(doc)}
                                     className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                                    title="Delete"
+                                    title={doc.source === 'vault' ? "Remove Link" : "Delete File"}
                                 >
-                                    <Trash2 className="w-4 h-4" />
+                                    {doc.source === 'vault' ? <X className="w-4 h-4" /> : <Trash2 className="w-4 h-4" />}
                                 </button>
                             </div>
                         </div>
@@ -370,6 +487,62 @@ export default function ProjectDocuments({ projectId }: ProjectDocumentsProps) {
                     </div>
                 </div>
             )}
+
+            {/* Vault Select Modal */}
+            {showSelectModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+                    <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full p-6 animate-in fade-in zoom-in duration-200 flex flex-col max-h-[80vh]">
+                        <div className="flex items-center justify-between mb-6 shrink-0">
+                            <h3 className="text-xl font-bold text-gray-900">Select Document from Vault</h3>
+                            <button
+                                onClick={() => setShowSelectModal(false)}
+                                className="text-gray-400 hover:text-gray-600"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+
+                        <div className="overflow-y-auto flex-1 pr-2">
+                            {vaultDocuments.length === 0 ? (
+                                <p className="text-center text-gray-500 py-8">No documents found in Vault.</p>
+                            ) : (
+                                <div className="space-y-3">
+                                    {vaultDocuments.map((vDoc) => {
+                                        // Check if already linked
+                                        const isLinked = documents.some(d => (d as any).source === 'vault' && d.id === vDoc.id);
+
+                                        return (
+                                            <div key={vDoc.id} className="flex items-center justify-between p-3 border border-gray-100 rounded-lg hover:bg-gray-50">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-8 h-8 bg-blue-50 rounded flex items-center justify-center">
+                                                        <FileText className="w-4 h-4 text-blue-500" />
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-medium text-gray-900 line-clamp-1">{vDoc.title}</p>
+                                                        <p className="text-xs text-gray-500">{new Date(vDoc.created_at).toLocaleDateString()}</p>
+                                                    </div>
+                                                </div>
+                                                {isLinked ? (
+                                                    <span className="text-xs font-semibold text-green-600 bg-green-100 px-2 py-1 rounded">Linked</span>
+                                                ) : (
+                                                    <button
+                                                        onClick={() => handleAttach(vDoc.id)}
+                                                        disabled={attaching}
+                                                        className="px-3 py-1.5 text-xs font-medium bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+                                                    >
+                                                        Select
+                                                    </button>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
         </div>
     );
 }

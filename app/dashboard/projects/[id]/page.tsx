@@ -94,7 +94,7 @@ export default function AdminProjectDetailPage() {
     const [editForm, setEditForm] = useState<Partial<Project>>({});
 
     // UI State
-    const [activeTab, setActiveTab] = useState("milestones");
+    const [activeTab, setActiveTab] = useState("documents");
 
     // Milestone modal state
     const [showMilestoneModal, setShowMilestoneModal] = useState(false);
@@ -993,19 +993,6 @@ export default function AdminProjectDetailPage() {
             <div className="border-b border-gray-200 mb-6">
                 <nav className="-mb-px flex space-x-8" aria-label="Tabs">
                     <button
-                        onClick={() => setActiveTab("milestones")}
-                        className={`
-                            whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2
-                            ${activeTab === "milestones"
-                                ? "border-primary text-primary"
-                                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                            }
-                        `}
-                    >
-                        <TrendingUp className="w-4 h-4" />
-                        Milestones
-                    </button>
-                    <button
                         onClick={() => setActiveTab("documents")}
                         className={`
                             whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2
@@ -1018,6 +1005,19 @@ export default function AdminProjectDetailPage() {
                         <FileText className="w-4 h-4" />
                         Documents
                         <span className="ml-1 px-1.5 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-bold">New</span>
+                    </button>
+                    <button
+                        onClick={() => setActiveTab("milestones")}
+                        className={`
+                            whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2
+                            ${activeTab === "milestones"
+                                ? "border-primary text-primary"
+                                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                            }
+                        `}
+                    >
+                        <TrendingUp className="w-4 h-4" />
+                        Milestones
                     </button>
                     <button
                         onClick={() => setActiveTab("contracts")}
