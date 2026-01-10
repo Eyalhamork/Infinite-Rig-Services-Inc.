@@ -1017,6 +1017,7 @@ export default function AdminProjectDetailPage() {
                     >
                         <FileText className="w-4 h-4" />
                         Documents
+                        <span className="ml-1 px-1.5 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-bold">New</span>
                     </button>
                     <button
                         onClick={() => setActiveTab("contracts")}
