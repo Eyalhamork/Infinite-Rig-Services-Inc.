@@ -335,7 +335,7 @@ export default function ProjectDocuments({ projectId }: ProjectDocumentsProps) {
                             setShowSelectModal(true);
                             fetchVaultDocuments();
                         }}
-                        className="flex items-center gap-2 px-4 py-2 border border-blue-200 text-blue-700 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors shadow-sm"
+                        className="flex items-center gap-2 px-4 py-2 border border-orange-200 text-orange-700 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors shadow-sm"
                     >
                         <Globe className="w-4 h-4" />
                         Select from Vault
