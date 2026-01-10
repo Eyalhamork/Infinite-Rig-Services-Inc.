@@ -867,7 +867,6 @@ export default function AdminProjectDetailPage() {
                     </div>
                 </div>
 
-                {/* Progress Bar */}
                 <div className="p-6 border-b border-gray-100">
                     <div className="flex items-center justify-between mb-2">
                         <span className="text-sm font-medium text-gray-700">Project Progress</span>
@@ -875,7 +874,7 @@ export default function AdminProjectDetailPage() {
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
                         <div
-                            className="bg-gradient-to-r from-primary to-orange-400 h-2 rounded-full transition-all duration-500"
+                            className="bg-gradient-to-r from-primary-500 to-primary-700 h-2 rounded-full transition-all duration-500"
                             style={{ width: `${calculateProgress()}%` }}
                         ></div>
                     </div>

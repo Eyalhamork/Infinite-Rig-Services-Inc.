@@ -297,7 +297,7 @@ export default function ProjectDetailPage() {
 
       {/* Project Header */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="bg-gradient-to-r from-navy-900 to-navy-800 p-6 text-white">
+        <div className="bg-gradient-to-r from-primary-500 to-primary-700 p-6 text-white">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-3 mb-2">
@@ -358,7 +358,7 @@ export default function ProjectDetailPage() {
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div
-              className="bg-gradient-to-r from-primary to-gold h-2 rounded-full transition-all duration-500"
+              className="bg-gradient-to-r from-primary-500 to-primary-700 h-2 rounded-full transition-all duration-500"
               style={{ width: `${calculateProgress()}%` }}
             ></div>
           </div>
@@ -615,10 +615,10 @@ export default function ProjectDetailPage() {
                           )}
                           {milestone.status && milestone.status !== 'pending' && (
                             <span className={`px-2 py-0.5 text-xs rounded-full uppercase tracking-wider font-bold ${milestone.status === 'completed' ? 'bg-green-100 text-green-700' :
-                                milestone.status === 'in_progress' ? 'bg-blue-100 text-blue-700' :
-                                  milestone.status === 'skipped' ? 'bg-gray-100 text-gray-500 line-through' :
-                                    milestone.status === 'cancelled' ? 'bg-red-100 text-red-700' :
-                                      'bg-gray-100 text-gray-600'
+                              milestone.status === 'in_progress' ? 'bg-blue-100 text-blue-700' :
+                                milestone.status === 'skipped' ? 'bg-gray-100 text-gray-500 line-through' :
+                                  milestone.status === 'cancelled' ? 'bg-red-100 text-red-700' :
+                                    'bg-gray-100 text-gray-600'
                               }`}>
                               {milestone.status.replace('_', ' ')}
                             </span>

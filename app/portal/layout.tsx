@@ -259,7 +259,7 @@ export default function PortalLayout({
           isCollapsed ? "justify-center px-0" : "justify-between"
         )}>
           <Link href="/portal" className={cn("flex items-center space-x-3", isCollapsed ? "hidden" : "flex")}>
-            <div className="w-10 h-10 bg-gradient-to-br from-primary to-gold rounded-xl flex items-center justify-center shadow-lg shrink-0">
+            <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center shadow-lg shrink-0">
               <Building2 className="w-6 h-6 text-white" />
             </div>
             {!isCollapsed && (
