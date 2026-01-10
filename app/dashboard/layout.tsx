@@ -317,7 +317,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed top-0 left-0 z-50 h-full bg-[#1A1A2E] text-white transition-all duration-300 ease-in-out",
+          "fixed top-0 left-0 z-50 h-full bg-navy-900 text-white transition-all duration-300 ease-in-out",
           sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
           isCollapsed ? "w-20" : "w-64"
         )}
@@ -407,7 +407,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         </TooltipProvider>
 
         {/* Bottom section */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/10 bg-[#1A1A2E]">
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/10 bg-navy-900">
           {/* Back to Main Site */}
           {!isCollapsed ? (
             <Link

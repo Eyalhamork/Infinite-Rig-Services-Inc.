@@ -204,21 +204,21 @@ export default function PortalDashboard() {
 
   return (
     <div className="space-y-8 pb-8">
-      {/* Premium Welcome Header with Orange Theme */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-primary-500 to-primary-700 p-8 md:p-12 text-white shadow-2xl">
+      {/* Premium Welcome Header with Navy Theme */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-navy-900 to-navy-800 p-8 md:p-12 text-white shadow-2xl">
         <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold mb-3 tracking-tight">
               Client Portal
             </h1>
-            <p className="text-orange-50/90 max-w-xl text-lg font-light">
+            <p className="text-navy-100/90 max-w-xl text-lg font-light">
               Welcome back. Track your active projects, review documents, and connect with our team.
             </p>
           </div>
           <div className="hidden md:block">
             <Link
               href="/quote"
-              className="inline-flex items-center px-6 py-3 bg-white text-primary-600 rounded-xl font-bold shadow-lg hover:bg-orange-50 hover:-translate-y-0.5 transition-all"
+              className="inline-flex items-center px-6 py-3 bg-primary-600 text-white rounded-xl font-bold shadow-lg shadow-primary-600/20 hover:bg-primary-700 hover:-translate-y-0.5 transition-all"
             >
               <Calendar className="w-5 h-5 mr-2" />
               New Request
@@ -227,9 +227,9 @@ export default function PortalDashboard() {
         </div>
 
         {/* Abstract shapes */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-[100px] -mr-20 -mt-20 pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-orange-400/20 rounded-full blur-[80px] -ml-20 -mb-20 pointer-events-none" />
-        <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-[0.05] pointer-events-none" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-[100px] -mr-20 -mt-20 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-blue-500/10 rounded-full blur-[80px] -ml-20 -mb-20 pointer-events-none" />
+        <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-[0.03] pointer-events-none" />
       </div>
 
       {/* Stats Grid */}
@@ -395,28 +395,28 @@ export default function PortalDashboard() {
 
               <Link
                 href="/portal/messages"
-                className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-2xl hover:bg-gray-50 transition-colors group"
+                className="flex items-center justify-between p-4 bg-primary-50 border border-primary-100 rounded-2xl hover:bg-primary-100 transition-all group"
               >
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600">
+                  <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-primary-600">
                     <MessageSquare className="w-5 h-5" />
                   </div>
-                  <span className="font-medium text-navy-900">Send Message</span>
+                  <span className="font-bold text-primary-900">Send Message</span>
                 </div>
-                <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-emerald-500 transition-colors" />
+                <ArrowRight className="w-4 h-4 text-primary-400 group-hover:text-primary-600 transition-colors" />
               </Link>
 
               <Link
                 href="/portal/documents"
-                className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-2xl hover:bg-gray-50 transition-colors group"
+                className="flex items-center justify-between p-4 bg-primary-50 border border-primary-100 rounded-2xl hover:bg-primary-100 transition-all group"
               >
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-purple-50 rounded-xl flex items-center justify-center text-purple-600">
+                  <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-primary-600">
                     <FileText className="w-5 h-5" />
                   </div>
-                  <span className="font-medium text-navy-900">View Documents</span>
+                  <span className="font-bold text-primary-900">View Documents</span>
                 </div>
-                <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-purple-500 transition-colors" />
+                <ArrowRight className="w-4 h-4 text-primary-400 group-hover:text-primary-600 transition-colors" />
               </Link>
             </div>
           </div>

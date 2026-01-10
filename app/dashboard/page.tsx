@@ -372,13 +372,13 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6 pb-8">
       {/* Premium Welcome Banner - Compacted */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#0F172A] via-[#1E293B] to-[#334155] p-6 text-white shadow-xl">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-navy-900 via-navy-800 to-navy-900 p-6 text-white shadow-xl">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h2 className="text-2xl md:text-3xl font-bold mb-1 tracking-tight">
               Dashboard Overview
             </h2>
-            <p className="text-slate-300 text-base max-w-xl font-light">
+            <p className="text-navy-100 text-base max-w-xl font-light">
               Welcome back. Here's a comprehensive look at your platform's performance.
             </p>
           </div>
@@ -497,7 +497,7 @@ export default function DashboardPage() {
           <div className="mt-6 pt-6 border-t border-gray-100">
             <Link
               href="/dashboard/notifications"
-              className="flex items-center justify-center text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
+              className="flex items-center justify-center text-sm font-bold text-primary-600 hover:text-primary-700 transition-colors"
             >
               View all activity <ArrowRight className="ml-1 h-4 w-4" />
             </Link>
@@ -526,41 +526,41 @@ export default function DashboardPage() {
 
             <Link
               href="/dashboard/documents/upload"
-              className="flex items-center justify-between p-3.5 bg-white border border-gray-100 rounded-2xl hover:bg-gray-50 hover:border-blue-100 transition-all group"
+              className="flex items-center justify-between p-3.5 bg-primary-50 border border-primary-100 rounded-2xl hover:bg-primary-100 transition-all group"
             >
               <div className="flex items-center space-x-3">
-                <div className="w-9 h-9 bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-600">
+                <div className="w-9 h-9 bg-white rounded-xl flex items-center justify-center text-primary-600">
                   <FileText className="h-4 w-4" />
                 </div>
-                <span className="font-medium text-gray-900 text-sm">Upload Document</span>
+                <span className="font-bold text-primary-900 text-sm">Upload Document</span>
               </div>
-              <ArrowRight className="h-3 w-3 text-gray-300 group-hover:text-emerald-500 transform group-hover:translate-x-1 transition-all" />
+              <ArrowRight className="h-3 w-3 text-primary-400 group-hover:text-primary-600 transform group-hover:translate-x-1 transition-all" />
             </Link>
 
             <Link
               href="/dashboard/news/new"
-              className="flex items-center justify-between p-3.5 bg-white border border-gray-100 rounded-2xl hover:bg-gray-50 hover:border-blue-100 transition-all group"
+              className="flex items-center justify-between p-3.5 bg-primary-50 border border-primary-100 rounded-2xl hover:bg-primary-100 transition-all group"
             >
               <div className="flex items-center space-x-3">
-                <div className="w-9 h-9 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600">
+                <div className="w-9 h-9 bg-white rounded-xl flex items-center justify-center text-primary-600">
                   <TrendingUp className="h-4 w-4" />
                 </div>
-                <span className="font-medium text-gray-900 text-sm">Create News</span>
+                <span className="font-bold text-primary-900 text-sm">Create News</span>
               </div>
-              <ArrowRight className="h-3 w-3 text-gray-300 group-hover:text-blue-500 transform group-hover:translate-x-1 transition-all" />
+              <ArrowRight className="h-3 w-3 text-primary-400 group-hover:text-primary-600 transform group-hover:translate-x-1 transition-all" />
             </Link>
 
             <Link
               href="/dashboard/employees/new"
-              className="flex items-center justify-between p-3.5 bg-white border border-gray-100 rounded-2xl hover:bg-gray-50 hover:border-purple-100 transition-all group"
+              className="flex items-center justify-between p-3.5 bg-primary-50 border border-primary-100 rounded-2xl hover:bg-primary-100 transition-all group"
             >
               <div className="flex items-center space-x-3">
-                <div className="w-9 h-9 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600">
+                <div className="w-9 h-9 bg-white rounded-xl flex items-center justify-center text-primary-600">
                   <Users className="h-4 w-4" />
                 </div>
-                <span className="font-medium text-gray-900 text-sm">Add Employee</span>
+                <span className="font-bold text-primary-900 text-sm">Add Employee</span>
               </div>
-              <ArrowRight className="h-3 w-3 text-gray-300 group-hover:text-purple-500 transform group-hover:translate-x-1 transition-all" />
+              <ArrowRight className="h-3 w-3 text-primary-400 group-hover:text-primary-600 transform group-hover:translate-x-1 transition-all" />
             </Link>
           </div>
 
