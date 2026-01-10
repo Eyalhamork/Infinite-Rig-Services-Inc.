@@ -823,7 +823,7 @@ export default function AdminProjectDetailPage() {
 
             {/* Project Header */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="bg-gradient-to-r from-primary to-orange-600 p-6 text-white">
+                <div className="bg-gradient-to-r from-primary-500 to-primary-700 p-6 text-white">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div>
                             {isEditing ? (
