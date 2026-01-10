@@ -33,6 +33,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { MoneyInput } from "@/components/ui/MoneyInput";
+import ProjectDocuments from "./ProjectDocuments";
 
 const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -91,6 +92,9 @@ export default function AdminProjectDetailPage() {
     const [saving, setSaving] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [editForm, setEditForm] = useState<Partial<Project>>({});
+
+    // UI State
+    const [activeTab, setActiveTab] = useState("milestones");
 
     // Milestone modal state
     const [showMilestoneModal, setShowMilestoneModal] = useState(false);
@@ -985,169 +989,225 @@ export default function AdminProjectDetailPage() {
                 )}
             </div>
 
-            {/* Contract Management */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 mb-6">
-                <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-                    <h2 className="text-lg font-bold text-gray-900">Contract Management</h2>
-                    {contractDoc && (
-                        <div className="flex gap-2">
-                            <button
-                                onClick={() => setShowContractModal(true)}
-                                className="inline-flex items-center gap-2 px-3 py-1.5 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium"
-                            >
-                                <ExternalLink className="w-4 h-4" />
-                                View Details
-                            </button>
-                            <button
-                                onClick={handleDeleteContract}
-                                className="inline-flex items-center gap-2 px-3 py-1.5 bg-red-50 text-red-600 border border-red-100 rounded-lg hover:bg-red-100 text-sm font-medium"
-                            >
-                                <Trash2 className="w-4 h-4" />
-                                Delete
-                            </button>
-                        </div>
-                    )}
-                </div>
+            {/* Tabs */}
+            <div className="border-b border-gray-200 mb-6">
+                <nav className="-mb-px flex space-x-8" aria-label="Tabs">
+                    <button
+                        onClick={() => setActiveTab("milestones")}
+                        className={`
+                            whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2
+                            ${activeTab === "milestones"
+                                ? "border-primary text-primary"
+                                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                            }
+                        `}
+                    >
+                        <TrendingUp className="w-4 h-4" />
+                        Milestones
+                    </button>
+                    <button
+                        onClick={() => setActiveTab("documents")}
+                        className={`
+                            whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2
+                            ${activeTab === "documents"
+                                ? "border-primary text-primary"
+                                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                            }
+                        `}
+                    >
+                        <FileText className="w-4 h-4" />
+                        Documents
+                    </button>
+                    <button
+                        onClick={() => setActiveTab("contracts")}
+                        className={`
+                            whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2
+                            ${activeTab === "contracts"
+                                ? "border-primary text-primary"
+                                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                            }
+                        `}
+                    >
+                        <Briefcase className="w-4 h-4" />
+                        Contracts
+                    </button>
+                </nav>
+            </div>
 
-                <div className="p-6">
-                    {!contractDoc ? (
-                        <div className="text-center py-6">
-                            <FileCheck className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                            <p className="text-gray-500 mb-4">No formal contract generated yet.</p>
-                            <button
-                                onClick={() => setShowContractModal(true)}
-                                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-orange-600 text-sm font-medium"
-                            >
-                                Generate Contract
-                            </button>
-                        </div>
-                    ) : (
-                        <div>
-                            <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg mb-6">
-                                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <FileCheck className="w-5 h-5 text-green-600" />
+            {/* Contract Management Tab */}
+            {activeTab === "contracts" && (
+                <div className="bg-white rounded-xl shadow-sm border border-gray-100 mb-6 animate-in fade-in duration-200">
+                    <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+                        <h2 className="text-lg font-bold text-gray-900">Contract Management</h2>
+                        {contractDoc && (
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={() => setShowContractModal(true)}
+                                    className="inline-flex items-center gap-2 px-3 py-1.5 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium"
+                                >
+                                    <ExternalLink className="w-4 h-4" />
+                                    View Details
+                                </button>
+                                <button
+                                    onClick={handleDeleteContract}
+                                    className="inline-flex items-center gap-2 px-3 py-1.5 bg-red-50 text-red-600 border border-red-100 rounded-lg hover:bg-red-100 text-sm font-medium"
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                    Delete
+                                </button>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="p-6">
+                        {!contractDoc ? (
+                            <div className="text-center py-6">
+                                <FileCheck className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                                <p className="text-gray-500 mb-4">No formal contract generated yet.</p>
+                                <button
+                                    onClick={() => setShowContractModal(true)}
+                                    className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-orange-600 text-sm font-medium"
+                                >
+                                    Generate Contract
+                                </button>
+                            </div>
+                        ) : (
+                            <div>
+                                <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg mb-6">
+                                    <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <FileCheck className="w-5 h-5 text-green-600" />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-semibold text-gray-900">{contractDoc.title}</h3>
+                                        <p className="text-sm text-gray-500">
+                                            Generated on {new Date(contractDoc.created_at).toLocaleDateString()}
+                                        </p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h3 className="font-semibold text-gray-900">{contractDoc.title}</h3>
-                                    <p className="text-sm text-gray-500">
-                                        Generated on {new Date(contractDoc.created_at).toLocaleDateString()}
-                                    </p>
+
+                                <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                                    <History className="w-4 h-4" />
+                                    Contract History
+                                </h3>
+                                <div className="space-y-4 max-h-60 overflow-y-auto pr-2">
+                                    {contractHistory.length > 0 ? (
+                                        contractHistory.map((update) => (
+                                            <div key={update.id} className="relative pl-6 border-l-2 border-gray-200 pb-4 last:border-0 last:pb-0">
+                                                <div className="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-gray-400"></div>
+                                                <p className="text-sm font-medium text-gray-900">{update.title}</p>
+                                                <p className="text-xs text-gray-500 mt-0.5">{update.description}</p>
+                                                <div className="text-xs text-gray-400 mt-1">
+                                                    {new Date(update.created_at).toLocaleString()} by {update.profiles?.full_name || 'System'}
+                                                </div>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p className="text-sm text-gray-500 italic">No updates recorded.</p>
+                                    )}
                                 </div>
                             </div>
+                        )}
+                    </div>
+                </div>
+            )}
 
-                            <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                                <History className="w-4 h-4" />
-                                Contract History
-                            </h3>
-                            <div className="space-y-4 max-h-60 overflow-y-auto pr-2">
-                                {contractHistory.length > 0 ? (
-                                    contractHistory.map((update) => (
-                                        <div key={update.id} className="relative pl-6 border-l-2 border-gray-200 pb-4 last:border-0 last:pb-0">
-                                            <div className="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-gray-400"></div>
-                                            <p className="text-sm font-medium text-gray-900">{update.title}</p>
-                                            <p className="text-xs text-gray-500 mt-0.5">{update.description}</p>
-                                            <div className="text-xs text-gray-400 mt-1">
-                                                {new Date(update.created_at).toLocaleString()} by {update.profiles?.full_name || 'System'}
+            {/* Documents Tab */}
+            {activeTab === "documents" && (
+                <div className="animate-in fade-in duration-200">
+                    <ProjectDocuments projectId={project.id} />
+                </div>
+            )}
+
+            {/* Milestones Tab */}
+            {activeTab === "milestones" && (
+                <div className="bg-white rounded-xl shadow-sm border border-gray-100 animate-in fade-in duration-200">
+                    <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+                        <h2 className="text-lg font-bold text-gray-900">Project Milestones</h2>
+                        <button
+                            onClick={() => setShowMilestoneModal(true)}
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-orange-600 text-sm font-medium"
+                        >
+                            <Plus className="w-4 h-4" />
+                            Add Milestone
+                        </button>
+                    </div>
+
+                    {milestones.length > 0 ? (
+                        <div className="divide-y divide-gray-100">
+                            {milestones.map((milestone, index) => (
+                                <div key={milestone.id} className="p-6 flex items-start gap-4 hover:bg-gray-50">
+                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-sm ${milestone.is_completed ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
+                                        }`}>
+                                        {milestone.is_completed ? <CheckCircle2 className="w-5 h-5" /> : index + 1}
+                                    </div>
+                                    <div className="flex-1">
+                                        <h3
+                                            className={`font-semibold ${milestone.is_completed ? "text-green-700 line-through" : "text-gray-900"
+                                                }`}
+                                        >
+                                            {milestone.milestone_name}
+                                        </h3>
+                                        {milestone.description && (
+                                            <p className="text-gray-500 text-sm mt-1">{milestone.description}</p>
+                                        )}
+                                        <div className="flex items-center gap-4 mt-2 text-sm">
+                                            {milestone.due_date && (
+                                                <span className="text-gray-500 flex items-center gap-1">
+                                                    <Calendar className="w-4 h-4" />
+                                                    Due: {new Date(milestone.due_date).toLocaleDateString()}
+                                                </span>
+                                            )}
+                                            {milestone.completion_date && (
+                                                <span className="text-green-600 flex items-center gap-1">
+                                                    <CheckCircle2 className="w-4 h-4" />
+                                                    Completed: {new Date(milestone.completion_date).toLocaleDateString()}
+                                                </span>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <div className="relative">
+                                            <select
+                                                value={milestone.status || (milestone.is_completed ? 'completed' : 'pending')}
+                                                onChange={(e) => updateMilestoneStatus(milestone, e.target.value)}
+                                                className={`
+                                            appearance-none pr-8 text-xs font-bold uppercase tracking-wider py-1.5 px-3 rounded-lg border-0 cursor-pointer focus:ring-2 focus:ring-primary/20 outline-none transition-colors
+                                            ${(milestone.status === 'completed' || milestone.is_completed) ? 'bg-green-100 text-green-700 hover:bg-green-200' : ''}
+                                            ${milestone.status === 'in_progress' ? 'bg-blue-100 text-blue-700 hover:bg-blue-200' : ''}
+                                            ${(!milestone.status || milestone.status === 'pending') ? 'bg-gray-100 text-gray-700 hover:bg-gray-200' : ''}
+                                            ${milestone.status === 'skipped' ? 'bg-gray-100 text-gray-400 line-through hover:bg-gray-200' : ''}
+                                            ${milestone.status === 'cancelled' ? 'bg-red-50 text-red-600 hover:bg-red-100' : ''}
+                                        `}
+                                            >
+                                                <option value="pending">Pending</option>
+                                                <option value="in_progress">In Progress</option>
+                                                <option value="completed">Completed</option>
+                                                <option value="skipped">Skipped</option>
+                                                <option value="cancelled">Cancelled</option>
+                                            </select>
+                                            <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none opacity-50">
+                                                <TrendingUp className="w-3 h-3 rotate-90" />
                                             </div>
                                         </div>
-                                    ))
-                                ) : (
-                                    <p className="text-sm text-gray-500 italic">No updates recorded.</p>
-                                )}
-                            </div>
+                                        <button
+                                            onClick={() => deleteMilestone(milestone.id)}
+                                            className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                            title="Delete Milestone"
+                                        >
+                                            <Trash2 className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="p-12 text-center">
+                            <Clock className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                            <p className="text-gray-500">No milestones defined yet</p>
                         </div>
                     )}
                 </div>
-            </div>
-
-            {/* Milestones */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-                <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-                    <h2 className="text-lg font-bold text-gray-900">Project Milestones</h2>
-                    <button
-                        onClick={() => setShowMilestoneModal(true)}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-orange-600 text-sm font-medium"
-                    >
-                        <Plus className="w-4 h-4" />
-                        Add Milestone
-                    </button>
-                </div>
-
-                {milestones.length > 0 ? (
-                    <div className="divide-y divide-gray-100">
-                        {milestones.map((milestone, index) => (
-                            <div key={milestone.id} className="p-6 flex items-start gap-4 hover:bg-gray-50">
-                                <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-sm ${milestone.is_completed ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
-                                    }`}>
-                                    {milestone.is_completed ? <CheckCircle2 className="w-5 h-5" /> : index + 1}
-                                </div>
-                                <div className="flex-1">
-                                    <h3
-                                        className={`font-semibold ${milestone.is_completed ? "text-green-700 line-through" : "text-gray-900"
-                                            }`}
-                                    >
-                                        {milestone.milestone_name}
-                                    </h3>
-                                    {milestone.description && (
-                                        <p className="text-gray-500 text-sm mt-1">{milestone.description}</p>
-                                    )}
-                                    <div className="flex items-center gap-4 mt-2 text-sm">
-                                        {milestone.due_date && (
-                                            <span className="text-gray-500 flex items-center gap-1">
-                                                <Calendar className="w-4 h-4" />
-                                                Due: {new Date(milestone.due_date).toLocaleDateString()}
-                                            </span>
-                                        )}
-                                        {milestone.completion_date && (
-                                            <span className="text-green-600 flex items-center gap-1">
-                                                <CheckCircle2 className="w-4 h-4" />
-                                                Completed: {new Date(milestone.completion_date).toLocaleDateString()}
-                                            </span>
-                                        )}
-                                    </div>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <div className="relative">
-                                        <select
-                                            value={milestone.status || (milestone.is_completed ? 'completed' : 'pending')}
-                                            onChange={(e) => updateMilestoneStatus(milestone, e.target.value)}
-                                            className={`
-                                        appearance-none pr-8 text-xs font-bold uppercase tracking-wider py-1.5 px-3 rounded-lg border-0 cursor-pointer focus:ring-2 focus:ring-primary/20 outline-none transition-colors
-                                        ${(milestone.status === 'completed' || milestone.is_completed) ? 'bg-green-100 text-green-700 hover:bg-green-200' : ''}
-                                        ${milestone.status === 'in_progress' ? 'bg-blue-100 text-blue-700 hover:bg-blue-200' : ''}
-                                        ${(!milestone.status || milestone.status === 'pending') ? 'bg-gray-100 text-gray-700 hover:bg-gray-200' : ''}
-                                        ${milestone.status === 'skipped' ? 'bg-gray-100 text-gray-400 line-through hover:bg-gray-200' : ''}
-                                        ${milestone.status === 'cancelled' ? 'bg-red-50 text-red-600 hover:bg-red-100' : ''}
-                                    `}
-                                        >
-                                            <option value="pending">Pending</option>
-                                            <option value="in_progress">In Progress</option>
-                                            <option value="completed">Completed</option>
-                                            <option value="skipped">Skipped</option>
-                                            <option value="cancelled">Cancelled</option>
-                                        </select>
-                                        <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none opacity-50">
-                                            <TrendingUp className="w-3 h-3 rotate-90" />
-                                        </div>
-                                    </div>
-                                    <button
-                                        onClick={() => deleteMilestone(milestone.id)}
-                                        className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                                        title="Delete Milestone"
-                                    >
-                                        <Trash2 className="w-4 h-4" />
-                                    </button>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                ) : (
-                    <div className="p-12 text-center">
-                        <Clock className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                        <p className="text-gray-500">No milestones defined yet</p>
-                    </div>
-                )}
-            </div>
+            )}
 
             {/* Add Milestone Modal */}
             {showMilestoneModal && (
