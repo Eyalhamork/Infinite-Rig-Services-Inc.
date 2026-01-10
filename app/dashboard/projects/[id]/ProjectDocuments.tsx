@@ -116,7 +116,7 @@ export default function ProjectDocuments({ projectId }: ProjectDocumentsProps) {
             ));
         } catch (error) {
             console.error("Error fetching documents:", error);
-            toast.error("Failed to load documents");
+            toast.error("Failed to load documents", { description: (error as any).message });
         } finally {
             setLoading(false);
         }
