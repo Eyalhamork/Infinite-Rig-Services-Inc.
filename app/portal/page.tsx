@@ -204,21 +204,21 @@ export default function PortalDashboard() {
 
   return (
     <div className="space-y-8 pb-8">
-      {/* Premium Welcome Header with Navy/Gold Theme */}
-      <div className="relative overflow-hidden rounded-3xl bg-navy-900 p-8 md:p-12 text-white shadow-2xl">
+      {/* Premium Welcome Header with Orange Theme */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-primary-500 to-primary-700 p-8 md:p-12 text-white shadow-2xl">
         <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold mb-3 tracking-tight">
               Client Portal
             </h1>
-            <p className="text-gray-300 max-w-xl text-lg font-light">
+            <p className="text-orange-50/90 max-w-xl text-lg font-light">
               Welcome back. Track your active projects, review documents, and connect with our team.
             </p>
           </div>
           <div className="hidden md:block">
             <Link
               href="/quote"
-              className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-primary to-orange-500 rounded-xl font-semibold shadow-lg shadow-orange-500/20 hover:shadow-orange-500/30 hover:-translate-y-0.5 transition-all text-white"
+              className="inline-flex items-center px-6 py-3 bg-white text-primary-600 rounded-xl font-bold shadow-lg hover:bg-orange-50 hover:-translate-y-0.5 transition-all"
             >
               <Calendar className="w-5 h-5 mr-2" />
               New Request
@@ -227,9 +227,9 @@ export default function PortalDashboard() {
         </div>
 
         {/* Abstract shapes */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-primary/20 rounded-full blur-[100px] -mr-20 -mt-20 pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-blue-600/10 rounded-full blur-[80px] -ml-20 -mb-20 pointer-events-none" />
-        <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-[0.03] pointer-events-none" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-[100px] -mr-20 -mt-20 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-orange-400/20 rounded-full blur-[80px] -ml-20 -mb-20 pointer-events-none" />
+        <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-[0.05] pointer-events-none" />
       </div>
 
       {/* Stats Grid */}
@@ -239,8 +239,8 @@ export default function PortalDashboard() {
           className="relative group bg-white rounded-2xl p-6 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
         >
           <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center group-hover:bg-blue-100 transition-colors">
-              <FolderKanban className="w-6 h-6 text-blue-600" />
+            <div className="w-12 h-12 bg-orange-50 rounded-xl flex items-center justify-center group-hover:bg-orange-100 transition-colors">
+              <FolderKanban className="w-6 h-6 text-primary-600" />
             </div>
             <div className="w-8 h-8 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all">
               <ArrowRight className="w-5 h-5 text-gray-400" />
@@ -249,7 +249,7 @@ export default function PortalDashboard() {
           <div>
             <p className="text-sm font-medium text-gray-500 mb-1">Active Projects</p>
             <div className="flex items-baseline gap-1">
-              <p className="text-3xl font-bold text-navy-900 group-hover:text-blue-600 transition-colors">
+              <p className="text-3xl font-bold text-navy-900 group-hover:text-primary-600 transition-colors">
                 {stats.activeProjects}
               </p>
               <span className="text-base text-gray-400 font-normal">
@@ -382,7 +382,7 @@ export default function PortalDashboard() {
             <div className="space-y-4">
               <Link
                 href="/quote"
-                className="flex items-center justify-between p-4 bg-gradient-to-r from-primary to-orange-500 rounded-2xl text-white shadow-lg shadow-orange-500/20 hover:shadow-orange-500/30 hover:-translate-y-0.5 transition-all group"
+                className="flex items-center justify-between p-4 bg-gradient-to-r from-primary-500 to-primary-700 rounded-2xl text-white shadow-lg shadow-orange-500/20 hover:shadow-orange-500/30 hover:-translate-y-0.5 transition-all group"
               >
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">

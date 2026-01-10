@@ -162,7 +162,7 @@ export default function PortalProjectsPage() {
         </div>
         <Link
           href="/portal/requests/new"
-          className="inline-flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-orange-600 transition-colors"
+          className="inline-flex items-center gap-2 bg-primary-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-primary-700 transition-all shadow-sm shadow-primary-600/20"
         >
           <TrendingUp className="w-4 h-4" />
           Request Service
@@ -213,8 +213,8 @@ export default function PortalProjectsPage() {
             >
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-navy-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <FolderKanban className="w-6 h-6 text-navy-600" />
+                  <div className="w-12 h-12 bg-orange-50 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-orange-100 transition-colors">
+                    <FolderKanban className="w-6 h-6 text-primary-600" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2 mb-1">
@@ -284,7 +284,7 @@ export default function PortalProjectsPage() {
           </p>
           <Link
             href="/portal/requests/new"
-            className="inline-flex items-center bg-primary text-white px-6 py-3 rounded-xl font-semibold hover:bg-orange-600 transition-colors"
+            className="inline-flex items-center bg-primary-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-primary-700 transition-all shadow-lg shadow-primary-600/20"
           >
             Request Service
           </Link>

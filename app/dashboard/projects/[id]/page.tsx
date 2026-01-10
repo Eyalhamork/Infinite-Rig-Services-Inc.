@@ -804,14 +804,14 @@ export default function AdminProjectDetailPage() {
                         <div className="flex items-center gap-2">
                             <button
                                 onClick={() => setShowContractModal(true)}
-                                className="px-4 py-2 border border-gray-200 bg-white text-gray-700 rounded-lg hover:bg-gray-50 flex items-center gap-2"
+                                className="px-4 py-2 border border-primary-200 text-primary-700 bg-primary-50 rounded-lg hover:bg-primary-100 flex items-center gap-2 transition-colors shadow-sm"
                             >
                                 <FileCheck className="w-4 h-4" />
                                 Generate Contract
                             </button>
                             <button
                                 onClick={() => setIsEditing(true)}
-                                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-orange-600 flex items-center gap-2"
+                                className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 flex items-center gap-2 transition-all shadow-sm shadow-primary-600/20"
                             >
                                 <Edit3 className="w-4 h-4" />
                                 Edit Project
@@ -1003,7 +1003,6 @@ export default function AdminProjectDetailPage() {
                     >
                         <FileText className="w-4 h-4" />
                         Documents
-                        <span className="ml-1 px-1.5 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-bold">New</span>
                     </button>
                     <button
                         onClick={() => setActiveTab("milestones")}
@@ -1125,7 +1124,7 @@ export default function AdminProjectDetailPage() {
                         <h2 className="text-lg font-bold text-gray-900">Project Milestones</h2>
                         <button
                             onClick={() => setShowMilestoneModal(true)}
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-orange-600 text-sm font-medium"
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 text-sm font-bold transition-all shadow-sm shadow-primary-600/20"
                         >
                             <Plus className="w-4 h-4" />
                             Add Milestone
