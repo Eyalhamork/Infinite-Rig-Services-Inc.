@@ -201,7 +201,7 @@ export default function AssetIntegrityPage() {
                         >
                             <div className="relative h-[600px] w-full rounded-[2.5rem] overflow-hidden shadow-2xl border border-white/10 group">
                                 <Image
-                                    src="/images/services/offshore-hero.png"
+                                    src="/images/hero-asset-integrity.png"
                                     alt="Asset Integrity Inspection"
                                     fill
                                     className="object-cover transition-transform duration-700 group-hover:scale-105"

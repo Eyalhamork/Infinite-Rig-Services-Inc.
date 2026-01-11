@@ -163,7 +163,7 @@ export default function ServicesPage() {
       description:
         "Comprehensive asset integrity management and inspection services to ensure the reliability, safety, and longevity of your offshore and onshore assets through advanced inspection technologies and expert analysis.",
       gradient: "from-amber-600 to-amber-800",
-      imagePlaceholder: "/images/services/offshore-hero.png",
+      imagePlaceholder: "/images/hero-asset-integrity.png",
       imageAlt: "Asset integrity inspection",
       features: [
         { icon: Eye, text: "NDT Inspections" },
@@ -187,7 +187,7 @@ export default function ServicesPage() {
       description:
         "Specialized marine towage and rig move services for safely relocating drilling rigs and offshore platforms into territorial waters. Our experienced teams ensure seamless, compliant transitions across international maritime boundaries.",
       gradient: "from-cyan-600 to-cyan-800",
-      imagePlaceholder: "/images/services/offshore-operations.png",
+      imagePlaceholder: "/images/hero-rig-move.png",
       imageAlt: "Rig move and marine towage",
       features: [
         { icon: Navigation, text: "Rig Relocation" },
@@ -211,7 +211,7 @@ export default function ServicesPage() {
       description:
         "Comprehensive maritime security solutions including armed guard services to protect vessels and offshore installations from piracy and other maritime threats. Our security teams ensure safe operations in high-risk waters.",
       gradient: "from-slate-600 to-slate-800",
-      imagePlaceholder: "/images/services/offshore-safety-premium.png",
+      imagePlaceholder: "/images/hero-maritime-security.png",
       imageAlt: "Maritime security operations",
       features: [
         { icon: ShieldAlert, text: "Armed Guard Services" },

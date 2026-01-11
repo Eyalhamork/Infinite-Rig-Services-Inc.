@@ -59,7 +59,7 @@ export const heroServices = [
         description: "Advanced NDT, corrosion management, and structural assessments to protect your critical infrastructure.",
         icon: Search,
         gradient: "from-amber-600 to-amber-900",
-        image: "/images/hero-offshore.png",
+        image: "/images/hero-asset-integrity.png",
         link: "/services/asset-integrity",
         color: "amber",
         badge: "Inspection Excellence"
@@ -70,7 +70,7 @@ export const heroServices = [
         description: "Safe rig relocation and marine towage services for bringing drilling rigs into territorial waters.",
         icon: Compass,
         gradient: "from-cyan-600 to-cyan-900",
-        image: "/images/hero-offshore.png",
+        image: "/images/hero-rig-move.png",
         link: "/services/rig-move",
         color: "cyan",
         badge: "Marine Towage"
@@ -81,7 +81,7 @@ export const heroServices = [
         description: "Armed guard services and anti-piracy protection to safeguard vessels and platforms in high-risk waters.",
         icon: ShieldAlert,
         gradient: "from-slate-600 to-slate-900",
-        image: "/images/hero-offshore.png",
+        image: "/images/hero-maritime-security.png",
         link: "/services/security",
         color: "slate",
         badge: "Armed Protection"
