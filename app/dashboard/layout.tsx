@@ -317,7 +317,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed top-0 left-0 z-50 h-full bg-navy-900 text-white transition-all duration-300 ease-in-out",
+          "fixed top-0 left-0 z-50 h-full bg-navy-950 text-white transition-all duration-300 ease-in-out",
           sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
           isCollapsed ? "w-20" : "w-64"
         )}

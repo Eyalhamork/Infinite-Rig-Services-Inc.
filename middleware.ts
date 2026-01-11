@@ -77,24 +77,32 @@ export async function middleware(request: NextRequest) {
 
   // Role-based access control
   if (user && isProtectedPath) {
-    // Get user role from profiles table
-    const { data: profile, error: profileError } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single()
+    // Use the get_user_role RPC function which has SECURITY DEFINER to bypass RLS
+    // This avoids the issue where RLS policies block reading the profile's role
+    const { data: roleData, error: roleError } = await supabase
+      .rpc('get_user_role', { user_id: user.id })
 
     // Debug logging
     console.log('[Middleware] User ID:', user.id)
-    console.log('[Middleware] Profile data:', profile)
-    console.log('[Middleware] Profile error:', profileError)
+    console.log('[Middleware] Role from RPC:', roleData)
+    console.log('[Middleware] Role error:', roleError)
 
-    // Determine role with fallback to user metadata
+    // Determine role with fallback to user metadata, then to direct query
     let userRole = 'client' // Default
-    if (profile?.role) {
-      userRole = profile.role
+    if (roleData && !roleError) {
+      userRole = roleData
     } else if (user.user_metadata?.role) {
       userRole = user.user_metadata.role
+    } else {
+      // Final fallback: try direct query (for backwards compatibility)
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single()
+      if (profile?.role) {
+        userRole = profile.role
+      }
     }
 
     console.log('[Middleware] Detected role:', userRole)
@@ -118,17 +126,14 @@ export async function middleware(request: NextRequest) {
 
   // If authenticated user tries to access login/signup, redirect appropriately
   if (user && (pathname === '/login' || pathname === '/signup')) {
-    // Get user role from profiles table
-    const { data: profile, error: profileError } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single()
+    // Use RPC function for role check (SECURITY DEFINER bypasses RLS)
+    const { data: roleData, error: roleError } = await supabase
+      .rpc('get_user_role', { user_id: user.id })
 
     // Determine role with fallback
     let userRole = 'client'
-    if (profile?.role) {
-      userRole = profile.role
+    if (roleData && !roleError) {
+      userRole = roleData
     } else if (user.user_metadata?.role) {
       userRole = user.user_metadata.role
     }
