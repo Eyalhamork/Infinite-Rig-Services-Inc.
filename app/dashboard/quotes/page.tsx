@@ -18,6 +18,8 @@ import {
   Package,
   Briefcase,
   Trash2,
+  Compass,
+  ShieldAlert,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
@@ -45,6 +47,10 @@ const serviceIcons: Record<string, React.ElementType> = {
   supply: Package,
   manning: Briefcase,
   waste: Trash2,
+  hse: ClipboardList,
+  "asset-integrity": Eye,
+  "rig-move": Compass,
+  security: ShieldAlert,
 };
 
 export default function QuotesPage() {
@@ -143,6 +149,10 @@ export default function QuotesPage() {
       supply: "Supply Chain & Logistics",
       manning: "Manning Services",
       waste: "Waste Management",
+      hse: "HSE Consulting",
+      "asset-integrity": "Asset Integrity & Inspection",
+      "rig-move": "Rig Move & Marine Towage",
+      security: "Maritime Security Services",
     };
     return labels[service] || service;
   };
@@ -195,7 +205,11 @@ export default function QuotesPage() {
             <option value="offshore">Offshore Services</option>
             <option value="supply">Supply Chain</option>
             <option value="manning">Manning Services</option>
+            <option value="hse">HSE Consulting</option>
             <option value="waste">Waste Management</option>
+            <option value="asset-integrity">Asset Integrity</option>
+            <option value="rig-move">Rig Move & Towage</option>
+            <option value="security">Maritime Security</option>
           </select>
         </div>
       </div>
@@ -357,12 +371,12 @@ export default function QuotesPage() {
               <div className="flex items-center space-x-4">
                 <div
                   className={`w-16 h-16 rounded-xl flex items-center justify-center ${selectedQuote.service_area === "offshore"
-                      ? "bg-blue-100 text-blue-600"
-                      : selectedQuote.service_area === "supply"
-                        ? "bg-green-100 text-green-600"
-                        : selectedQuote.service_area === "waste"
-                          ? "bg-teal-100 text-teal-600"
-                          : "bg-purple-100 text-purple-600"
+                    ? "bg-blue-100 text-blue-600"
+                    : selectedQuote.service_area === "supply"
+                      ? "bg-green-100 text-green-600"
+                      : selectedQuote.service_area === "waste"
+                        ? "bg-teal-100 text-teal-600"
+                        : "bg-purple-100 text-purple-600"
                     }`}
                 >
                   {(() => {

@@ -6,114 +6,130 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import Link from "next/link";
 import {
+    Compass,
+    Ship,
+    Anchor,
+    Navigation,
     Shield,
-    AlertTriangle,
-    FileCheck,
     Users,
     CheckCircle2,
     Award,
     Clock,
-    ArrowRight,
-    ClipboardCheck,
-    GraduationCap,
-    HeartPulse,
-    HardHat,
-    Flame,
-    Search,
     TrendingUp,
+    FileCheck,
+    Settings,
+    Target,
+    ArrowRight,
+    AlertTriangle,
+    MapPin,
+    Globe,
+    Waves,
 } from "lucide-react";
 
-export default function HSEConsultingPage() {
+export default function RigMovePage() {
     const capabilities = [
         {
-            icon: Search,
-            title: "Audits & Assessments",
+            icon: Navigation,
+            title: "Rig Relocation Services",
             description:
-                "Comprehensive gap analysis and risk assessments to identify vulnerabilities before they become incidents.",
+                "Complete planning and execution of rig moves, ensuring safe transport of drilling rigs and platforms to new locations within territorial waters.",
             features: [
-                "ISO 45001 Gap Analysis",
-                "Regulatory Compliance",
-                "Process Safety Audits",
-                "Environmental Impact",
+                "Route Planning & Optimization",
+                "Weather Window Analysis",
+                "Permit Coordination",
+                "Rig Preparation & Securing",
             ],
-            gradient: "from-red-500 to-rose-600",
+            gradient: "from-cyan-500 to-cyan-700",
         },
         {
-            icon: GraduationCap,
-            title: "Training Academy",
+            icon: Ship,
+            title: "Marine Towage Operations",
             description:
-                "Building competency through accredited safety training programs tailored to offshore environments.",
+                "Professional marine towage services with experienced crews and modern vessels for safe, efficient transportation of offshore assets.",
             features: [
-                "BOSIET/HUET Prep",
-                "Permit to Work Systems",
-                "Advanced First Aid",
-                "Incident Command",
+                "Deep Sea Towing",
+                "Coastal Towage",
+                "Escort Services",
+                "Emergency Response",
             ],
-            gradient: "from-rose-500 to-red-700",
+            gradient: "from-blue-500 to-blue-700",
+        },
+        {
+            icon: Anchor,
+            title: "Anchor Handling",
+            description:
+                "Expert anchor handling vessel (AHV) operations for positioning, mooring, and station-keeping of drilling units and floating platforms.",
+            features: [
+                "Anchor Deployment",
+                "Mooring Systems",
+                "Chain Handling",
+                "Pre-Lay Surveys",
+            ],
+            gradient: "from-teal-500 to-teal-700",
         },
         {
             icon: FileCheck,
-            title: "Management Systems",
+            title: "Maritime Compliance",
             description:
-                "Design and implementation of robust HSE-MS frameworks aligned with IOGP and ISO standards.",
+                "Full regulatory compliance support ensuring all rig moves meet international maritime standards and territorial water entry requirements.",
             features: [
-                "Policy Development",
-                "KPI Dashboarding",
-                "Manuals & Procedures",
-                "System Integration",
+                "Port State Requirements",
+                "Flag State Compliance",
+                "Customs Coordination",
+                "Safety Documentation",
             ],
-            gradient: "from-orange-500 to-red-600",
-        },
-        {
-            icon: HeartPulse,
-            title: "Health & Hygiene",
-            description:
-                "Occupational health strategies to protect your workforce from physical, chemical, and biological hazards.",
-            features: [
-                "Medical Emergency Plans",
-                "Industrial Hygiene",
-                "Fatigue Management",
-                "Health Surveillance",
-            ],
-            gradient: "from-red-600 to-orange-700",
+            gradient: "from-cyan-600 to-blue-700",
         },
     ];
 
+    const services = [
+        "Jack-up rig relocations",
+        "Semi-submersible towing",
+        "FPSO positioning support",
+        "Platform decommissioning transport",
+        "Pipe-lay vessel support",
+        "Heavy lift vessel operations",
+        "Offshore installation tows",
+        "Territorial water entries",
+        "Port approach coordination",
+        "Emergency towing services",
+    ];
+
     const stats = [
-        { value: "0", label: "Target Incidents", icon: Shield },
-        { value: "100%", label: "Compliance Rate", icon: CheckCircle2 },
-        { value: "ISO", label: "45001 Certified", icon: Award },
-        { value: "24/7", label: "Emergency Support", icon: Clock },
+        { value: "150+", label: "Rigs Relocated", icon: Target },
+        { value: "100%", label: "Safe Delivery", icon: Award },
+        { value: "24/7", label: "Operations Center", icon: Clock },
+        { value: "Global", label: "Coverage", icon: Globe },
     ];
 
     const process = [
         {
             step: "01",
-            title: "Diagnose",
+            title: "Planning & Survey",
             description:
-                "We evaluate your current safety culture and systems against global best practices.",
-            icon: Search,
+                "Comprehensive route planning, weather analysis, and pre-move surveys to ensure optimal tow routes and timing.",
+            icon: MapPin,
         },
         {
             step: "02",
-            title: "Design",
+            title: "Preparation",
             description:
-                "Developing tailored strategies and management systems that fit your operational reality.",
-            icon: FileCheck,
+                "Rig securing, ballasting, vessel mobilization, and coordination with port authorities and flag states.",
+            icon: Settings,
         },
         {
             step: "03",
-            title: "Implement",
+            title: "Execution",
             description:
-                "Rolling out programs with hands-on training and leadership coaching to ensure adoption.",
-            icon: Users,
+                "Professional towing operations with 24/7 monitoring, weather routing, and real-time position tracking.",
+            icon: Navigation,
         },
         {
             step: "04",
-            title: "Sustain",
+            title: "Positioning",
             description:
-                "Continuous monitoring and improvement to maintain peak safety performance.",
-            icon: Shield,
+                "Precise rig positioning, anchor deployment, and final station-keeping at the destination location.",
+            icon: Anchor,
         },
     ];
 
@@ -123,11 +139,11 @@ export default function HSEConsultingPage() {
 
             {/* Premium Hero Section */}
             <section className="relative pt-40 pb-32 overflow-hidden bg-navy-900 before:absolute before:inset-0 before:bg-[url('/bg-pattern.svg')] before:opacity-5 before:z-0">
-                <div className="absolute inset-0 bg-gradient-to-br from-navy-900 via-red-950 to-primary-950 opacity-95 z-0"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-navy-900 via-cyan-950 to-primary-950 opacity-95 z-0"></div>
 
-                {/* Animated Orbs - Red Theme */}
-                <div className="absolute top-20 right-0 w-[500px] h-[500px] bg-red-600/10 rounded-full blur-[128px] animate-pulse z-0 mix-blend-screen"></div>
-                <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-orange-500/10 rounded-full blur-[128px] animate-pulse delay-1000 z-0 mix-blend-screen"></div>
+                {/* Animated Orbs */}
+                <div className="absolute top-20 right-0 w-[500px] h-[500px] bg-cyan-600/20 rounded-full blur-[128px] animate-pulse z-0 mix-blend-screen"></div>
+                <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[128px] animate-pulse delay-1000 z-0 mix-blend-screen"></div>
 
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
@@ -142,40 +158,39 @@ export default function HSEConsultingPage() {
                                 transition={{ delay: 0.2, duration: 0.5 }}
                                 className="inline-flex items-center space-x-2 bg-white/5 backdrop-blur-md border border-white/10 rounded-full px-5 py-2 mb-8"
                             >
-                                <Shield className="h-4 w-4 text-red-500" />
+                                <Compass className="h-4 w-4 text-gold" />
                                 <span className="text-sm font-medium text-gray-200 tracking-wide uppercase">
-                                    Safety First
+                                    Service Capability
                                 </span>
                             </motion.div>
                             <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight tracking-tight text-white">
-                                Zero Compromise <br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-white to-orange-500">
-                                    on Safety
+                                Rig Move & <br />
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-white to-cyan-400">
+                                    Marine Towage
                                 </span>
                             </h1>
                             <p className="text-xl text-gray-300 leading-relaxed mb-10 max-w-xl font-light">
-                                Building world-class safety cultures that protect your most valuable assets: your people and your reputation.
+                                Specialized marine towage and rig relocation services for safely
+                                transporting drilling rigs into territorial waters with full
+                                regulatory compliance.
                             </p>
 
                             <div className="flex flex-wrap gap-4">
                                 <Link
                                     href="/contact"
-                                    className="bg-red-600 text-white px-8 py-4 rounded-xl text-lg font-bold hover:bg-red-500 hover:scale-105 transition-all duration-300 shadow-[0_0_20px_rgba(220,38,38,0.3)]"
+                                    className="bg-gold text-navy-900 px-8 py-4 rounded-xl text-lg font-bold hover:bg-white hover:scale-105 transition-all duration-300 shadow-[0_0_20px_rgba(255,215,0,0.3)]"
                                 >
-                                    Request Audit
+                                    Request Rig Move Quote
                                 </Link>
                                 <div className="flex items-center space-x-4 px-6 py-4 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10">
                                     <div className="flex -space-x-3">
-                                        <div className="w-8 h-8 rounded-full bg-red-500 border-2 border-navy-900 relative flex items-center justify-center text-[10px] font-bold text-white">
-                                            <Flame className="w-4 h-4" />
-                                        </div>
-                                        <div className="w-8 h-8 rounded-full bg-orange-500 border-2 border-navy-900 relative flex items-center justify-center text-[10px] font-bold text-white">
-                                            <AlertTriangle className="w-4 h-4" />
-                                        </div>
+                                        {[1, 2, 3].map((i) => (
+                                            <div key={i} className="w-8 h-8 rounded-full bg-cyan-500 border-2 border-navy-900 relative flex items-center justify-center text-[10px] font-bold text-white">
+                                                <Ship className="w-4 h-4" />
+                                            </div>
+                                        ))}
                                     </div>
-                                    <span className="text-sm text-gray-300 font-medium">
-                                        Risk Assessment Ready
-                                    </span>
+                                    <span className="text-sm text-gray-300 font-medium">Expert Marine Teams</span>
                                 </div>
                             </div>
                         </motion.div>
@@ -188,8 +203,8 @@ export default function HSEConsultingPage() {
                         >
                             <div className="relative h-[600px] w-full rounded-[2.5rem] overflow-hidden shadow-2xl border border-white/10 group">
                                 <Image
-                                    src="/images/services/offshore-safety-premium.png"
-                                    alt="Offshore Safety"
+                                    src="/images/services/offshore-operations.png"
+                                    alt="Rig Move Operations"
                                     fill
                                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                                     priority
@@ -200,25 +215,18 @@ export default function HSEConsultingPage() {
                                 <div className="absolute bottom-8 left-8 right-8 bg-white/10 backdrop-blur-xl border border-white/20 p-6 rounded-2xl">
                                     <div className="flex items-center justify-between mb-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center">
-                                                <CheckCircle2 className="w-5 h-5 text-red-500" />
+                                            <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
+                                                <Navigation className="w-5 h-5 text-green-400" />
                                             </div>
                                             <div>
-                                                <div className="text-white font-bold">
-                                                    Safety Standard
-                                                </div>
-                                                <div className="text-red-400 text-xs font-bold uppercase tracking-wider">
-                                                    Gold Class
-                                                </div>
+                                                <div className="text-white font-bold">Tow Status</div>
+                                                <div className="text-green-400 text-xs font-bold uppercase tracking-wider">On Schedule</div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className="w-full bg-white/20 h-1.5 rounded-full overflow-hidden">
-                                        <div className="h-full bg-red-500 w-[99%]"></div>
-                                    </div>
-                                    <div className="flex justify-between mt-2 text-xs text-gray-400">
-                                        <span>Compliance Score</span>
-                                        <span>99.9%</span>
+                                        <div className="text-right">
+                                            <div className="text-3xl font-bold text-white">150+</div>
+                                            <div className="text-gray-400 text-xs">Rigs Moved</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -240,22 +248,20 @@ export default function HSEConsultingPage() {
                                 transition={{ delay: i * 0.1 }}
                                 className="bg-white rounded-2xl p-6 shadow-xl shadow-gray-200 border border-gray-100 text-center hover:-translate-y-1 transition-transform duration-300"
                             >
-                                <div className="inline-flex items-center justify-center w-12 h-12 bg-red-50 rounded-xl mb-3">
-                                    <stat.icon className="h-6 w-6 text-red-600" />
+                                <div className="inline-flex items-center justify-center w-12 h-12 bg-cyan-50 rounded-xl mb-3">
+                                    <stat.icon className="h-6 w-6 text-cyan-600" />
                                 </div>
                                 <div className="text-3xl font-bold text-navy-900 mb-1">
                                     {stat.value}
                                 </div>
-                                <div className="text-sm font-medium text-gray-500 uppercase tracking-wide">
-                                    {stat.label}
-                                </div>
+                                <div className="text-sm font-medium text-gray-500 uppercase tracking-wide">{stat.label}</div>
                             </motion.div>
                         ))}
                     </div>
                 </div>
             </section>
 
-            {/* Capabilities */}
+            {/* Core Capabilities */}
             <section className="py-24 bg-white relative overflow-hidden">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <motion.div
@@ -264,14 +270,15 @@ export default function HSEConsultingPage() {
                         viewport={{ once: true }}
                         className="text-center mb-20"
                     >
-                        <span className="text-red-600 font-bold text-sm uppercase tracking-widest bg-red-50 px-4 py-2 rounded-full">
-                            HSE Expertise
+                        <span className="text-cyan-600 font-bold text-sm uppercase tracking-widest bg-cyan-50 px-4 py-2 rounded-full">
+                            Our Capabilities
                         </span>
                         <h2 className="text-4xl md:text-5xl font-bold text-navy-900 mt-6 mb-6">
-                            Holistic Safety Solutions
+                            Complete Rig Move Solutions
                         </h2>
                         <p className="text-xl text-gray-600 max-w-3xl mx-auto font-light leading-relaxed">
-                            We go beyond compliance to create safety ecosystems that drive efficiency and operational excellence.
+                            From planning to positioning, we handle every aspect of your rig
+                            relocation with precision and expertise.
                         </p>
                     </motion.div>
 
@@ -285,17 +292,13 @@ export default function HSEConsultingPage() {
                                 transition={{ delay: i * 0.1 }}
                                 className="group relative bg-white rounded-3xl p-8 lg:p-10 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden"
                             >
-                                <div
-                                    className={`absolute top-0 right-0 w-64 h-64 bg-gradient-to-br ${capability.gradient} opacity-5 rounded-bl-full -mr-16 -mt-16 transition-opacity group-hover:opacity-10`}
-                                ></div>
+                                <div className={`absolute top-0 right-0 w-64 h-64 bg-gradient-to-br ${capability.gradient} opacity-5 rounded-bl-full -mr-16 -mt-16 transition-opacity group-hover:opacity-10`}></div>
 
-                                <div
-                                    className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${capability.gradient} flex items-center justify-center mb-8 shadow-md group-hover:scale-110 transition-transform duration-300`}
-                                >
+                                <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${capability.gradient} flex items-center justify-center mb-8 shadow-md group-hover:scale-110 transition-transform duration-300`}>
                                     <capability.icon className="h-8 w-8 text-white" />
                                 </div>
 
-                                <h3 className="text-2xl font-bold text-navy-900 mb-4 group-hover:text-red-700 transition-colors">
+                                <h3 className="text-2xl font-bold text-navy-900 mb-4 group-hover:text-cyan-700 transition-colors">
                                     {capability.title}
                                 </h3>
                                 <p className="text-gray-600 mb-8 leading-relaxed">
@@ -308,9 +311,7 @@ export default function HSEConsultingPage() {
                                             key={j}
                                             className="flex items-center space-x-3 text-sm font-medium text-gray-700"
                                         >
-                                            <div
-                                                className={`w-2 h-2 rounded-full bg-gradient-to-r ${capability.gradient}`}
-                                            ></div>
+                                            <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${capability.gradient}`}></div>
                                             <span>{feature}</span>
                                         </div>
                                     ))}
@@ -321,12 +322,11 @@ export default function HSEConsultingPage() {
                 </div>
             </section>
 
-            {/* Visual Feature Section - Dark Mode */}
+            {/* Visual Feature Section */}
             <section className="py-32 bg-navy-900 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-navy-950 via-red-950/20 to-navy-900"></div>
-                {/* Background Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-br from-navy-950 via-navy-900 to-cyan-950"></div>
                 <div className="absolute inset-0 opacity-10">
-                    <div className="absolute inset-0 bg-[url('/bg-pattern.svg')] opacity-30"></div>
+                    <Image src="/images/services/offshore-operations.png" alt="Background" fill className="object-cover" />
                 </div>
 
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -336,33 +336,46 @@ export default function HSEConsultingPage() {
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
                         >
-                            <span className="text-red-500 font-bold text-sm uppercase tracking-widest mb-4 block">
-                                Risk Management
-                            </span>
+                            <span className="text-gold font-bold text-sm uppercase tracking-widest mb-4 block">Territorial Water Entry</span>
                             <h2 className="text-4xl md:text-5xl font-bold text-white mb-8 leading-tight">
-                                Proactive <br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-400">
-                                    Hazard Mitigation
-                                </span>
+                                Safe Passage Into <br />
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-300">Your Waters</span>
                             </h2>
 
                             <div className="space-y-8">
                                 <div className="flex gap-6">
                                     <div className="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center shrink-0 border border-white/10">
-                                        <TrendingUp className="w-6 h-6 text-red-500" />
+                                        <Globe className="w-6 h-6 text-gold" />
                                     </div>
                                     <div>
-                                        <h4 className="text-xl font-bold text-white mb-2">Predictive Safety</h4>
-                                        <p className="text-gray-400 leading-relaxed">Utilizing leading indicators to anticipate and prevent incidents before they occur.</p>
+                                        <h4 className="text-xl font-bold text-white mb-2">International Expertise</h4>
+                                        <p className="text-gray-400 leading-relaxed">
+                                            Experienced in navigating complex international maritime regulations and coordinating with port authorities across West Africa and beyond.
+                                        </p>
                                     </div>
                                 </div>
+
                                 <div className="flex gap-6">
                                     <div className="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center shrink-0 border border-white/10">
-                                        <FileCheck className="w-6 h-6 text-red-500" />
+                                        <Shield className="w-6 h-6 text-gold" />
                                     </div>
                                     <div>
-                                        <h4 className="text-xl font-bold text-white mb-2">Audit Trails</h4>
-                                        <p className="text-gray-400 leading-relaxed">Comprehensive digital documentation ensuring full transparency and regulatory audit readiness.</p>
+                                        <h4 className="text-xl font-bold text-white mb-2">Safety First Approach</h4>
+                                        <p className="text-gray-400 leading-relaxed">
+                                            Every rig move is planned with safety as the top priority, with comprehensive risk assessments and contingency planning.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-6">
+                                    <div className="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center shrink-0 border border-white/10">
+                                        <Waves className="w-6 h-6 text-gold" />
+                                    </div>
+                                    <div>
+                                        <h4 className="text-xl font-bold text-white mb-2">Weather Routing</h4>
+                                        <p className="text-gray-400 leading-relaxed">
+                                            Advanced weather forecasting and route optimization to ensure safe passages and minimize transit times.
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -372,16 +385,27 @@ export default function HSEConsultingPage() {
                             initial={{ opacity: 0, x: 30 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
-                            className="relative"
+                            className="grid grid-cols-2 gap-4"
                         >
-                            <div className="relative h-[500px] w-full rounded-2xl overflow-hidden shadow-2xl border border-white/10">
-                                <Image src="/images/services/offshore-hero.png" alt="Safety Inspection" fill className="object-cover hover:scale-105 transition-transform duration-700" />
-                                <div className="absolute inset-0 bg-gradient-to-t from-navy-900/80 to-transparent"></div>
-                                <div className="absolute bottom-8 left-8">
-                                    <div className="bg-red-600/90 backdrop-blur-md p-4 rounded-xl inline-flex items-center gap-3">
-                                        <AlertTriangle className="text-white w-6 h-6" />
-                                        <p className="text-white font-bold">Hazard Identified & Mitigated</p>
+                            <div className="space-y-4 mt-12">
+                                <div className="relative h-64 rounded-2xl overflow-hidden shadow-2xl">
+                                    <Image src="/images/services/offshore-operations.png" alt="Marine Towage" fill className="object-cover hover:scale-110 transition-transform duration-700" />
+                                </div>
+                                <div className="relative h-48 rounded-2xl overflow-hidden shadow-2xl bg-cyan-900/30 border border-white/10 p-6">
+                                    <h3 className="text-3xl font-bold text-white mb-2">150+</h3>
+                                    <p className="text-gray-300 text-sm">Successful Rig Moves</p>
+                                    <div className="absolute bottom-4 right-4 text-white/10">
+                                        <Ship className="w-16 h-16" />
                                     </div>
+                                </div>
+                            </div>
+                            <div className="space-y-4">
+                                <div className="relative h-48 rounded-2xl overflow-hidden shadow-2xl bg-gold/10 border border-gold/20 p-6 flex flex-col justify-end">
+                                    <h3 className="text-xl font-bold text-gold mb-1">100%</h3>
+                                    <p className="text-gold/80 text-sm">Safe Delivery Record</p>
+                                </div>
+                                <div className="relative h-80 rounded-2xl overflow-hidden shadow-2xl">
+                                    <Image src="/images/services/offshore-hero.png" alt="Rig Operations" fill className="object-cover hover:scale-110 transition-transform duration-700" />
                                 </div>
                             </div>
                         </motion.div>
@@ -398,10 +422,8 @@ export default function HSEConsultingPage() {
                         viewport={{ once: true }}
                         className="text-center mb-16"
                     >
-                        <span className="text-red-600 font-semibold text-sm uppercase tracking-wide">
-                            The Methodology
-                        </span>
-                        <h2 className="text-4xl font-bold text-navy-900 mt-2">Consulting Workflow</h2>
+                        <span className="text-cyan-600 font-semibold text-sm uppercase tracking-wide">Our Methodology</span>
+                        <h2 className="text-4xl font-bold text-navy-900 mt-2">Rig Move Process</h2>
                     </motion.div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -418,12 +440,10 @@ export default function HSEConsultingPage() {
                                     <div className="text-5xl font-bold text-gray-100 mb-6 absolute top-4 right-6 select-none">
                                         {item.step}
                                     </div>
-                                    <div className="w-14 h-14 bg-red-100 rounded-2xl flex items-center justify-center mb-6 text-red-600 relative z-10 group-hover:bg-red-600 group-hover:text-white transition-colors duration-300">
+                                    <div className="w-14 h-14 bg-cyan-100 rounded-2xl flex items-center justify-center mb-6 text-cyan-600 relative z-10">
                                         <item.icon className="h-7 w-7" />
                                     </div>
-                                    <h3 className="text-xl font-bold text-navy-900 mb-3 relative z-10">
-                                        {item.title}
-                                    </h3>
+                                    <h3 className="text-xl font-bold text-navy-900 mb-3 relative z-10">{item.title}</h3>
                                     <p className="text-gray-600 text-sm leading-relaxed relative z-10">
                                         {item.description}
                                     </p>
@@ -440,24 +460,25 @@ export default function HSEConsultingPage() {
             </section>
 
             {/* CTA Section */}
-            <section className="py-24 bg-gradient-to-br from-red-900 via-orange-900 to-primary-950 text-white relative overflow-hidden">
+            <section className="py-24 bg-gradient-to-br from-cyan-900 via-blue-900 to-primary-950 text-white relative overflow-hidden">
                 {/* Abstract Shapes */}
-                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-red-600/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-                <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-orange-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
+                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-cyan-600/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+                <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
 
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
                     <h2 className="text-4xl md:text-6xl font-bold mb-8">
-                        Elevate Your Safety Standards
+                        Ready to Relocate <br /> Your Rig?
                     </h2>
                     <p className="text-xl mb-12 max-w-2xl mx-auto text-gray-300 font-light">
-                        Contact our certified experts to discuss how we can help you achieve zero-incident operations.
+                        Partner with us for safe, efficient rig moves into your territorial waters
+                        with full regulatory compliance.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-6 justify-center">
                         <Link
                             href="/contact"
-                            className="bg-white text-red-900 px-10 py-5 rounded-2xl text-lg font-bold hover:bg-gray-100 hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center justify-center"
+                            className="bg-primary text-white px-10 py-5 rounded-2xl text-lg font-bold hover:bg-primary-600 hover:shadow-lg hover:shadow-primary/30 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center"
                         >
-                            Consult with Experts
+                            Request Rig Move Quote
                             <ArrowRight className="ml-2 h-5 w-5" />
                         </Link>
                     </div>

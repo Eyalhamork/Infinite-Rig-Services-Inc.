@@ -167,7 +167,11 @@ export default function RequestsPage() {
             manning: "Technical Manning",
             offshore: "Offshore/Technical Services",
             hse: "HSE & Training",
-            supply: "Supply Chain & Logistics"
+            supply: "Supply Chain & Logistics",
+            waste: "Waste Management",
+            "asset-integrity": "Asset Integrity & Inspection",
+            "rig-move": "Rig Move & Marine Towage",
+            security: "Maritime Security Services",
         };
         return map[type] || type;
     };

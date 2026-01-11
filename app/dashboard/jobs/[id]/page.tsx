@@ -14,6 +14,9 @@ const departments = [
     "Finance & Administration",
     "Human Resources",
     "Information Technology",
+    "Asset Integrity & Inspection",
+    "Marine Operations & Towage",
+    "Maritime Security",
 ];
 
 export default function EditJobPage() {

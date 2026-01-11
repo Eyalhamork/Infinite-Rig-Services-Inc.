@@ -41,6 +41,9 @@ const SERVICE_TYPES = [
     { value: "hse", label: "HSE Consulting", color: "bg-green-500" },
     { value: "supply", label: "Supply Chain", color: "bg-orange-500" },
     { value: "waste", label: "Waste Management", color: "bg-teal-500" },
+    { value: "asset-integrity", label: "Asset Integrity & Inspection", color: "bg-amber-500" },
+    { value: "rig-move", label: "Rig Move & Marine Towage", color: "bg-cyan-500" },
+    { value: "security", label: "Maritime Security", color: "bg-slate-500" },
 ];
 
 export default function TemplatesPage() {

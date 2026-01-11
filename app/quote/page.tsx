@@ -24,7 +24,7 @@ import SuccessModal from "@/components/ui/SuccessModal";
 export default function QuotePage() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [activeSegment, setActiveSegment] = useState<
-        "offshore" | "manning" | "hse" | "supply" | "waste"
+        "offshore" | "manning" | "hse" | "supply" | "waste" | "asset-integrity" | "rig-move" | "security"
     >("offshore");
     const [showSuccessModal, setShowSuccessModal] = useState(false);
 
@@ -57,6 +57,9 @@ export default function QuotePage() {
         { id: "hse", label: "HSE Consulting" },
         { id: "supply", label: "Supply Chain" },
         { id: "waste", label: "Waste Management" },
+        { id: "asset-integrity", label: "Asset Integrity" },
+        { id: "rig-move", label: "Rig Move & Towage" },
+        { id: "security", label: "Maritime Security" },
     ];
 
     return (
@@ -65,7 +68,7 @@ export default function QuotePage() {
 
             {/* Hero Section */}
             <section className="relative pt-40 pb-20 overflow-hidden bg-navy-900">
-                <div className="absolute inset-0 bg-gradient-to-br from-navy-900 via-navy-800 to-black opacity-95"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-navy-900 via-navy-800 to-primary-950 opacity-95"></div>
                 <div className="absolute inset-0 bg-[url('/bg-pattern.svg')] opacity-5"></div>
 
                 {/* Animated Orbs */}

@@ -140,7 +140,7 @@ export default function ManningServicesPage() {
 
       {/* Premium Hero Section */}
       <section className="relative pt-40 pb-32 overflow-hidden bg-navy-900 before:absolute before:inset-0 before:bg-[url('/bg-pattern.svg')] before:opacity-5 before:z-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-navy-900 via-purple-950 to-black opacity-95 z-0"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-navy-900 via-purple-950 to-primary-950 opacity-95 z-0"></div>
 
         {/* Animated Orbs - Purple Theme */}
         <div className="absolute top-20 right-0 w-[500px] h-[500px] bg-purple-600/20 rounded-full blur-[128px] animate-pulse z-0 mix-blend-screen"></div>
@@ -487,7 +487,7 @@ export default function ManningServicesPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 bg-gradient-to-br from-purple-900 via-indigo-900 to-black text-white relative overflow-hidden">
+      <section className="py-24 bg-gradient-to-br from-purple-900 via-indigo-900 to-primary-950 text-white relative overflow-hidden">
         {/* Abstract Shapes */}
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
         <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-indigo-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>

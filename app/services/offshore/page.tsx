@@ -137,7 +137,7 @@ export default function OffshoreServicesPage() {
 
       {/* Premium Hero Section */}
       <section className="relative pt-40 pb-32 overflow-hidden bg-navy-900 before:absolute before:inset-0 before:bg-[url('/bg-pattern.svg')] before:opacity-5 before:z-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-navy-900 via-navy-800 to-black opacity-95 z-0"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-navy-900 via-navy-800 to-primary-950 opacity-95 z-0"></div>
 
         {/* Animated Orbs */}
         <div className="absolute top-20 right-0 w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[128px] animate-pulse z-0 mix-blend-screen"></div>
@@ -507,7 +507,7 @@ export default function OffshoreServicesPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 bg-gradient-to-br from-blue-900 via-navy-900 to-black text-white relative overflow-hidden">
+      <section className="py-24 bg-gradient-to-br from-blue-900 via-navy-900 to-primary-950 text-white relative overflow-hidden">
         {/* Abstract Shapes */}
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
         <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gold/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>

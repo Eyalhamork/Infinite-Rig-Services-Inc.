@@ -2,7 +2,10 @@ import {
     Anchor,
     Package,
     Briefcase,
-    Shield
+    Shield,
+    Search,
+    Compass,
+    ShieldAlert
 } from "lucide-react";
 
 export const heroServices = [
@@ -49,5 +52,38 @@ export const heroServices = [
         link: "/services/hse",
         color: "orange",
         badge: "Safety First"
+    },
+    {
+        id: "asset-integrity",
+        title: "Asset Integrity & Inspection",
+        description: "Advanced NDT, corrosion management, and structural assessments to protect your critical infrastructure.",
+        icon: Search,
+        gradient: "from-amber-600 to-amber-900",
+        image: "/images/hero-offshore.png",
+        link: "/services/asset-integrity",
+        color: "amber",
+        badge: "Inspection Excellence"
+    },
+    {
+        id: "rig-move",
+        title: "Rig Move & Marine Towage",
+        description: "Safe rig relocation and marine towage services for bringing drilling rigs into territorial waters.",
+        icon: Compass,
+        gradient: "from-cyan-600 to-cyan-900",
+        image: "/images/hero-offshore.png",
+        link: "/services/rig-move",
+        color: "cyan",
+        badge: "Marine Towage"
+    },
+    {
+        id: "security",
+        title: "Maritime Security",
+        description: "Armed guard services and anti-piracy protection to safeguard vessels and platforms in high-risk waters.",
+        icon: ShieldAlert,
+        gradient: "from-slate-600 to-slate-900",
+        image: "/images/hero-offshore.png",
+        link: "/services/security",
+        color: "slate",
+        badge: "Armed Protection"
     }
 ];

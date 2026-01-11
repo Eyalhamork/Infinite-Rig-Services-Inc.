@@ -25,6 +25,12 @@ import {
   Headphones,
   AlertTriangle,
   ClipboardCheck,
+  Search,
+  Compass,
+  ShieldAlert,
+  Eye,
+  Navigation,
+  Lock,
 } from "lucide-react";
 
 export default function ServicesPage() {
@@ -147,6 +153,78 @@ export default function ServicesPage() {
         "Environmental impact assessment and reporting",
         "Recycling and resource recovery",
         "Regulatory compliance management",
+      ],
+    },
+    {
+      icon: Search,
+      title: "Asset Integrity & Inspection",
+      route: "asset-integrity",
+      tagline: "Protecting your critical infrastructure",
+      description:
+        "Comprehensive asset integrity management and inspection services to ensure the reliability, safety, and longevity of your offshore and onshore assets through advanced inspection technologies and expert analysis.",
+      gradient: "from-amber-600 to-amber-800",
+      imagePlaceholder: "/images/services/offshore-hero.png",
+      imageAlt: "Asset integrity inspection",
+      features: [
+        { icon: Eye, text: "NDT Inspections" },
+        { icon: Search, text: "Corrosion Monitoring" },
+        { icon: ClipboardCheck, text: "Structural Assessments" },
+        { icon: FileCheck, text: "Compliance Reporting" },
+      ],
+      capabilities: [
+        "Non-Destructive Testing (NDT) services",
+        "Corrosion management and monitoring",
+        "Structural integrity assessments",
+        "Risk-based inspection planning",
+        "Asset life extension programs",
+      ],
+    },
+    {
+      icon: Compass,
+      title: "Rig Move & Marine Towage",
+      route: "rig-move",
+      tagline: "Safe rig relocation to territorial waters",
+      description:
+        "Specialized marine towage and rig move services for safely relocating drilling rigs and offshore platforms into territorial waters. Our experienced teams ensure seamless, compliant transitions across international maritime boundaries.",
+      gradient: "from-cyan-600 to-cyan-800",
+      imagePlaceholder: "/images/services/offshore-operations.png",
+      imageAlt: "Rig move and marine towage",
+      features: [
+        { icon: Navigation, text: "Rig Relocation" },
+        { icon: Ship, text: "Marine Towage" },
+        { icon: Anchor, text: "Anchor Handling" },
+        { icon: FileCheck, text: "Maritime Compliance" },
+      ],
+      capabilities: [
+        "Rig tow planning and execution",
+        "Anchor handling vessel operations",
+        "Maritime regulatory compliance",
+        "Positioning and station-keeping",
+        "Port entry and customs coordination",
+      ],
+    },
+    {
+      icon: ShieldAlert,
+      title: "Maritime Security Services",
+      route: "security",
+      tagline: "Protecting assets against maritime threats",
+      description:
+        "Comprehensive maritime security solutions including armed guard services to protect vessels and offshore installations from piracy and other maritime threats. Our security teams ensure safe operations in high-risk waters.",
+      gradient: "from-slate-600 to-slate-800",
+      imagePlaceholder: "/images/services/offshore-safety-premium.png",
+      imageAlt: "Maritime security operations",
+      features: [
+        { icon: ShieldAlert, text: "Armed Guard Services" },
+        { icon: Lock, text: "Anti-Piracy Protection" },
+        { icon: Eye, text: "Threat Assessment" },
+        { icon: Users, text: "Security Personnel" },
+      ],
+      capabilities: [
+        "Armed security teams for vessels and platforms",
+        "Anti-piracy and anti-terrorism protection",
+        "Security risk assessments",
+        "Voyage security planning",
+        "Crisis response and management",
       ],
     },
   ];
@@ -306,7 +384,7 @@ export default function ServicesPage() {
 
       {/* Why Choose Us */}
       <section className="py-24 bg-navy-900 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-navy-900 via-navy-800 to-black"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-navy-900 via-navy-800 to-primary-950"></div>
         <div className="absolute top-0 right-0 w-full h-full bg-[url('/bg-pattern.svg')] opacity-5"></div>
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">

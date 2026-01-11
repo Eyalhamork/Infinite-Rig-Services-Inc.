@@ -58,6 +58,9 @@ const serviceOptions = [
     { value: "hse", label: "HSE" },
     { value: "supply", label: "Supply Chain" },
     { value: "waste", label: "Waste Management" },
+    { value: "asset-integrity", label: "Asset Integrity" },
+    { value: "rig-move", label: "Rig Move" },
+    { value: "security", label: "Security" },
 ];
 
 export default function AdminProjectsPage() {

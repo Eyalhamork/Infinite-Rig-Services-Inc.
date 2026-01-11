@@ -30,6 +30,9 @@ import {
   FileCheck,
   HeadphonesIcon,
   BarChart3,
+  Search,
+  Compass,
+  ShieldAlert,
 } from "lucide-react";
 
 const fadeInUp = {
@@ -99,46 +102,71 @@ export default function HomePage() {
             </p>
           </motion.div>
 
-          <div className="flex flex-wrap justify-center gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               {
                 icon: Anchor,
                 title: "Offshore Services",
-                desc: "Expert technical support and operations for drilling rigs and offshore platforms with highly trained crews.",
-                features: [
-                  "Drilling Support",
-                  "Platform Operations",
-                  "Technical Maintenance",
-                ],
+                route: "offshore",
+                desc: "Expert technical support and operations for drilling rigs and offshore platforms.",
+                features: ["Drilling Support", "Platform Operations", "Maintenance"],
                 gradient: "from-blue-500 to-blue-600",
               },
               {
                 icon: Package,
                 title: "Supply Chain",
-                desc: "Efficient procurement, logistics, and transportation solutions ensuring seamless offshore operations.",
+                route: "supply",
+                desc: "Efficient procurement, logistics, and transportation solutions for offshore operations.",
                 features: ["Procurement", "Logistics", "Transportation"],
                 gradient: "from-green-500 to-green-600",
               },
               {
                 icon: Briefcase,
                 title: "Manning Services",
-                desc: "Recruitment, training, and certification of qualified offshore personnel and specialized crew members.",
+                route: "manning",
+                desc: "Recruitment, training, and certification of qualified offshore personnel.",
                 features: ["Recruitment", "Training", "Certification"],
                 gradient: "from-purple-500 to-purple-600",
               },
               {
                 icon: Shield,
                 title: "HSE Consulting",
-                desc: "Comprehensive Health, Safety, and Environmental consulting to ensure zero-incident operations.",
+                route: "hse",
+                desc: "Comprehensive Health, Safety, and Environmental consulting services.",
                 features: ["Safety Audits", "Risk Assessment", "Compliance"],
-                gradient: "from-orange-500 to-orange-600",
+                gradient: "from-red-500 to-red-600",
               },
               {
                 icon: Ship,
                 title: "Waste Management",
-                desc: "Integrated hazardous waste handling, recycling, and disposal solutions for sustainable offshore operations.",
+                route: "waste-management",
+                desc: "Integrated hazardous waste handling, recycling, and disposal solutions.",
                 features: ["Hazardous Handling", "Recycling", "EPA Compliance"],
                 gradient: "from-teal-500 to-teal-600",
+              },
+              {
+                icon: Search,
+                title: "Asset Integrity",
+                route: "asset-integrity",
+                desc: "NDT inspections, corrosion monitoring, and structural assessments.",
+                features: ["NDT Testing", "Corrosion Mgmt", "Inspections"],
+                gradient: "from-amber-500 to-amber-600",
+              },
+              {
+                icon: Compass,
+                title: "Rig Move & Towage",
+                route: "rig-move",
+                desc: "Marine towage and rig relocation into territorial waters.",
+                features: ["Rig Relocation", "Marine Towage", "Anchor Handling"],
+                gradient: "from-cyan-500 to-cyan-600",
+              },
+              {
+                icon: ShieldAlert,
+                title: "Maritime Security",
+                route: "security",
+                desc: "Armed guard services and anti-piracy protection for vessels.",
+                features: ["Armed Guards", "Anti-Piracy", "Threat Assessment"],
+                gradient: "from-slate-500 to-slate-600",
               },
             ].map((service, i) => (
               <motion.div
@@ -146,27 +174,27 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="group relative bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 overflow-hidden w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.5rem)]"
+                transition={{ delay: i * 0.05 }}
+                className="group relative bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 overflow-hidden"
               >
                 <div
                   className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${service.gradient} opacity-5 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500`}
                 ></div>
 
                 <div
-                  className={`w-16 h-16 bg-gradient-to-br ${service.gradient} rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}
+                  className={`w-14 h-14 bg-gradient-to-br ${service.gradient} rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300`}
                 >
-                  <service.icon className="h-8 w-8 text-white" />
+                  <service.icon className="h-7 w-7 text-white" />
                 </div>
 
-                <h3 className="text-2xl font-bold text-navy mb-3 group-hover:text-primary transition-colors">
+                <h3 className="text-xl font-bold text-navy mb-3 group-hover:text-primary transition-colors">
                   {service.title}
                 </h3>
-                <p className="text-gray-600 mb-6 leading-relaxed">
+                <p className="text-gray-600 mb-5 text-sm leading-relaxed">
                   {service.desc}
                 </p>
 
-                <ul className="space-y-2 mb-6">
+                <ul className="space-y-2 mb-5">
                   {service.features.map((feature, j) => (
                     <li
                       key={j}
@@ -179,10 +207,7 @@ export default function HomePage() {
                 </ul>
 
                 <Link
-                  href={`/services/${service.title.toLowerCase().split(" ")[0] === "hse"
-                    ? "hse"
-                    : service.title.toLowerCase().split(" ")[0]
-                    }`}
+                  href={`/services/${service.route}`}
                   className="inline-flex items-center text-primary font-semibold hover:gap-2 transition-all group/link"
                 >
                   Learn More

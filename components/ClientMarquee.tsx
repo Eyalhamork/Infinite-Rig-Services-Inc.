@@ -12,6 +12,7 @@ const clients = [
     { name: "LPRA", subtitle: "Liberia Petroleum Regulatory Authority" },
     { name: "ZOIL", subtitle: "Zoil Limited Gh (Waste Management)" },
     { name: "JPN", subtitle: "JPN Offshore Int Ltd" },
+    { name: "TSG", subtitle: "Seabird Group / TSG" },
     // Duplicate for seamless scroll
     { name: "NOCAL", subtitle: "National Oil Company of Liberia" },
     { name: "LPRC", subtitle: "Liberia Petroleum Refining Company" },
@@ -22,6 +23,7 @@ const clients = [
     { name: "LPRA", subtitle: "Liberia Petroleum Regulatory Authority" },
     { name: "ZOIL", subtitle: "Zoil Limited Gh (Waste Management)" },
     { name: "JPN", subtitle: "JPN Offshore Int Ltd" },
+    { name: "TSG", subtitle: "Seabird Group / TSG" },
 ];
 
 export default function ClientMarquee() {

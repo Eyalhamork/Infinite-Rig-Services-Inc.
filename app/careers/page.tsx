@@ -351,7 +351,7 @@ export default function CareersPage() {
 
       {/* Culture - Navy Section */}
       <section className="py-24 bg-navy-900 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-navy-900 via-navy-800 to-black"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-navy-900 via-navy-800 to-primary-950"></div>
         <div className="absolute top-0 right-0 w-full h-full bg-[url('/bg-pattern.svg')] opacity-5"></div>
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">

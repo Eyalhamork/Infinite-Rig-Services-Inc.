@@ -11,7 +11,10 @@ import {
     ChevronRight,
     ArrowLeft,
     CheckCircle2,
-    Trash2
+    Trash2,
+    Search,
+    Compass,
+    ShieldAlert,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -20,7 +23,7 @@ const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-type ServiceType = "manning" | "offshore" | "hse" | "supply" | "waste";
+type ServiceType = "manning" | "offshore" | "hse" | "supply" | "waste" | "asset-integrity" | "rig-move" | "security";
 
 interface ServiceOption {
     id: ServiceType;
@@ -59,6 +62,24 @@ const services: ServiceOption[] = [
         title: "Waste Management",
         description: "Hazardous waste handling, recycling, and disposal services.",
         icon: Trash2,
+    },
+    {
+        id: "asset-integrity",
+        title: "Asset Integrity & Inspection",
+        description: "NDT inspections, corrosion monitoring, and structural assessments.",
+        icon: Search,
+    },
+    {
+        id: "rig-move",
+        title: "Rig Move & Marine Towage",
+        description: "Safe rig relocation and marine towage into territorial waters.",
+        icon: Compass,
+    },
+    {
+        id: "security",
+        title: "Maritime Security Services",
+        description: "Armed guard services and anti-piracy protection for vessels.",
+        icon: ShieldAlert,
     },
 ];
 
@@ -235,6 +256,102 @@ export default function NewRequestPage() {
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Handling Requirements</label>
                                 <input type="text" className="w-full p-2.5 border rounded-lg" placeholder="e.g. Special containers needed" onChange={(e) => handleInputChange("handling", e.target.value)} />
+                            </div>
+                        </div>
+                    </>
+                );
+            case "asset-integrity":
+                return (
+                    <>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Inspection Type *</label>
+                                <select className="w-full p-2.5 border rounded-lg bg-white" onChange={(e) => handleInputChange("inspection_type", e.target.value)}>
+                                    <option value="">Select Type</option>
+                                    <option value="ndt">Non-Destructive Testing (NDT)</option>
+                                    <option value="corrosion">Corrosion Assessment</option>
+                                    <option value="structural">Structural Inspection</option>
+                                    <option value="fitness">Fitness for Service</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Asset Type</label>
+                                <input type="text" className="w-full p-2.5 border rounded-lg" placeholder="e.g. Pipeline, Pressure Vessel" onChange={(e) => handleInputChange("asset_type", e.target.value)} />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                                <input type="text" className="w-full p-2.5 border rounded-lg" placeholder="e.g. Offshore Ghana" onChange={(e) => handleInputChange("location", e.target.value)} />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Preferred Date</label>
+                                <input type="date" className="w-full p-2.5 border rounded-lg" onChange={(e) => handleInputChange("preferred_date", e.target.value)} />
+                            </div>
+                        </div>
+                    </>
+                );
+            case "rig-move":
+                return (
+                    <>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Rig Type *</label>
+                                <select className="w-full p-2.5 border rounded-lg bg-white" onChange={(e) => handleInputChange("rig_type", e.target.value)}>
+                                    <option value="">Select Type</option>
+                                    <option value="jack-up">Jack-up Rig</option>
+                                    <option value="semi-sub">Semi-Submersible</option>
+                                    <option value="drillship">Drillship</option>
+                                    <option value="fpso">FPSO</option>
+                                    <option value="platform">Platform</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Rig Name</label>
+                                <input type="text" className="w-full p-2.5 border rounded-lg" placeholder="e.g. Discovery Explorer" onChange={(e) => handleInputChange("rig_name", e.target.value)} />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Origin Location</label>
+                                <input type="text" className="w-full p-2.5 border rounded-lg" placeholder="e.g. Las Palmas" onChange={(e) => handleInputChange("origin", e.target.value)} />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Destination</label>
+                                <input type="text" className="w-full p-2.5 border rounded-lg" placeholder="e.g. Liberia Territorial Waters" onChange={(e) => handleInputChange("destination", e.target.value)} />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Target Arrival Date</label>
+                                <input type="date" className="w-full p-2.5 border rounded-lg" onChange={(e) => handleInputChange("arrival_date", e.target.value)} />
+                            </div>
+                        </div>
+                    </>
+                );
+            case "security":
+                return (
+                    <>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Service Type *</label>
+                                <select className="w-full p-2.5 border rounded-lg bg-white" onChange={(e) => handleInputChange("security_type", e.target.value)}>
+                                    <option value="">Select Type</option>
+                                    <option value="armed-guards">Armed Security Team</option>
+                                    <option value="risk-assessment">Security Risk Assessment</option>
+                                    <option value="escort">Vessel Escort Services</option>
+                                    <option value="platform">Platform Security</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Vessel/Platform Name</label>
+                                <input type="text" className="w-full p-2.5 border rounded-lg" placeholder="e.g. MV Ocean Carrier" onChange={(e) => handleInputChange("vessel_name", e.target.value)} />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Route/Region</label>
+                                <input type="text" className="w-full p-2.5 border rounded-lg" placeholder="e.g. Gulf of Guinea Transit" onChange={(e) => handleInputChange("route", e.target.value)} />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Duration</label>
+                                <input type="text" className="w-full p-2.5 border rounded-lg" placeholder="e.g. 14 days" onChange={(e) => handleInputChange("duration", e.target.value)} />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Team Size Required</label>
+                                <input type="number" min="1" className="w-full p-2.5 border rounded-lg" placeholder="e.g. 4" onChange={(e) => handleInputChange("team_size", e.target.value)} />
                             </div>
                         </div>
                     </>
