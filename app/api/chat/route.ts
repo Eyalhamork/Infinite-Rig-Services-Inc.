@@ -1,11 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import fs from "fs";
+import path from "path";
 import {
   generateEmbedding,
   generateChatResponse,
   shouldHandoffToHuman,
   getHandoffMessage,
 } from "@/lib/gemini";
+import { generateHaikuResponse } from "@/lib/haiku";
 
 // Supabase client with service role for database operations
 const supabase = createClient(
@@ -73,28 +76,52 @@ export async function POST(request: NextRequest) {
     try {
       relevantDocs = await searchRelevantDocuments(userQuery);
     } catch (error) {
-      console.error("Document search error:", error);
-      // Continue without RAG context if search fails
+      console.error("Vector document search error:", error);
+    }
+
+    // Fallback to local documents search if vector search returned nothing
+    if (!relevantDocs || relevantDocs.length === 0) {
+      try {
+        relevantDocs = searchLocalDocuments(userQuery);
+      } catch (localErr) {
+        console.error("Local document fallback search error:", localErr);
+      }
     }
 
     // Step 2: Generate AI response with context
     let aiResponse: string;
+    const hasAnthropicKey = !!(
+      (process.env.ANTHROPIC_API_KEY && process.env.ANTHROPIC_API_KEY.trim() !== "" && process.env.ANTHROPIC_API_KEY !== "your-anthropic-api-key") ||
+      (process.env.CLAUDE_API_KEY && process.env.CLAUDE_API_KEY.trim() !== "")
+    );
+
     try {
-      const context = relevantDocs.map((doc) => ({
+      const context = (relevantDocs || []).map((doc) => ({
         content: doc.content,
         source: doc.source_file || "Company Document",
-        similarity: doc.similarity,
+        similarity: doc.similarity ?? doc.score,
       }));
 
       console.log("Generating response with", context.length, "context documents");
-      console.log("GOOGLE_API_KEY set:", !!process.env.GOOGLE_API_KEY);
 
-      aiResponse = await generateChatResponse(messages, context);
+      if (hasAnthropicKey) {
+        console.log("Using Claude Haiku for chat completion");
+        aiResponse = await generateHaikuResponse(messages, context);
+      } else {
+        console.log("ANTHROPIC_API_KEY not detected; trying fallback model");
+        aiResponse = await generateChatResponse(messages, context);
+      }
     } catch (error: any) {
       console.error("AI response error:", error?.message || error);
       console.error("Full error:", JSON.stringify(error, null, 2));
-      aiResponse =
-        "I apologize, but I'm having trouble processing your request right now. Please try again in a moment, or contact us directly at info@infiniterigservices.com or +231 88 191 5322.";
+
+      if (!hasAnthropicKey) {
+        aiResponse =
+          "The AI assistant is primed for Claude Haiku! Please provide or add your `ANTHROPIC_API_KEY` in `.env.local` to start chatting with the documentation-trained assistant.";
+      } else {
+        aiResponse =
+          "I apologize, but I'm having trouble processing your request right now. Please try again in a moment, or contact us directly at info@infiniterigservices.com or +231 88 191 5322.";
+      }
     }
 
     // Step 3: Manage conversation
@@ -171,6 +198,56 @@ async function searchRelevantDocuments(query: string, limit: number = 5) {
     return data || [];
   } catch (error) {
     console.error("Document search error:", error);
+    return [];
+  }
+}
+
+/**
+ * Fallback keyword search on local documentation files
+ */
+function searchLocalDocuments(query: string, limit: number = 5): any[] {
+  try {
+    const docsDir = path.join(process.cwd(), "documents");
+    if (!fs.existsSync(docsDir)) return [];
+
+    const files = fs.readdirSync(docsDir).filter((f) => f.endsWith(".txt") || f.endsWith(".md"));
+    const stopWords = new Set(["what", "is", "the", "and", "or", "to", "in", "for", "with", "about", "are", "you", "tell", "me"]);
+    const queryWords = query
+      .toLowerCase()
+      .split(/[^a-z0-9]+/)
+      .filter((w) => w.length > 2 && !stopWords.has(w));
+
+    if (queryWords.length === 0) return [];
+
+    const matches: { content: string; source_file: string; score: number }[] = [];
+
+    for (const file of files) {
+      const filePath = path.join(docsDir, file);
+      const fileContent = fs.readFileSync(filePath, "utf-8");
+      const paragraphs = fileContent.split(/\r?\n\s*\r?\n/).filter((p) => p.trim().length > 30);
+
+      for (const p of paragraphs) {
+        const pLower = p.toLowerCase();
+        let score = 0;
+        for (const word of queryWords) {
+          if (pLower.includes(word)) {
+            score += 1;
+          }
+        }
+        if (score > 0) {
+          matches.push({
+            content: p.trim(),
+            source_file: file,
+            score,
+          });
+        }
+      }
+    }
+
+    matches.sort((a, b) => b.score - a.score);
+    return matches.slice(0, limit);
+  } catch (err) {
+    console.error("Local document fallback error:", err);
     return [];
   }
 }

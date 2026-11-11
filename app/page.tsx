@@ -68,7 +68,7 @@ export default function HomePage() {
             </div>
             <div className="flex items-center space-x-2">
               <Award className="h-5 w-5 text-gold" />
-              <span className="font-medium">15+ Years Excellence</span>
+              <span className="font-medium">Founded 2025</span>
             </div>
             <div className="flex items-center space-x-2">
               <Globe className="h-5 w-5 text-primary" />

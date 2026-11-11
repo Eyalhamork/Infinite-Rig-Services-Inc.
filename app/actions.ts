@@ -40,8 +40,6 @@ const applicationSchema = z.object({
 })
 
 export async function submitContactForm(formData: FormData) {
-    const supabase = await createClient()
-
     const rawData = {
         name: formData.get('name'),
         email: formData.get('email'),
@@ -54,26 +52,33 @@ export async function submitContactForm(formData: FormData) {
     const validatedFields = contactSchema.safeParse(rawData)
 
     if (!validatedFields.success) {
-        return { error: 'Invalid form data' }
+        return { error: 'Invalid form data. Please fill out all required fields.' }
     }
 
-    const { error } = await supabase.from('contact_submissions').insert({
-        full_name: validatedFields.data.name,
-        email: validatedFields.data.email,
-        company: validatedFields.data.company,
-        phone: validatedFields.data.phone,
-        subject: validatedFields.data.subject,
-        message: validatedFields.data.message,
-    })
-
-    if (error) {
-        console.error('Error submitting contact form:', error)
-        return { error: 'Failed to submit form' }
-    }
-
-    // Send email notification to admin
+    let dbSaved = false
     try {
-        await sendContactNotification({
+        const supabase = await createClient()
+        const { error } = await supabase.from('contact_submissions').insert({
+            full_name: validatedFields.data.name,
+            email: validatedFields.data.email,
+            company: validatedFields.data.company,
+            phone: validatedFields.data.phone,
+            subject: validatedFields.data.subject,
+            message: validatedFields.data.message,
+        })
+        if (!error) {
+            dbSaved = true
+        } else {
+            console.warn('Supabase contact submission insert warning:', error.message)
+        }
+    } catch (dbErr: any) {
+        console.warn('Supabase temporarily unavailable for contact submission:', dbErr?.message || dbErr)
+    }
+
+    // Send email notification to admin via Resend
+    let emailSent = false
+    try {
+        const emailRes = await sendContactNotification({
             name: validatedFields.data.name,
             email: validatedFields.data.email,
             phone: validatedFields.data.phone,
@@ -81,17 +86,21 @@ export async function submitContactForm(formData: FormData) {
             subject: validatedFields.data.subject,
             message: validatedFields.data.message,
         })
+        if (emailRes?.success) {
+            emailSent = true
+        }
     } catch (emailError) {
         console.error('Error sending contact notification email:', emailError)
-        // Don't fail the submission if email fails
+    }
+
+    if (!dbSaved && !emailSent) {
+        return { error: 'Failed to submit form. Please contact us directly at info@infiniterigservices.com or +231 88 191 5322.' }
     }
 
     return { success: true }
 }
 
 export async function submitQuoteForm(formData: FormData) {
-    const supabase = await createClient()
-
     const rawData = {
         service_area: formData.get('service_area'),
         full_name: formData.get('full_name'),
@@ -104,26 +113,33 @@ export async function submitQuoteForm(formData: FormData) {
     const validatedFields = quoteSchema.safeParse(rawData)
 
     if (!validatedFields.success) {
-        return { error: 'Invalid form data' }
+        return { error: 'Invalid form data. Please fill out all required fields.' }
     }
 
-    const { error } = await supabase.from('quote_submissions').insert({
-        service_area: validatedFields.data.service_area,
-        full_name: validatedFields.data.full_name,
-        company_name: validatedFields.data.company_name,
-        email: validatedFields.data.email,
-        phone: validatedFields.data.phone,
-        project_requirements: validatedFields.data.project_requirements,
-    })
-
-    if (error) {
-        console.error('Error submitting quote form:', error)
-        return { error: 'Failed to submit quote request' }
-    }
-
-    // Send email notification to admin
+    let dbSaved = false
     try {
-        await sendQuoteNotification({
+        const supabase = await createClient()
+        const { error } = await supabase.from('quote_submissions').insert({
+            service_area: validatedFields.data.service_area,
+            full_name: validatedFields.data.full_name,
+            company_name: validatedFields.data.company_name,
+            email: validatedFields.data.email,
+            phone: validatedFields.data.phone,
+            project_requirements: validatedFields.data.project_requirements,
+        })
+        if (!error) {
+            dbSaved = true
+        } else {
+            console.warn('Supabase quote submission insert warning:', error.message)
+        }
+    } catch (dbErr: any) {
+        console.warn('Supabase temporarily unavailable for quote submission:', dbErr?.message || dbErr)
+    }
+
+    // Send email notification to admin via Resend
+    let emailSent = false
+    try {
+        const emailRes = await sendQuoteNotification({
             name: validatedFields.data.full_name,
             email: validatedFields.data.email,
             phone: validatedFields.data.phone,
@@ -131,17 +147,21 @@ export async function submitQuoteForm(formData: FormData) {
             serviceArea: validatedFields.data.service_area,
             requirements: validatedFields.data.project_requirements,
         })
+        if (emailRes?.success) {
+            emailSent = true
+        }
     } catch (emailError) {
         console.error('Error sending quote notification email:', emailError)
-        // Don't fail the submission if email fails
+    }
+
+    if (!dbSaved && !emailSent) {
+        return { error: 'Failed to submit quote request. Please try again or contact us directly at info@infiniterigservices.com.' }
     }
 
     return { success: true }
 }
 
 export async function submitApplication(formData: FormData) {
-    const supabase = await createClient()
-
     const rawData = {
         job_id: formData.get('job_id'),
         job_title: formData.get('job_title'),
@@ -162,8 +182,11 @@ export async function submitApplication(formData: FormData) {
     }
 
     const fullName = `${validatedFields.data.first_name} ${validatedFields.data.last_name}`
+    let applicationId = `app_${Date.now()}`
+    let dbSaved = false
 
     try {
+        const supabase = await createClient()
         // First, check if the user already has a profile
         const { data: existingProfile } = await supabase
             .from('profiles')
@@ -171,15 +194,7 @@ export async function submitApplication(formData: FormData) {
             .eq('email', validatedFields.data.email)
             .single()
 
-        let applicantId = existingProfile?.id
-
-        // If no profile exists, create a new one (for guest applicants)
-        // Note: For authenticated users, profile would already exist
-        if (!applicantId) {
-            // For guest submissions, we'll use the auth.users approach or store without profile
-            // Since we don't have auth here, we'll create the application with minimal data
-            // In production, you'd want proper auth flow for applicants
-        }
+        const applicantId = existingProfile?.id
 
         // Insert the application
         const { data: application, error: appError } = await supabase
@@ -196,44 +211,52 @@ export async function submitApplication(formData: FormData) {
             .select()
             .single()
 
-        if (appError) {
-            console.error('Error creating application:', appError)
-            return { error: 'Failed to submit application. Please try again.' }
+        if (!appError && application) {
+            applicationId = application.id
+            dbSaved = true
+        } else {
+            console.warn('Supabase application insert warning:', appError?.message)
         }
+    } catch (dbErr: any) {
+        console.warn('Supabase temporarily unavailable for application:', dbErr?.message || dbErr)
+    }
 
-        // Send confirmation email to applicant
-        try {
-            await sendApplicationConfirmation(
-                validatedFields.data.email,
-                fullName,
-                validatedFields.data.job_title
-            )
-        } catch (emailError) {
-            console.error('Error sending confirmation email:', emailError)
-        }
+    // Send confirmation email to applicant
+    let emailSent = false
+    try {
+        const confRes = await sendApplicationConfirmation(
+            validatedFields.data.email,
+            fullName,
+            validatedFields.data.job_title
+        )
+        if (confRes?.success) emailSent = true
+    } catch (emailError) {
+        console.error('Error sending confirmation email:', emailError)
+    }
 
-        // Send notification email to HR
-        try {
-            await sendHRNotification({
-                applicantName: fullName,
-                applicantEmail: validatedFields.data.email,
-                applicantPhone: validatedFields.data.phone,
-                jobTitle: validatedFields.data.job_title,
-                resumeUrl: validatedFields.data.resume_url,
-                coverLetter: validatedFields.data.cover_letter,
-                currentPosition: validatedFields.data.current_position,
-            })
-        } catch (emailError) {
-            console.error('Error sending HR notification email:', emailError)
-        }
+    // Send notification email to HR
+    try {
+        const hrRes = await sendHRNotification({
+            applicantName: fullName,
+            applicantEmail: validatedFields.data.email,
+            applicantPhone: validatedFields.data.phone,
+            jobTitle: validatedFields.data.job_title,
+            resumeUrl: validatedFields.data.resume_url,
+            coverLetter: validatedFields.data.cover_letter,
+            currentPosition: validatedFields.data.current_position,
+        })
+        if (hrRes?.success) emailSent = true
+    } catch (emailError) {
+        console.error('Error sending HR notification email:', emailError)
+    }
 
-        return {
-            success: true,
-            applicationId: application.id,
-        }
-    } catch (error) {
-        console.error('Application submission error:', error)
-        return { error: 'An unexpected error occurred. Please try again.' }
+    if (!dbSaved && !emailSent) {
+        return { error: 'Failed to submit application. Please try again or email hr@infiniterigservices.com directly.' }
+    }
+
+    return {
+        success: true,
+        applicationId,
     }
 }
 

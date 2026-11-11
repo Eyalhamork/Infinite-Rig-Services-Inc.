@@ -81,7 +81,7 @@ export async function generateChatResponse(
 ): Promise<string> {
   try {
     const model = genAI.getGenerativeModel({
-      model: 'gemini-pro',
+      model: 'gemini-1.5-flash',
       safetySettings,
       generationConfig: {
         temperature: 0.7,

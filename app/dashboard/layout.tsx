@@ -66,6 +66,12 @@ const defaultNavItems: NavItem[] = [
     roles: ["super_admin", "management"],
   },
   {
+    label: "Quote Requests",
+    href: "/dashboard/quotes",
+    icon: ClipboardList,
+    roles: ["super_admin", "management"],
+  },
+  {
     label: "Projects",
     href: "/dashboard/projects",
     icon: FolderKanban,
@@ -187,6 +193,17 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         return acc;
       }, {});
 
+      // Fetch quote requests count separately as they don't have notifications yet
+      const { count: quoteCount } = await supabase
+        .from("quote_submissions")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "new");
+
+      const { count: contactCount } = await supabase
+        .from("contact_submissions")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "new");
+
       setNavItems((prevItems) =>
         prevItems.map((item) => {
           if (item.label === "Applications") {
@@ -198,6 +215,12 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           }
           if (item.label === "Service Inbox") {
             return { ...item, badge: counts["service_request"] || 0 };
+          }
+          if (item.label === "Quote Requests") {
+            return { ...item, badge: quoteCount || 0 };
+          }
+          if (item.label === "Contact Submissions") {
+            return { ...item, badge: contactCount || 0 };
           }
           return item;
         })

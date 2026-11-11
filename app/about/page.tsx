@@ -50,40 +50,25 @@ export default function AboutPage() {
 
   const milestones = [
     {
-      year: "2010",
+      year: "2025",
       title: "Foundation",
-      desc: "Established in Monrovia with a vision to transform offshore support.",
-    },
-    {
-      year: "2012",
-      title: "ISO Certification",
-      desc: "Achieved ISO 9001:2015, setting the standard for quality.",
-    },
-    {
-      year: "2015",
-      title: "Regional Expansion",
-      desc: "Extended operations to serve major clients across West Africa.",
-    },
-    {
-      year: "2018",
-      title: "500+ Projects",
-      desc: "Celebrated a major milestone of successful project deliveries.",
-    },
-    {
-      year: "2020",
-      title: "Digital Leap",
-      desc: "Integrated advanced digital systems for operational efficiency.",
+      desc: "Established in Monrovia with a disruptive vision to modernize offshore support.",
     },
     {
       year: "2025",
-      title: "Market Leader",
-      desc: "Recognized as the premier offshore services partner in the region.",
+      title: "ISO Certification",
+      desc: "Rapidly achieved ISO 9001:2015, setting our initial standard for quality.",
+    },
+    {
+      year: "2026",
+      title: "Regional Launch",
+      desc: "Actively deploying solutions to serve major clients across West Africa.",
     },
   ];
 
   const stats = [
-    { value: "15+", label: "Years Experience", icon: TrendingUp },
-    { value: "500+", label: "Projects Delivered", icon: CheckCircle2 },
+    { value: "2025", label: "Founded", icon: TrendingUp },
+    { value: "50+", label: "Target Projects", icon: CheckCircle2 },
     { value: "200+", label: "Expert Staff", icon: Users },
     { value: "100%", label: "Safety Record", icon: Shield },
   ];
@@ -145,24 +130,26 @@ export default function AboutPage() {
                 <span className="text-primary font-bold text-sm uppercase tracking-widest">Our Story</span>
               </div>
               <h2 className="text-4xl md:text-5xl font-bold text-navy-900 mb-8 leading-tight">
-                Building Excellence <br /> Since <span className="text-primary">2010</span>
+                Building Excellence <br /> Since <span className="text-primary">2025</span>
               </h2>
               <div className="space-y-6 text-lg text-gray-600 leading-relaxed font-light">
                 <p>
-                  Founded in the heart of Monrovia, Infinite Rig Services
-                  emerged with a clear vision: to become Liberia's premier
-                  provider of offshore support services. What began as a strategic initiative has evolved into a regional power-house.
+                  Founded in 2025 in the heart of Monrovia, Infinite Rig Services
+                  emerged with a bold vision: to disrupt and modernize Liberia's
+                  offshore support sector. We are built on modern principles,
+                  cutting-edge technology, and an elite team of experts dedicated to
+                  operational excellence.
                 </p>
                 <p>
-                  Our journey has been marked by unwavering commitment to
-                  <strong className="text-navy-900 font-semibold"> safety, operational excellence, and client satisfaction</strong>.
-                  Through strategic investments in people, technology, and
-                  infrastructure, we've built a reputation for accuracy and reliability in the most demanding environments.
+                  Our journey is driven by an unwavering commitment to
+                  <strong className="text-navy-900 font-semibold"> safety, efficiency, and transparency</strong>.
+                  By utilizing the latest digital integration and world-class
+                  infrastructure from day one, we provide reliability that
+                  legacy operators cannot match.
                 </p>
                 <p>
-                  Today, with over <strong className="text-navy-900 font-semibold">200 dedicated professionals</strong> and a track
-                  record of successful projects, we continue to set
-                  industry standards while maintaining our core values.
+                  Today, with a rapidly growing team of <strong className="text-navy-900 font-semibold">dedicated professionals</strong> and a clear
+                  roadmap for regional dominance, we are setting the new industry standard for West Africa.
                 </p>
               </div>
             </motion.div>
@@ -205,8 +192,8 @@ export default function AboutPage() {
                     <TrendingUp className="w-8 h-8" />
                   </div>
                   <div>
-                    <p className="text-3xl font-bold text-navy-900">15+</p>
-                    <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">Years Experience</p>
+                    <p className="text-3xl font-bold text-navy-900">2025</p>
+                    <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">Founded</p>
                   </div>
                 </div>
                 <div className="h-px bg-gray-200 mb-6"></div>
@@ -215,8 +202,8 @@ export default function AboutPage() {
                     <CheckCircle2 className="w-8 h-8" />
                   </div>
                   <div>
-                    <p className="text-3xl font-bold text-navy-900">500+</p>
-                    <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">Projects Done</p>
+                    <p className="text-3xl font-bold text-navy-900">100%</p>
+                    <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">Safety Focus</p>
                   </div>
                 </div>
               </div>

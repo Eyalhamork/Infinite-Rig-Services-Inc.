@@ -5,7 +5,8 @@ import {
     Shield,
     Search,
     Compass,
-    ShieldAlert
+    ShieldAlert,
+    Trash2
 } from "lucide-react";
 
 export const heroServices = [
@@ -85,5 +86,16 @@ export const heroServices = [
         link: "/services/security",
         color: "slate",
         badge: "Armed Protection"
+    },
+    {
+        id: "waste-management",
+        title: "Waste Management",
+        description: "Integrated offshore waste management focusing on hazardous material handling and environmental compliance.",
+        icon: Trash2,
+        gradient: "from-teal-600 to-teal-900",
+        image: "/images/hero-waste-management.png",
+        link: "/services/waste-management",
+        color: "teal",
+        badge: "Eco Solutions"
     }
 ];

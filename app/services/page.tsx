@@ -280,7 +280,7 @@ export default function ServicesPage() {
               </span>
             </h1>
             <p className="text-xl md:text-2xl text-gray-300 leading-relaxed max-w-3xl mx-auto font-light">
-              Three decades of excellence delivering world-class offshore
+              Founded in 2025 to deliver world-class offshore
               support, supply chain management, and manning services across West Africa.
             </p>
           </motion.div>

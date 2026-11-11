@@ -19,6 +19,22 @@ interface Message {
   timestamp: Date;
 }
 
+function formatChatMessage(content: string) {
+  if (!content) return "";
+  const parts = content.split(/(\*\*.*?\*\*)/g);
+  return parts.map((part, index) => {
+    if (part.startsWith("**") && part.endsWith("**") && part.length >= 4) {
+      return (
+        <strong key={index} className="font-semibold text-inherit">
+          {part.slice(2, -2)}
+        </strong>
+      );
+    }
+    const clean = part.replace(/^#+\s+/gm, "");
+    return <span key={index}>{clean}</span>;
+  });
+}
+
 export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -217,9 +233,9 @@ export default function ChatPage() {
                           : "bg-gray-100 text-gray-900"
                       }`}
                     >
-                      <p className="text-sm leading-relaxed whitespace-pre-wrap">
-                        {message.content}
-                      </p>
+                      <div className="text-sm leading-relaxed whitespace-pre-wrap">
+                        {formatChatMessage(message.content)}
+                      </div>
                     </div>
 
                     {/* Timestamp and Actions */}

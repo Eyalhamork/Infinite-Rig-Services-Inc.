@@ -21,6 +21,22 @@ interface Message {
   timestamp: Date;
 }
 
+function formatChatMessage(content: string) {
+  if (!content) return "";
+  const parts = content.split(/(\*\*.*?\*\*)/g);
+  return parts.map((part, index) => {
+    if (part.startsWith("**") && part.endsWith("**") && part.length >= 4) {
+      return (
+        <strong key={index} className="font-semibold text-inherit">
+          {part.slice(2, -2)}
+        </strong>
+      );
+    }
+    const clean = part.replace(/^#+\s+/gm, "");
+    return <span key={index}>{clean}</span>;
+  });
+}
+
 export default function FloatingChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
@@ -375,9 +391,9 @@ export default function FloatingChatWidget() {
                           : "bg-white text-gray-900 shadow-sm"
                       }`}
                     >
-                      <p className="text-sm leading-relaxed whitespace-pre-wrap">
-                        {message.content}
-                      </p>
+                      <div className="text-sm leading-relaxed whitespace-pre-wrap">
+                        {formatChatMessage(message.content)}
+                      </div>
                     </div>
                     <p className="text-xs text-gray-400 mt-1 px-1">
                       {message.timestamp.toLocaleTimeString("en-US", {

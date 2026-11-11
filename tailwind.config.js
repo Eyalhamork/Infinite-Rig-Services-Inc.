@@ -34,8 +34,8 @@ module.exports = {
 					'800': '#B04723',
 					'900': '#943B1D',
 					'950': '#5C2510',
-					DEFAULT: 'hsl(var(--primary))',
-					foreground: 'hsl(var(--primary-foreground))'
+					DEFAULT: '#FF6B35',
+					foreground: '#FFFFFF'
 				},
 				navy: {
 					'50': '#E6F0F7',

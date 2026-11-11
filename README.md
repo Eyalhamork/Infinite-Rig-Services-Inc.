@@ -136,9 +136,20 @@ The platform supports **6 distinct user roles**:
 
 ## ✨ Key Features
 
-### Public Website
+### 🛠️ Core Services
+Infinite Rig Services provides a full spectrum of offshore solutions:
+
+- **🏗️ Offshore Operations:** Expert technical support for drilling rigs and platforms.
+- **📦 Supply Chain & Logistics:** End-to-end procurement and delivery for remote operations.
+- **👥 Manning Services:** Specialized recruitment, training, and crew management.
+- **🛡️ HSE Consulting:** Building world-class safety cultures (ISO standards).
+- **♻️ Waste Management:** Integrated hazardous and non-hazardous waste solutions.
+- **🔍 Asset Integrity & Inspection:** Advanced NDT and structural assessments.
+- **⚓ Rig Move & Marine Towage:** Safe rig relocation and station-keeping.
+- **🔒 Maritime Security:** Armed protection and anti-piracy services.
+
 - 🏠 Homepage with hero video and company stats
-- 📋 Detailed service pages (Offshore/Supply/Manning)
+- 📋 Detailed service pages for all 8 core sectors
 - 👥 About Us with team profiles
 - 🛡️ HSSE (Health, Safety, Security, Environment) section
 - 💼 Careers portal with live job board

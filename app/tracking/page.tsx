@@ -161,18 +161,18 @@ function TrackingContent() {
                     >
                         <form onSubmit={handleSearch} className="relative">
                             <div className="relative group">
-                                <div className="absolute inset-0 bg-gradient-to-r from-green-500 to-teal-500 rounded-2xl blur opacity-20 group-hover:opacity-30 transition-opacity"></div>
+                                <div className="absolute inset-0 bg-gradient-to-r from-green-500/30 to-teal-500/30 rounded-2xl blur opacity-30 group-hover:opacity-50 transition-opacity"></div>
                                 <input
                                     type="text"
                                     value={trackingId}
                                     onChange={(e) => setTrackingId(e.target.value)}
                                     placeholder="Enter Tracking ID (e.g., IRS-8842...)"
-                                    className="w-full bg-navy-800/80 backdrop-blur-xl border border-white/10 text-white placeholder-gray-500 rounded-2xl py-6 pl-6 pr-36 focus:outline-none focus:border-green-500/50 focus:ring-1 focus:ring-green-500/50 transition-all text-lg shadow-2xl"
+                                    className="w-full bg-white border border-gray-200 text-gray-900 placeholder-gray-400 rounded-2xl py-6 pl-6 pr-36 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all text-lg font-medium shadow-2xl"
                                 />
                                 <button
                                     type="submit"
                                     disabled={isSearching}
-                                    className="absolute right-2 top-2 bottom-2 bg-green-600 hover:bg-green-500 text-white px-8 rounded-xl font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                    className="absolute right-2 top-2 bottom-2 bg-green-600 hover:bg-green-500 text-white px-8 rounded-xl font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-md"
                                 >
                                     {isSearching ? (
                                         <>
@@ -188,12 +188,12 @@ function TrackingContent() {
                                 </button>
                             </div>
                         </form>
-                        <div className="mt-4 flex items-center justify-center gap-6 text-sm text-gray-500">
+                        <div className="mt-4 flex items-center justify-center gap-6 text-sm text-gray-400">
                             <span className="flex items-center gap-1">
-                                <CheckCircle2 className="w-3 h-3 text-green-500" /> Live Data
+                                <CheckCircle2 className="w-3.5 h-3.5 text-green-400" /> Live Data
                             </span>
                             <span className="flex items-center gap-1">
-                                <CheckCircle2 className="w-3 h-3 text-green-500" /> Secure Access
+                                <CheckCircle2 className="w-3.5 h-3.5 text-green-400" /> Secure Access
                             </span>
                         </div>
                     </motion.div>
@@ -209,46 +209,47 @@ function TrackingContent() {
                             >
                                 {/* Supply Chain Visuals - Only if Supply */}
                                 {trackingData.isSupply && (
-                                    <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 mb-8 relative overflow-hidden">
-                                        <div className="absolute top-0 right-0 p-8 opacity-10">
-                                            <Anchor className="w-32 h-32 text-white" />
+                                    <div className="bg-white text-gray-900 border border-gray-100 rounded-3xl p-8 mb-8 shadow-2xl relative overflow-hidden">
+                                        <div className="absolute top-0 right-0 p-8 opacity-5">
+                                            <Anchor className="w-32 h-32 text-navy-900" />
                                         </div>
 
                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
                                             <div>
-                                                <h3 className="text-gray-400 text-sm uppercase tracking-wider mb-1">Status</h3>
-                                                <div className="text-2xl font-bold text-green-400 flex items-center gap-2">
+                                                <h3 className="text-gray-500 text-sm uppercase tracking-wider mb-1 font-semibold">Status</h3>
+                                                <div className="text-2xl font-bold text-green-600 flex items-center gap-2">
                                                     <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
                                                     {trackingData.status}
                                                 </div>
                                             </div>
                                             <div>
-                                                <h3 className="text-gray-400 text-sm uppercase tracking-wider mb-1">Target Date</h3>
-                                                <div className="text-2xl font-bold text-white">{trackingData.eta}</div>
+                                                <h3 className="text-gray-500 text-sm uppercase tracking-wider mb-1 font-semibold">Target Date</h3>
+                                                <div className="text-2xl font-bold text-gray-900">{trackingData.eta}</div>
                                             </div>
                                             <div>
-                                                <h3 className="text-gray-400 text-sm uppercase tracking-wider mb-1">Vessel/Ref</h3>
-                                                <div className="text-2xl font-bold text-white">{trackingData.vessel}</div>
+                                                <h3 className="text-gray-500 text-sm uppercase tracking-wider mb-1 font-semibold">Vessel / Ref</h3>
+                                                <div className="text-2xl font-bold text-gray-900">{trackingData.vessel}</div>
                                             </div>
                                         </div>
 
                                         {/* Progress Bar */}
-                                        <div className="mt-10 mb-2">
-                                            <div className="flex justify-between text-sm text-gray-400 mb-2">
-                                                <span>Origin</span>
-                                                <span>Destination</span>
+                                        <div className="mt-10 mb-2 relative z-10">
+                                            <div className="flex justify-between text-sm text-gray-600 font-medium mb-2">
+                                                <span>Origin: <strong className="text-gray-900">{trackingData.origin}</strong></span>
+                                                <span>Destination: <strong className="text-gray-900">{trackingData.destination}</strong></span>
                                             </div>
-                                            <div className="h-2 bg-navy-900 rounded-full overflow-hidden">
+                                            <div className="h-3 bg-gray-100 rounded-full overflow-hidden p-0.5 border border-gray-200">
                                                 <motion.div
                                                     initial={{ width: 0 }}
                                                     animate={{ width: `${trackingData.progress}%` }}
                                                     transition={{ duration: 1, delay: 0.5 }}
-                                                    className="h-full bg-gradient-to-r from-green-600 to-teal-400"
+                                                    className="h-full bg-gradient-to-r from-green-600 to-teal-500 rounded-full"
                                                 ></motion.div>
                                             </div>
-                                            <div className="flex justify-between text-sm font-medium text-white mt-2">
-                                                <span>{trackingData.origin}</span>
-                                                <span>{trackingData.destination}</span>
+                                            <div className="flex justify-between text-xs text-gray-500 mt-2 font-mono">
+                                                <span>Dispatched</span>
+                                                <span className="font-bold text-green-700">{trackingData.progress}% In Transit</span>
+                                                <span>Delivered</span>
                                             </div>
                                         </div>
                                     </div>
@@ -256,27 +257,27 @@ function TrackingContent() {
 
                                 {/* Generic Project Header - If NOT Supply */}
                                 {!trackingData.isSupply && (
-                                    <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 mb-8 text-center">
-                                        <h2 className="text-3xl font-bold mb-2">Project Timeline</h2>
-                                        <p className="text-gray-400">{trackingData.status}</p>
-                                        <div className="mt-6 w-full bg-navy-900 rounded-full h-2 max-w-lg mx-auto overflow-hidden">
+                                    <div className="bg-white text-gray-900 border border-gray-100 rounded-3xl p-8 mb-8 text-center shadow-2xl">
+                                        <h2 className="text-3xl font-bold mb-2 text-gray-900">Project Timeline</h2>
+                                        <p className="text-gray-600 font-medium">{trackingData.status}</p>
+                                        <div className="mt-6 w-full bg-gray-100 border border-gray-200 rounded-full h-3 max-w-lg mx-auto overflow-hidden p-0.5">
                                             <div
-                                                className="bg-green-500 h-full transition-all duration-1000"
+                                                className="bg-gradient-to-r from-green-600 to-teal-500 h-full rounded-full transition-all duration-1000"
                                                 style={{ width: `${trackingData.progress}%` }}
                                             ></div>
                                         </div>
-                                        <div className="mt-2 text-sm text-green-400">{trackingData.progress}% Complete</div>
+                                        <div className="mt-3 text-sm font-bold text-green-700">{trackingData.progress}% Complete</div>
                                     </div>
                                 )}
 
                                 {/* Timeline */}
-                                <div className="bg-navy-800/50 backdrop-blur-md border border-white/5 rounded-3xl p-8">
-                                    <h3 className="text-xl font-bold mb-8 flex items-center gap-2">
-                                        <Calendar className="w-5 h-5 text-green-500" />
+                                <div className="bg-white text-gray-900 border border-gray-100 rounded-3xl p-8 shadow-2xl">
+                                    <h3 className="text-xl font-bold mb-8 flex items-center gap-2 text-gray-900">
+                                        <Calendar className="w-5 h-5 text-green-600" />
                                         Project Milestones
                                     </h3>
 
-                                    <div className="space-y-8 relative before:absolute before:left-[27px] before:top-4 before:bottom-4 before:w-[2px] before:bg-white/10">
+                                    <div className="space-y-8 relative before:absolute before:left-[27px] before:top-4 before:bottom-4 before:w-[2px] before:bg-gray-200">
                                         {trackingData.events.map((event: any, i: number) => (
                                             <motion.div
                                                 key={i}
@@ -285,24 +286,24 @@ function TrackingContent() {
                                                 transition={{ delay: 0.2 + (i * 0.1) }}
                                                 className="relative pl-20"
                                             >
-                                                <div className={`absolute left-0 top-1 w-14 h-14 rounded-2xl flex items-center justify-center border ${event.completed
-                                                    ? 'bg-green-500/10 border-green-500/30 text-green-500'
+                                                <div className={`absolute left-0 top-1 w-14 h-14 rounded-2xl flex items-center justify-center border shadow-sm ${event.completed
+                                                    ? 'bg-green-50 border-green-200 text-green-600'
                                                     : event.current
-                                                        ? 'bg-white/10 border-white/30 text-white animate-pulse'
-                                                        : 'bg-navy-900 border-white/10 text-gray-600'
+                                                        ? 'bg-orange-50 border-orange-300 text-orange-600 animate-pulse'
+                                                        : 'bg-gray-50 border-gray-200 text-gray-400'
                                                     }`}>
                                                     <event.icon className="w-6 h-6" />
                                                 </div>
 
                                                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                                                     <div>
-                                                        <h4 className={`text-lg font-bold ${event.completed || event.current ? 'text-white' : 'text-gray-500'}`}>
+                                                        <h4 className={`text-lg font-bold ${event.completed || event.current ? 'text-gray-900' : 'text-gray-400'}`}>
                                                             {event.status}
                                                         </h4>
-                                                        <p className="text-gray-400 text-sm">{event.location}</p>
+                                                        <p className="text-gray-500 text-sm">{event.location}</p>
                                                     </div>
                                                     <div className="text-right">
-                                                        <span className={`text-sm font-mono ${event.completed ? 'text-green-400' : 'text-gray-500'}`}>
+                                                        <span className={`text-sm font-mono font-medium ${event.completed ? 'text-green-700 bg-green-50 px-2.5 py-1 rounded-md' : 'text-gray-400'}`}>
                                                             {event.date}
                                                         </span>
                                                     </div>

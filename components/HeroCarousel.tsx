@@ -93,13 +93,13 @@ export default function HeroCarousel() {
                                 src={heroServices[currentIndex].image}
                                 alt={heroServices[currentIndex].title}
                                 fill
-                                className="object-cover mix-blend-overlay opacity-60"
+                                className="object-cover mix-blend-overlay opacity-80"
                                 priority
                             />
                         )}
 
-                        {/* Dark Overlay for Text Readability */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/80 to-navy/40" />
+                        {/* Dark Overlay for Text Readability - Tuned to 70% bottom, 40% top */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-navy/70 via-navy/55 to-navy/40" />
 
                         {/* Pattern Overlay */}
                         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-30"></div>
@@ -124,12 +124,12 @@ export default function HeroCarousel() {
                                 </span>
 
                                 {/* Title */}
-                                <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-8 leading-tight tracking-tight">
+                                <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-8 leading-tight tracking-tight drop-shadow-[0_4px_16px_rgba(0,0,0,0.6)]">
                                     {heroServices[currentIndex].title}
                                 </h1>
 
                                 {/* Description */}
-                                <p className="text-xl md:text-2xl text-gray-100 mb-12 max-w-3xl mx-auto leading-relaxed font-light">
+                                <p className="text-xl md:text-2xl text-gray-100 mb-12 max-w-3xl mx-auto leading-relaxed font-light drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]">
                                     {heroServices[currentIndex].description}
                                 </p>
 

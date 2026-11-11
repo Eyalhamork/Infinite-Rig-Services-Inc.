@@ -69,3 +69,12 @@ public/fallback-*.js
 
 # Windows reserved names
 nul
+
+# Development documentation, build logs and prompts
+*.txt
+!public/robots.txt
+documents/
+DEPLOYMENT_CHECKLIST.md
+SETUP.md
+QUICKSTART.md
+Employee-QR Functionality(NOT DONE)/
