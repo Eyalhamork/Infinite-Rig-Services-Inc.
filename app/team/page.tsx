@@ -37,6 +37,7 @@ const teamMembers = [
     department: "Executive Leadership",
     tier: "executive",
     bio: "Visionary leader driving strategic growth and operational excellence across West African offshore markets.",
+    image: "/images/employees/ceo.jpg",
     email: "mkermue@infiniterigservices.com",
     linkedin: "#",
   },
@@ -46,6 +47,7 @@ const teamMembers = [
     department: "Executive Leadership",
     tier: "executive",
     bio: "Strategic operations executive ensuring delivery of world-class offshore support services.",
+    image: "/images/employees/placeholder.svg",
     email: "mwrotto@infiniterigservices.com",
     linkedin: "#",
   },
@@ -56,6 +58,7 @@ const teamMembers = [
     department: "Human Resources",
     tier: "management",
     bio: "Leading talent acquisition, development, and organizational culture initiatives.",
+    image: "/images/employees/admin and hr manager.jpg",
     email: "njallah@infiniterigservices.com",
     linkedin: "#",
   },
@@ -65,6 +68,7 @@ const teamMembers = [
     department: "Supply Chain",
     tier: "management",
     bio: "Managing strategic procurement and supply chain operations for offshore projects.",
+    image: "/images/employees/procurement and supply manager.png",
     email: "phoward@infiniterigservices.com",
     linkedin: "#",
   },
@@ -74,6 +78,7 @@ const teamMembers = [
     department: "Information Technology",
     tier: "management",
     bio: "Driving digital transformation and technology infrastructure excellence.",
+    image: "/images/employees/it manager.jpg",
     email: "mkromah@infiniterigservices.com",
     linkedin: "#",
   },
@@ -83,6 +88,7 @@ const teamMembers = [
     department: "Corporate Communications",
     tier: "management",
     bio: "Leading corporate communications, brand strategy, and stakeholder engagement.",
+    image: "/images/employees/placeholder.svg",
     email: "wnyanton@infiniterigservices.com",
     linkedin: "#",
   },
@@ -93,6 +99,7 @@ const teamMembers = [
     department: "Supply Chain",
     tier: "specialist",
     bio: "Providing expert guidance on procurement strategies and supply chain optimization.",
+    image: "/images/employees/procurement and consultancy.jpg",
     email: "fmcdonnough@infiniterigservices.com",
     linkedin: "#",
   },
@@ -102,6 +109,7 @@ const teamMembers = [
     department: "Information Technology",
     tier: "specialist",
     bio: "Technical expert ensuring robust IT systems and digital infrastructure.",
+    image: "/images/employees/placeholder.svg",
     email: "khoward@infiniterigservices.com",
     linkedin: "#",
   },
@@ -111,6 +119,7 @@ const teamMembers = [
     department: "Operations",
     tier: "specialist",
     bio: "Coordinating logistics and ensuring timely delivery of materials and services.",
+    image: "/images/employees/placeholder.svg",
     email: "djallah@infiniterigservices.com",
     linkedin: "#",
   },
@@ -120,6 +129,7 @@ const teamMembers = [
     department: "Corporate Communications",
     tier: "specialist",
     bio: "Enhancing brand visibility and managing internal and external communications strategies.",
+    image: "/images/employees/placeholder.svg",
     email: "kjallah@infiniterigservices.com",
     linkedin: "#",
   },
@@ -129,6 +139,7 @@ const teamMembers = [
     department: "Human Resources",
     tier: "specialist",
     bio: "Providing essential administrative support and ensuring smooth office operations.",
+    image: "/images/employees/placeholder.svg",
     email: "mwilliams@infiniterigservices.com",
     linkedin: "#",
   },
@@ -291,7 +302,7 @@ export default function TeamPage() {
                   <div className="flex flex-col md:flex-row h-full">
                     <div className="md:w-2/5 relative h-96 md:h-auto">
                       <Image
-                        src={`/images/team/${member.name.toLowerCase().replace(/\./g, "").replace(/\s+/g, "-")}.jpg`}
+                        src={member.image || "/images/employees/placeholder.svg"}
                         alt={member.name}
                         fill
                         className="object-cover transition-transform duration-700 group-hover:scale-105"
@@ -353,7 +364,7 @@ export default function TeamPage() {
                 >
                   <div className="relative h-72 overflow-hidden bg-gray-100">
                     <Image
-                      src={`/images/team/${member.name.toLowerCase().replace(/\./g, "").replace(/\s+/g, "-")}.jpg`}
+                      src={member.image || "/images/employees/placeholder.svg"}
                       alt={member.name}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -402,7 +413,7 @@ export default function TeamPage() {
                   {/* Upgraded Image Section - Larger */}
                   <div className="relative w-full sm:w-40 h-56 sm:h-full shrink-0 bg-gray-100">
                     <Image
-                      src={`/images/team/${member.name.toLowerCase().replace(/\./g, "").replace(/\s+/g, "-")}.jpg`}
+                      src={member.image || "/images/employees/placeholder.svg"}
                       alt={member.name}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
