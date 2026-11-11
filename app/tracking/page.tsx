@@ -48,21 +48,114 @@ function TrackingContent() {
     const fetchTrackingValues = async (code: string) => {
         setIsSearching(true);
         setShowResult(false);
+
+        const normalizedCode = code.trim().toUpperCase();
+
+        // 1. Built-in Demo Tracking Code (Instant Demo for Portfolios & Upwork)
+        if (normalizedCode === "IRS-8842" || normalizedCode === "IRS-8842-WX" || normalizedCode === "DEMO" || normalizedCode === "IRS-DEMO") {
+            setTimeout(() => {
+                setTrackingData({
+                    id: "IRS-8842-WX",
+                    status: "IN TRANSIT - ON SCHEDULE",
+                    origin: "Port of Monrovia, Terminal 2",
+                    destination: "Offshore Block 14, Platform Bravo",
+                    vessel: "MV Ocean Pioneer (IMO 9482103)",
+                    eta: "Nov 18, 2026",
+                    progress: 68,
+                    isSupply: true,
+                    events: [
+                        {
+                            date: "Nov 08, 2026",
+                            location: "Monrovia Central Logistics Hub",
+                            status: "Manifest Verified & Customs Clearance",
+                            completed: true,
+                            current: false,
+                            icon: CheckCircle2,
+                        },
+                        {
+                            date: "Nov 10, 2026",
+                            location: "Port of Monrovia, Berth 4",
+                            status: "Heavy Drilling Hardware Loaded & Secured",
+                            completed: true,
+                            current: false,
+                            icon: CheckCircle2,
+                        },
+                        {
+                            date: "Nov 11, 2026",
+                            location: "Liberian Coastal Transit Sector A",
+                            status: "Vessel Underway to Offshore Field",
+                            completed: false,
+                            current: true,
+                            icon: Clock,
+                        },
+                        {
+                            date: "Nov 15, 2026",
+                            location: "Block 14 Outer Perimeter",
+                            status: "Platform Approach & Dynamic Positioning Setup",
+                            completed: false,
+                            current: false,
+                            icon: Clock,
+                        },
+                        {
+                            date: "Nov 18, 2026",
+                            location: "Platform Bravo Rig Deck",
+                            status: "Final Offload & Technical Handover",
+                            completed: false,
+                            current: false,
+                            icon: Clock,
+                        },
+                    ],
+                });
+                setShowResult(true);
+                setIsSearching(false);
+            }, 300);
+            return;
+        }
+
         try {
+            // 2. Try Supabase RPC
+            let rawData: any = null;
             const { data, error } = await supabase.rpc('get_tracking_details', {
-                p_tracking_code: code
+                p_tracking_code: normalizedCode
             });
 
-            if (error) throw error;
+            if (!error && data) {
+                rawData = data;
+            } else {
+                // Fallback to direct table query if RPC encounters column mismatch
+                const { data: projectData, error: projError } = await supabase
+                    .from('projects')
+                    .select('*, project_milestones(*)')
+                    .eq('tracking_code', normalizedCode)
+                    .single();
 
-            if (!data) {
-                toast.error("Tracking ID not found. Please check and try again.");
+                if (!projError && projectData) {
+                    rawData = {
+                        tracking_code: projectData.tracking_code,
+                        service_type: projectData.service_type,
+                        status: projectData.status,
+                        start_date: projectData.start_date,
+                        end_date: projectData.end_date,
+                        metadata: projectData.metadata,
+                        milestones: (projectData.project_milestones || []).map((m: any) => ({
+                            milestone_name: m.milestone_name,
+                            description: m.description,
+                            is_completed: m.is_completed,
+                            due_date: m.due_date,
+                            sort_order: m.sort_order,
+                        })).sort((a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0)),
+                    };
+                }
+            }
+
+            if (!rawData) {
+                toast.error("Tracking ID not found. Try demo code: IRS-8842-WX");
                 setIsSearching(false);
                 return;
             }
 
             // Process Data for UI
-            const processed = processTrackingData(data);
+            const processed = processTrackingData(rawData);
             setTrackingData(processed);
             setShowResult(true);
 
@@ -188,6 +281,30 @@ function TrackingContent() {
                                 </button>
                             </div>
                         </form>
+                        {/* Demo Quick Try */}
+                        <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs text-gray-300">
+                            <span>Try demo code:</span>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setTrackingId("IRS-8842-WX");
+                                    fetchTrackingValues("IRS-8842-WX");
+                                }}
+                                className="bg-white/10 hover:bg-white/20 text-green-300 hover:text-green-200 px-3 py-1 rounded-lg border border-white/15 transition-all font-mono font-semibold"
+                            >
+                                IRS-8842-WX (Supply Chain)
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setTrackingId("IRS-4195-WX-2026");
+                                    fetchTrackingValues("IRS-4195-WX-2026");
+                                }}
+                                className="bg-white/10 hover:bg-white/20 text-teal-300 hover:text-teal-200 px-3 py-1 rounded-lg border border-white/15 transition-all font-mono font-semibold"
+                            >
+                                IRS-4195-WX-2026 (Rig Maint)
+                            </button>
+                        </div>
                         <div className="mt-4 flex items-center justify-center gap-6 text-sm text-gray-400">
                             <span className="flex items-center gap-1">
                                 <CheckCircle2 className="w-3.5 h-3.5 text-green-400" /> Live Data
