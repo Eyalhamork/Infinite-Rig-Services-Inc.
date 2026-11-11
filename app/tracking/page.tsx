@@ -252,20 +252,20 @@ function TrackingContent() {
                         transition={{ delay: 0.1 }}
                         className="max-w-xl mx-auto w-full mb-16"
                     >
-                        <form onSubmit={handleSearch} className="relative">
+                        <form onSubmit={handleSearch} className="relative z-10">
                             <div className="relative group">
-                                <div className="absolute inset-0 bg-gradient-to-r from-green-500/30 to-teal-500/30 rounded-2xl blur opacity-30 group-hover:opacity-50 transition-opacity"></div>
+                                <div className="absolute inset-0 bg-gradient-to-r from-green-500/30 to-teal-500/30 rounded-2xl blur opacity-30 group-hover:opacity-50 transition-opacity pointer-events-none"></div>
                                 <input
                                     type="text"
                                     value={trackingId}
                                     onChange={(e) => setTrackingId(e.target.value)}
                                     placeholder="Enter Tracking ID (e.g., IRS-8842...)"
-                                    className="w-full bg-white border border-gray-200 text-gray-900 placeholder-gray-400 rounded-2xl py-6 pl-6 pr-36 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all text-lg font-medium shadow-2xl"
+                                    className="relative z-10 w-full bg-white border border-gray-200 text-gray-900 placeholder-gray-400 rounded-2xl py-6 pl-6 pr-36 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all text-lg font-medium shadow-2xl"
                                 />
                                 <button
                                     type="submit"
                                     disabled={isSearching}
-                                    className="absolute right-2 top-2 bottom-2 bg-green-600 hover:bg-green-500 text-white px-8 rounded-xl font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-md"
+                                    className="absolute right-2 top-2 bottom-2 z-20 bg-green-600 hover:bg-green-500 text-white px-8 rounded-xl font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-md"
                                 >
                                     {isSearching ? (
                                         <>

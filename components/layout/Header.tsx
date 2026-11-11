@@ -3,13 +3,84 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import { Menu, X, Download } from "lucide-react";
-import { useState } from "react";
+import { Menu, X, Download, LayoutDashboard, LogOut } from "lucide-react";
+import { useState, useEffect } from "react";
 import { triggerPWAInstall } from "@/lib/pwa-utils";
+import { createClient } from "@/lib/supabase/client";
 
 export default function Header() {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [userRole, setUserRole] = useState<string>("client");
+
+  useEffect(() => {
+    const supabase = createClient();
+
+    const checkUser = async () => {
+      try {
+        const {
+          data: { user: currentUser },
+        } = await supabase.auth.getUser();
+
+        if (currentUser) {
+          setUser(currentUser);
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("role")
+            .eq("id", currentUser.id)
+            .single();
+
+          const role =
+            profile?.role || currentUser.user_metadata?.role || "client";
+          setUserRole(role);
+        } else {
+          setUser(null);
+        }
+      } catch (err) {
+        console.error("Header auth check error:", err);
+        setUser(null);
+      }
+    };
+
+    checkUser();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (session?.user) {
+        setUser(session.user);
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", session.user.id)
+          .single();
+
+        const role =
+          profile?.role || session.user.user_metadata?.role || "client";
+        setUserRole(role);
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  const isStaff = ["super_admin", "management", "editor", "support"].includes(
+    userRole
+  );
+  const dashboardHref = isStaff ? "/dashboard" : "/portal";
+  const dashboardLabel = isStaff ? "Dashboard" : "My Portal";
+
+  const handleSignOut = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    setUser(null);
+    window.location.href = "/";
+  };
 
   const navItems = [
     { name: "Home", path: "/" },
@@ -69,12 +140,32 @@ export default function Header() {
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-3">
-            <Link
-              href="/login"
-              className="text-md font-medium text-gray-700 hover:text-primary transition-colors px-4 py-2"
-            >
-              Login
-            </Link>
+            {user ? (
+              <div className="flex items-center space-x-2">
+                <Link
+                  href={dashboardHref}
+                  className="flex items-center gap-2 text-sm font-semibold text-gray-800 hover:text-primary bg-gray-100 hover:bg-primary/10 px-4 py-2 rounded-lg transition-all border border-gray-200"
+                >
+                  <LayoutDashboard className="w-4 h-4 text-primary" />
+                  <span>{dashboardLabel}</span>
+                </Link>
+                <button
+                  onClick={handleSignOut}
+                  title="Sign Out"
+                  className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors border border-transparent hover:border-red-100"
+                  aria-label="Sign Out"
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <Link
+                href="/login"
+                className="text-md font-medium text-gray-700 hover:text-primary transition-colors px-4 py-2"
+              >
+                Login
+              </Link>
+            )}
             <Link
               href="/quote"
               className="bg-gradient-to-r from-primary to-orange-600 text-white px-6 py-2.5 rounded-lg text-md font-semibold hover:shadow-lg hover:scale-105 transition-all duration-300"
@@ -118,13 +209,36 @@ export default function Header() {
 
             {/* Mobile Menu Actions */}
             <div className="pt-4 border-t border-gray-100 space-y-2">
-              <Link
-                href="/login"
-                onClick={closeMobileMenu}
-                className="block px-4 py-3 rounded-lg font-medium text-gray-700 hover:text-primary hover:bg-primary/5 transition-all"
-              >
-                Login
-              </Link>
+              {user ? (
+                <>
+                  <Link
+                    href={dashboardHref}
+                    onClick={closeMobileMenu}
+                    className="flex items-center gap-2 px-4 py-3 rounded-lg font-semibold text-primary bg-primary/10 transition-all"
+                  >
+                    <LayoutDashboard className="w-4 h-4" />
+                    <span>{dashboardLabel}</span>
+                  </Link>
+                  <button
+                    onClick={() => {
+                      closeMobileMenu();
+                      handleSignOut();
+                    }}
+                    className="w-full flex items-center gap-2 px-4 py-3 rounded-lg font-medium text-red-600 hover:bg-red-50 transition-all text-left"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Sign Out</span>
+                  </button>
+                </>
+              ) : (
+                <Link
+                  href="/login"
+                  onClick={closeMobileMenu}
+                  className="block px-4 py-3 rounded-lg font-medium text-gray-700 hover:text-primary hover:bg-primary/5 transition-all"
+                >
+                  Login
+                </Link>
+              )}
               <Link
                 href="/quote"
                 onClick={closeMobileMenu}

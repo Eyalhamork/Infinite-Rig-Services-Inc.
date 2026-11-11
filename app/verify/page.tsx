@@ -55,9 +55,9 @@ export default function VerifyPage() {
                             </p>
 
                             {/* Manual ID Search Form */}
-                            <form onSubmit={handleSearch} className="max-w-xl mx-auto mb-4">
+                            <form onSubmit={handleSearch} className="max-w-xl mx-auto mb-4 relative z-10">
                                 <div className="relative group">
-                                    <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-orange-500/30 rounded-2xl blur opacity-40 group-hover:opacity-70 transition-opacity" />
+                                    <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-orange-500/30 rounded-2xl blur opacity-40 group-hover:opacity-70 transition-opacity pointer-events-none" />
                                     <input
                                         type="text"
                                         value={employeeId}
@@ -66,11 +66,11 @@ export default function VerifyPage() {
                                             if (error) setError("");
                                         }}
                                         placeholder="Enter Employee ID (e.g., IRS-EMP-001)"
-                                        className="w-full bg-white text-gray-900 placeholder-gray-400 rounded-2xl py-5 pl-6 pr-36 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-lg font-medium shadow-2xl transition-all"
+                                        className="relative z-10 w-full bg-white text-gray-900 placeholder-gray-400 rounded-2xl py-5 pl-6 pr-36 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-lg font-medium shadow-2xl transition-all"
                                     />
                                     <button
                                         type="submit"
-                                        className="absolute right-2 top-2 bottom-2 bg-gradient-to-r from-primary to-orange-600 hover:from-primary-600 hover:to-orange-700 text-white px-7 rounded-xl font-bold transition-all shadow-md flex items-center gap-2"
+                                        className="absolute right-2 top-2 bottom-2 z-20 bg-gradient-to-r from-primary to-orange-600 hover:from-primary-600 hover:to-orange-700 text-white px-7 rounded-xl font-bold transition-all shadow-md flex items-center gap-2"
                                     >
                                         <Search className="w-4 h-4" />
                                         <span>Verify</span>
