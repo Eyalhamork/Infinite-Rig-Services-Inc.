@@ -284,7 +284,7 @@ export default function TeamPage() {
             <div className="w-24 h-1 bg-gradient-to-r from-navy-900 via-primary to-navy-900 mx-auto rounded-full"></div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 max-w-6xl mx-auto">
             {teamMembers
               .filter((member) => member.tier === "executive")
               .map((member, index) => (
@@ -299,33 +299,37 @@ export default function TeamPage() {
                   {/* Gold Accent Line */}
                   <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-gold to-transparent opacity-50 group-hover:opacity-100 transition-opacity"></div>
 
-                  <div className="flex flex-col md:flex-row h-full">
-                    <div className="md:w-2/5 relative h-96 md:h-auto">
+                  <div className="flex flex-col sm:flex-row h-full">
+                    <div className="sm:w-1/2 relative min-h-[340px] sm:min-h-[400px] sm:h-auto bg-navy-900">
                       <Image
                         src={member.image || "/images/employees/placeholder.svg"}
                         alt={member.name}
                         fill
-                        className="object-cover transition-transform duration-700 group-hover:scale-105"
+                        className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                        priority
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-navy-900 via-transparent to-transparent opacity-80 md:opacity-100"></div>
+                      {/* Premium edge blend: only on seam transition, leaving 80%+ of portrait crisp & uncovered */}
+                      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-navy-800/80 sm:bg-gradient-to-r sm:from-transparent sm:via-transparent sm:to-navy-800/70 pointer-events-none"></div>
 
                       {/* Executive Badge */}
-                      <div className="absolute top-4 left-4 bg-gold text-navy-900 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                      <div className="absolute top-4 left-4 bg-gold text-navy-900 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-md z-10">
                         Executive
                       </div>
                     </div>
 
-                    <div className="md:w-3/5 p-8 relative z-10 flex flex-col justify-center">
-                      <h3 className="text-3xl font-bold text-white mb-2 font-display">{member.name}</h3>
-                      <p className="text-gold font-medium mb-6 flex items-center gap-2">
-                        <span className="w-8 h-[1px] bg-gold/50"></span>
-                        {member.position}
-                      </p>
-                      <p className="text-gray-300 leading-relaxed mb-8 font-light">
-                        {member.bio}
-                      </p>
+                    <div className="sm:w-1/2 p-6 sm:p-8 relative z-10 flex flex-col justify-between">
+                      <div>
+                        <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2 font-display">{member.name}</h3>
+                        <p className="text-gold font-medium mb-4 sm:mb-6 flex items-center gap-2 text-sm sm:text-base">
+                          <span className="w-6 sm:w-8 h-[1px] bg-gold/50"></span>
+                          {member.position}
+                        </p>
+                        <p className="text-gray-300 leading-relaxed text-sm sm:text-base font-light">
+                          {member.bio}
+                        </p>
+                      </div>
 
-                      <div className="flex items-center gap-4 mt-auto">
+                      <div className="flex items-center gap-4 mt-6 pt-4 border-t border-white/10">
                         <a href={`mailto:${member.email}`} className="p-3 rounded-full bg-white/5 border border-white/10 text-white hover:bg-gold hover:text-navy-900 hover:border-gold transition-all duration-300 group-hover:-translate-y-1">
                           <Mail className="w-5 h-5" />
                         </a>
