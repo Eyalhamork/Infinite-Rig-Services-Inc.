@@ -38,8 +38,8 @@ const teamMembers = [
     tier: "executive",
     bio: "Visionary leader driving strategic growth and operational excellence across West African offshore markets.",
     image: "/images/employees/ceo.jpg",
-    email: "mkermue@infiniterigservices.com",
-    linkedin: "#",
+    email: "mkermue@gmail.com",
+    linkedin: "",
   },
   {
     name: "Mansfield Wrotto",
@@ -48,8 +48,8 @@ const teamMembers = [
     tier: "executive",
     bio: "Strategic operations executive ensuring delivery of world-class offshore support services.",
     image: "/images/employees/placeholder.svg",
-    email: "mwrotto@infiniterigservices.com",
-    linkedin: "#",
+    email: "",
+    linkedin: "",
   },
   // Department Heads & Senior Management
   {
@@ -59,8 +59,8 @@ const teamMembers = [
     tier: "management",
     bio: "Leading talent acquisition, development, and organizational culture initiatives.",
     image: "/images/employees/admin and hr manager.jpg",
-    email: "njallah@infiniterigservices.com",
-    linkedin: "#",
+    email: "",
+    linkedin: "",
   },
   {
     name: "Prince Howard",
@@ -68,9 +68,9 @@ const teamMembers = [
     department: "Supply Chain",
     tier: "management",
     bio: "Managing strategic procurement and supply chain operations for offshore projects.",
-    image: "/images/employees/procurement and supply manager.png",
-    email: "phoward@infiniterigservices.com",
-    linkedin: "#",
+    image: "/images/employees/procurement and supply manager.jpg",
+    email: "",
+    linkedin: "",
   },
   {
     name: "Mohammed Kromah",
@@ -79,8 +79,8 @@ const teamMembers = [
     tier: "management",
     bio: "Driving digital transformation and technology infrastructure excellence.",
     image: "/images/employees/it manager.jpg",
-    email: "mkromah@infiniterigservices.com",
-    linkedin: "#",
+    email: "lhkromah@gmail.com",
+    linkedin: "https://www.linkedin.com/in/layee-kromah/",
   },
   {
     name: "Woods Nyanton",
@@ -89,8 +89,8 @@ const teamMembers = [
     tier: "management",
     bio: "Leading corporate communications, brand strategy, and stakeholder engagement.",
     image: "/images/employees/placeholder.svg",
-    email: "wnyanton@infiniterigservices.com",
-    linkedin: "#",
+    email: "",
+    linkedin: "",
   },
   // Specialists & Consultants - Now promoted to "Expert" tier visually
   {
@@ -100,8 +100,8 @@ const teamMembers = [
     tier: "specialist",
     bio: "Providing expert guidance on procurement strategies and supply chain optimization.",
     image: "/images/employees/procurement and consultancy.jpg",
-    email: "fmcdonnough@infiniterigservices.com",
-    linkedin: "#",
+    email: "",
+    linkedin: "",
   },
   {
     name: "Kester Howard",
@@ -110,8 +110,8 @@ const teamMembers = [
     tier: "specialist",
     bio: "Technical expert ensuring robust IT systems and digital infrastructure.",
     image: "/images/employees/placeholder.svg",
-    email: "khoward@infiniterigservices.com",
-    linkedin: "#",
+    email: "",
+    linkedin: "",
   },
   {
     name: "Daniel M. Jallah",
@@ -119,9 +119,9 @@ const teamMembers = [
     department: "Operations",
     tier: "specialist",
     bio: "Coordinating logistics and ensuring timely delivery of materials and services.",
-    image: "/images/employees/placeholder.svg",
-    email: "djallah@infiniterigservices.com",
-    linkedin: "#",
+    image: "/images/employees/Expeditor.jpg",
+    email: "",
+    linkedin: "",
   },
   {
     name: "Kadiatu Mildred Jallah",
@@ -129,9 +129,9 @@ const teamMembers = [
     department: "Corporate Communications",
     tier: "specialist",
     bio: "Enhancing brand visibility and managing internal and external communications strategies.",
-    image: "/images/employees/placeholder.svg",
-    email: "kjallah@infiniterigservices.com",
-    linkedin: "#",
+    image: "/images/employees/Corporate Communications Officer.jpg",
+    email: "",
+    linkedin: "",
   },
   {
     name: "Maria B Williams",
@@ -140,8 +140,8 @@ const teamMembers = [
     tier: "specialist",
     bio: "Providing essential administrative support and ensuring smooth office operations.",
     image: "/images/employees/placeholder.svg",
-    email: "mwilliams@infiniterigservices.com",
-    linkedin: "#",
+    email: "",
+    linkedin: "",
   },
 ];
 
@@ -329,14 +329,20 @@ export default function TeamPage() {
                         </p>
                       </div>
 
-                      <div className="flex items-center gap-4 mt-6 pt-4 border-t border-white/10">
-                        <a href={`mailto:${member.email}`} className="p-3 rounded-full bg-white/5 border border-white/10 text-white hover:bg-gold hover:text-navy-900 hover:border-gold transition-all duration-300 group-hover:-translate-y-1">
-                          <Mail className="w-5 h-5" />
-                        </a>
-                        <a href={member.linkedin} className="p-3 rounded-full bg-white/5 border border-white/10 text-white hover:bg-[#0077b5] hover:text-white hover:border-[#0077b5] transition-all duration-300 group-hover:-translate-y-1">
-                          <Linkedin className="w-5 h-5" />
-                        </a>
-                      </div>
+                      {(member.email || (member.linkedin && member.linkedin !== "#")) && (
+                        <div className="flex items-center gap-4 mt-6 pt-4 border-t border-white/10">
+                          {member.email && (
+                            <a href={`mailto:${member.email}`} className="p-3 rounded-full bg-white/5 border border-white/10 text-white hover:bg-gold hover:text-navy-900 hover:border-gold transition-all duration-300 group-hover:-translate-y-1" title="Email">
+                              <Mail className="w-5 h-5" />
+                            </a>
+                          )}
+                          {member.linkedin && member.linkedin !== "#" && (
+                            <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="p-3 rounded-full bg-white/5 border border-white/10 text-white hover:bg-[#0077b5] hover:text-white hover:border-[#0077b5] transition-all duration-300 group-hover:-translate-y-1" title="LinkedIn">
+                              <Linkedin className="w-5 h-5" />
+                            </a>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </motion.div>
@@ -373,16 +379,22 @@ export default function TeamPage() {
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-navy-900/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
-                      <div className="flex gap-3">
-                        <a href={`mailto:${member.email}`} className="text-white hover:text-gold transition-colors">
-                          <Mail className="w-5 h-5" />
-                        </a>
-                        <a href={member.linkedin} className="text-white hover:text-gold transition-colors">
-                          <Linkedin className="w-5 h-5" />
-                        </a>
+                    {(member.email || (member.linkedin && member.linkedin !== "#")) && (
+                      <div className="absolute inset-0 bg-gradient-to-t from-navy-900/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                        <div className="flex gap-3">
+                          {member.email && (
+                            <a href={`mailto:${member.email}`} className="text-white hover:text-gold transition-colors" title="Email">
+                              <Mail className="w-5 h-5" />
+                            </a>
+                          )}
+                          {member.linkedin && member.linkedin !== "#" && (
+                            <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="text-white hover:text-gold transition-colors" title="LinkedIn">
+                              <Linkedin className="w-5 h-5" />
+                            </a>
+                          )}
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                   <div className="p-6">
                     <h3 className="text-xl font-bold text-navy-900 group-hover:text-primary transition-colors">{member.name}</h3>
@@ -423,11 +435,20 @@ export default function TeamPage() {
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     {/* Social Overlay */}
-                    <div className="absolute inset-0 bg-navy-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <a href={`mailto:${member.email}`} className="bg-white/20 hover:bg-white/40 p-2 rounded-full backdrop-blur-sm text-white transition-all">
-                        <Mail className="w-4 h-4" />
-                      </a>
-                    </div>
+                    {(member.email || (member.linkedin && member.linkedin !== "#")) && (
+                      <div className="absolute inset-0 bg-navy-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                        {member.email && (
+                          <a href={`mailto:${member.email}`} className="bg-white/20 hover:bg-white/40 p-2 rounded-full backdrop-blur-sm text-white transition-all" title="Email">
+                            <Mail className="w-4 h-4" />
+                          </a>
+                        )}
+                        {member.linkedin && member.linkedin !== "#" && (
+                          <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="bg-white/20 hover:bg-white/40 p-2 rounded-full backdrop-blur-sm text-white transition-all" title="LinkedIn">
+                            <Linkedin className="w-4 h-4" />
+                          </a>
+                        )}
+                      </div>
+                    )}
                   </div>
 
                   {/* Content */}
